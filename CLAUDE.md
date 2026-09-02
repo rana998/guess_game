@@ -114,6 +114,15 @@ XCTest only (not Swift Testing) per project convention. The Domain layer has ful
 >
 > This rule was established during the initial scaffold of this project and applies to all subsequent features, refactors, and fixes, unless the user explicitly says otherwise.
 
+## Git Workflow (Binding)
+
+This project is connected to GitHub at `https://github.com/rana998/guess_game.git` (remote `origin`, branch `main`).
+
+- **Auto-push rule**: after finishing any prompt/task in this project, always commit and push the resulting changes to `origin main` automatically — never wait to be asked separately. If a task produces no file changes, there is nothing to commit; skip silently.
+- **Commit message style**: short, clear, written in English, explaining *what* changed and *why* — not just what.
+- **Multiple meaningful commits**: split each task's work into logical, self-contained commits rather than one giant commit. Each commit should represent one clear change (e.g. a new use case, a UI change, a config update, a docs update) that could be understood and reverted independently.
+- **No attribution lines, ever**: never include a `Co-Authored-By: Claude ...` line, a `Claude-Session:` link, a "Generated with Claude Code" line, or any other co-author/attribution trailer in any commit message or PR description, in this repo or any other. No exceptions. This is enforced via `.claude/settings.json` in this repo (`attribution.commit`, `attribution.pr` set to `""`, `attribution.sessionUrl` set to `false`) — do not remove or override that config.
+
 ## Non-Goals / Current Limitations
 
 - Code signing disabled (not directly device-deployable without adding a Developer Team later).
