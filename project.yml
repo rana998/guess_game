@@ -28,8 +28,16 @@ targets:
     info:
       path: Generated/guessGame-Info.plist
       properties:
-        CFBundleDisplayName: guessGame
+        CFBundleDisplayName: تخمين
         UILaunchScreen: {}
+        UIAppFonts:
+          - Almarai-Light.ttf
+          - Almarai-Regular.ttf
+          - Almarai-Bold.ttf
+          - Almarai-ExtraBold.ttf
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
     scheme:
       testTargets:
         - guessGameTests
