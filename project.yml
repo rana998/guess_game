@@ -36,6 +36,7 @@ targets:
           - Almarai-Bold.ttf
           - Almarai-ExtraBold.ttf
         UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
     scheme:
