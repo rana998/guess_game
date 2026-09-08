@@ -22,6 +22,14 @@ struct HardShadowButtonStyle: ButtonStyle {
             if !isPressed {
                 shape
                     .fill(Color.inkStroke)
+                    // Without an explicit frame, this shape has no intrinsic
+                    // size and greedily expands to fill whatever space the
+                    // ZStack's parent offers (invisible in a fixed-height
+                    // HStack row, but disastrous inside a VStack with extra
+                    // room to distribute, like the portrait ScrollView) —
+                    // must match the label's frame exactly.
+                    .frame(maxWidth: fullWidth ? .infinity : nil)
+                    .frame(height: height)
                     .offset(x: shadowOffset.width, y: shadowOffset.height)
             }
 
