@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-guessGame is a SwiftUI number-guessing game for iOS. The Xcode project is generated via XcodeGen from `project.yml` (the source of truth — never edit `guessGame.xcodeproj` directly). It exists to demonstrate a strict Clean Architecture with three layers — Presentation, Domain, and Data — organized within a single Xcode target.
+guessGame (product name **تخمين**) is a SwiftUI party game for iOS: a picture-description guessing game for 3–6 players, each on their own device. The Xcode project is generated via XcodeGen from `project.yml` (the source of truth — never edit `guessGame.xcodeproj` directly). It's built as a strict Clean Architecture with three layers — Presentation, Domain, and Data — organized within a single Xcode target; only the Presentation layer is populated so far (Home screen + placeholder navigation), with Domain/Data waiting on the first real use case (room creation, gameplay, etc.) in a later phase.
 
 ## Architecture
 
@@ -20,8 +20,10 @@ All three layers live in **one Xcode target/module** (`guessGame`) — there are
 | Repository implementations | Data | `Data/Repositories` |
 | Data sources (in-memory, network, disk, ...) | Data | `Data/DataSources` |
 | Dependency wiring | App (composition root) | `App/guessGameApp.swift` |
+| Design tokens & reusable UI components | Presentation | `Presentation/DesignSystem` |
+| Navigation destinations | Presentation | `Presentation/Navigation` |
 
-Not every use case needs a repository dependency. `MakeGuessUseCase` is deliberately pure (no repository) because evaluating a guess against an already-known target is pure logic; `StartGameUseCase` needs `GameRepository` because it must obtain a new random number from outside the Domain layer. A use case depends on a repository only when it needs data or a side effect from outside Domain.
+`Domain/` and `Data/` currently contain no files — the app's only screens so far (Home and its placeholder destinations) have no business logic or external data dependency. This is deliberate and temporary, not an oversight, mirroring how earlier limitations were flagged rather than left silent (see Non-Goals below). The first real use case (e.g. room creation) will re-populate both folders following this table.
 
 ## Folder Structure
 
@@ -30,37 +32,33 @@ guessGame/
 ├── project.yml                  # XcodeGen project spec — source of truth for the .xcodeproj
 ├── .gitignore
 ├── CLAUDE.md
-├── guessGame/                   # App target: all three Clean Architecture layers
-│   ├── App/                     # Composition root — wires concrete types together
+├── DESIGN_SYSTEM.md
+├── guessGame/                   # App target
+│   ├── App/                     # Composition root
 │   │   └── guessGameApp.swift
-│   ├── Domain/                  # Business entities, use cases, repository protocols — no outward deps
-│   │   ├── Entities/
-│   │   │   ├── GameSession.swift
-│   │   │   └── GuessOutcome.swift
-│   │   ├── UseCases/
-│   │   │   ├── StartGameUseCase.swift
-│   │   │   ├── StartGameUseCaseImpl.swift
-│   │   │   ├── MakeGuessUseCase.swift
-│   │   │   └── MakeGuessUseCaseImpl.swift
-│   │   └── Repositories/
-│   │       └── GameRepository.swift
-│   ├── Data/                    # Repository implementations and data sources
-│   │   ├── DataSources/
-│   │   │   └── InMemoryGameDataSource.swift
-│   │   └── Repositories/
-│   │       └── GameRepositoryImpl.swift
-│   ├── Presentation/            # SwiftUI views and view models
-│   │   ├── ViewModels/
-│   │   │   └── GameViewModel.swift
-│   │   └── Views/
-│   │       └── GameView.swift
-│   └── Assets.xcassets/         # App icon and accent color
-└── guessGameTests/              # XCTest unit tests for the Domain layer
-    ├── UseCases/
-    │   ├── StartGameUseCaseTests.swift
-    │   └── MakeGuessUseCaseTests.swift
-    └── Mocks/
-        └── MockGameRepository.swift
+│   ├── Domain/                  # (empty — no use case exists yet)
+│   ├── Data/                    # (empty — no repository/data source exists yet)
+│   ├── Presentation/
+│   │   ├── Views/
+│   │   │   ├── HomeView.swift           # App entry point
+│   │   │   ├── CreateRoomView.swift     # Placeholder — no room logic yet
+│   │   │   ├── JoinRoomView.swift       # Placeholder — no room logic yet
+│   │   │   └── HowPlayView.swift        # Placeholder
+│   │   ├── Navigation/
+│   │   │   └── HomeDestination.swift    # Hashable enum for Home's NavigationStack
+│   │   └── DesignSystem/
+│   │       ├── Color+DesignSystem.swift
+│   │       ├── Font+DesignSystem.swift
+│   │       ├── Strings.swift            # Hardcoded Arabic strings, namespaced per screen
+│   │       ├── AppButtonStyle.swift     # Primary/secondary/tertiary-dashed button styles
+│   │       ├── ComicOutlineText.swift   # Stroked-text technique for the wordmark
+│   │       ├── StarburstLogo.swift      # Native SwiftUI starburst + wordmark lockup
+│   │       └── PlaceholderDestinationView.swift
+│   ├── Resources/
+│   │   └── Fonts/                # Bundled Almarai .ttf weights (Light/Regular/Bold/ExtraBold)
+│   └── Assets.xcassets/          # App icon, accent color, design-system colors, badge icons
+└── guessGameTests/
+    └── PlaceholderTests.swift    # Keeps the target buildable; no Domain logic exists yet
 ```
 
 ## Coding Conventions
@@ -96,18 +94,15 @@ After regenerating, open `guessGame.xcodeproj` in Xcode to run the app in the Si
 
 ## Dependency Injection
 
-`guessGameApp.swift` is the sole composition root — the only file that constructs concrete types from all three layers. `GameView` receives its already-built `GameViewModel` via `init`, held in `@State` (this mirrors `@StateObject`'s once-only seeding behavior for `ObservableObject`, but for `@Observable` reference types). `$viewModel.property` bindings work directly through `@State` without needing `@Bindable` in this configuration.
+`guessGameApp.swift` is the composition root. It currently wires nothing from Domain/Data (both are empty — see Architecture above); its content today is the app-wide RTL setup: forcing `UIView.appearance().semanticContentAttribute = .forceRightToLeft` in `init()` (so UIKit-backed chrome like `NavigationStack`'s back-chevron placement mirrors correctly) and applying `.environment(\.layoutDirection, .rightToLeft)` to the root view. `HomeView` has no ViewModel — it owns its own `NavigationStack` and push-navigation state directly via `@State private var path: [HomeDestination]`, since it has no business logic to separate out.
 
 ## Testing Strategy
 
-XCTest only (not Swift Testing) per project convention. The Domain layer has full coverage via `guessGameTests`:
-
-- `StartGameUseCaseTests` — uses `MockGameRepository` to verify the session is built with the repository's target, starts with zero attempts and not finished, and that the requested range is passed through correctly.
-- `MakeGuessUseCaseTests` — no mock needed since `MakeGuessUseCaseImpl` is pure logic; verifies too-low/too-high/correct outcomes, that a correct guess marks the session finished, that every guess increments the attempt count, and that an incorrect guess leaves the session unfinished.
+XCTest only (not Swift Testing) per project convention. There is currently no logic-bearing Domain code to test — `guessGameTests/PlaceholderTests.swift` exists solely to keep the test target buildable and should be removed once the first real use case (and its real tests) ships. `HomeView` and its placeholder destinations are pure declarative SwiftUI with no logic to assert, so they're intentionally untested; `Font+DesignSystem`/`Color+DesignSystem` are trivial accessors wrapping platform APIs, also intentionally untested.
 
 ## Design System
 
-See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full visual design system — colors, typography, spacing, and Apple HIG compliance rules. Follow it for every UI/frontend task; treat it as the source of truth over any values inferred from mockup images or screenshots.
+See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full visual design system — colors, typography, spacing, and Apple HIG compliance rules. Follow it for every UI/frontend task; treat it as the source of truth over any values inferred from mockup images or screenshots. Token helpers live in `Presentation/DesignSystem/`. Note: DESIGN_SYSTEM.md's single `Ink/Stroke & Ink/Text` token was split into two color assets, `InkStroke` and `InkText` — identical in Light Mode, but `InkStroke` stays dark in Dark Mode (it's a comic-outline color around shapes) while `InkText` inverts to a warm off-white (it's body/label text color and needs contrast against the dark Paper background).
 
 ## Multi-Agent Workflow Rule (Binding)
 
@@ -130,7 +125,9 @@ This project is connected to GitHub at `https://github.com/rana998/guess_game.gi
 ## Non-Goals / Current Limitations
 
 - Code signing disabled (not directly device-deployable without adding a Developer Team later).
-- In-memory game state only, no persistence.
 - Placeholder app icon with no artwork yet (a missing-icon build warning is expected).
 - Swift 5 language mode, not Swift 6 strict concurrency.
 - iPhone-only device family.
+- Landscape-only for the current screen set (no portrait support) — `Home.png` is pixel-exact to iPhone 16's landscape point size and DESIGN_SYSTEM.md defines landscape-specific safe-area rules; see DESIGN_SYSTEM.md's Safe Areas & Layout section.
+- No real room/networking logic yet — Create Room, Join Room, and How to Play are UI-only placeholders that push to empty stub screens. See `/Users/rana/Desktop/Takhmeen Handoff Plan.pdf` for the planned full screen flow and the future `roomState`/`roundState` networking contract.
+- No `Localizable.strings`/`NSLocalizedString` infrastructure — single hardcoded Arabic language via `Presentation/DesignSystem/Strings.swift`. A future real localization pass is a mechanical extraction from there, not a rewrite.
