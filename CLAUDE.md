@@ -52,7 +52,7 @@ guessGame/
 │   │       ├── Strings.swift            # Hardcoded Arabic strings, namespaced per screen
 │   │       ├── AppButtonStyle.swift     # Primary/secondary/tertiary-dashed button styles
 │   │       ├── ComicOutlineText.swift   # Stroked-text technique for the wordmark
-│   │       ├── StarburstLogo.swift      # Native SwiftUI starburst + wordmark lockup
+│   │       ├── StarburstLogo.swift      # Real PNG starburst asset (Image("starburst"), template-tinted shadow copy) + wordmark lockup, GeometryReader-proportional layout
 │   │       └── PlaceholderDestinationView.swift
 │   ├── Resources/
 │   │   └── Fonts/                # Bundled Almarai .ttf weights (Light/Regular/Bold/ExtraBold)
@@ -128,6 +128,6 @@ This project is connected to GitHub at `https://github.com/rana998/guess_game.gi
 - Placeholder app icon with no artwork yet (a missing-icon build warning is expected).
 - Swift 5 language mode, not Swift 6 strict concurrency.
 - iPhone-only device family.
-- Landscape-only for the current screen set (no portrait support) — `Home.png` is pixel-exact to iPhone 16's landscape point size and DESIGN_SYSTEM.md defines landscape-specific safe-area rules; see DESIGN_SYSTEM.md's Safe Areas & Layout section.
+- Adaptive across portrait and landscape on all supported iPhone sizes — `HomeView` picks its arrangement live from a `GeometryReader` width-vs-height comparison (no fixed device breakpoints). `Home.png` remains the pixel-exact reference for the landscape composition only; the portrait arrangement is a proportional reflow of the same elements (not a separately designed screen), and DESIGN_SYSTEM.md's landscape safe-area rule still applies whenever the device is in landscape.
 - No real room/networking logic yet — Create Room, Join Room, and How to Play are UI-only placeholders that push to empty stub screens. See `/Users/rana/Desktop/Takhmeen Handoff Plan.pdf` for the planned full screen flow and the future `roomState`/`roundState` networking contract.
 - No `Localizable.strings`/`NSLocalizedString` infrastructure — single hardcoded Arabic language via `Presentation/DesignSystem/Strings.swift`. A future real localization pass is a mechanical extraction from there, not a rewrite.
