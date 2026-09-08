@@ -105,6 +105,10 @@ XCTest only (not Swift Testing) per project convention. The Domain layer has ful
 - `StartGameUseCaseTests` — uses `MockGameRepository` to verify the session is built with the repository's target, starts with zero attempts and not finished, and that the requested range is passed through correctly.
 - `MakeGuessUseCaseTests` — no mock needed since `MakeGuessUseCaseImpl` is pure logic; verifies too-low/too-high/correct outcomes, that a correct guess marks the session finished, that every guess increments the attempt count, and that an incorrect guess leaves the session unfinished.
 
+## Design System
+
+See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full visual design system — colors, typography, spacing, and Apple HIG compliance rules. Follow it for every UI/frontend task; treat it as the source of truth over any values inferred from mockup images or screenshots.
+
 ## Multi-Agent Workflow Rule (Binding)
 
 > All future non-trivial work on this project follows a 3-agent process:
