@@ -19,3 +19,6 @@ Generated/
 
 # Claude Code local session state (not project config)
 .claude/scheduled_tasks.lock
+
+# Local simulator screenshots taken for visual review, not project assets
+Preview/
