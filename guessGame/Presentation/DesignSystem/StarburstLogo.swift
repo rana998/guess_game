@@ -1,59 +1,62 @@
 import SwiftUI
 
-/// A 12-point comic starburst, built as a native Shape (not an image asset) so it
-/// recolors correctly for Dark Mode and mirrors correctly under RTL.
-struct StarburstShape: Shape {
-    var points: Int = 12
-    var innerRadiusRatio: CGFloat = 0.72
-
-    func path(in rect: CGRect) -> Path {
-        let center = CGPoint(x: rect.midX, y: rect.midY)
-        let outerRadius = min(rect.width, rect.height) / 2
-        let innerRadius = outerRadius * innerRadiusRatio
-        let vertexCount = points * 2
-
-        var path = Path()
-        for i in 0..<vertexCount {
-            let angle = CGFloat(i) * .pi / CGFloat(points) - .pi / 2
-            let radius = i.isMultiple(of: 2) ? outerRadius : innerRadius
-            let point = CGPoint(x: center.x + radius * cos(angle), y: center.y + radius * sin(angle))
-            i == 0 ? path.move(to: point) : path.addLine(to: point)
-        }
-        path.closeSubpath()
-        return path
-    }
-}
-
-/// The "تخمين" wordmark lockup: yellow starburst with a hard offset shadow, the
-/// outlined red wordmark centered on it, and the black subtitle ribbon overlapping
-/// its bottom edge — matching Home.png's composition.
+/// The "تخمين" wordmark lockup: the real starburst PNG asset (yellow burst,
+/// black outline, baked-in soft glow), a template-tinted copy of the same
+/// asset as its hard-offset shadow, the outlined red wordmark, and the black
+/// subtitle ribbon — matching Home.png's composition. Sizes proportionally:
+/// every child is positioned as a fraction of this view's own frame, which is
+/// locked to the asset's real 3:2 pixel ratio (1536x1024) so those fractions
+/// never drift out of alignment with the artwork, regardless of what size
+/// HomeView gives this view on a given device/orientation.
+///
+/// The asset's baked-in soft glow means the shadow layer below doesn't read
+/// as a perfectly crisp DESIGN_SYSTEM.md "hard, never blurred" shadow — that
+/// mismatch is inherent to using the real exported artwork rather than a
+/// hand-drawn shape, and is accepted rather than papered over.
 struct StarburstLogo: View {
     var body: some View {
-        ZStack {
-            StarburstShape()
-                .fill(Color.inkStroke)
-                .offset(x: 6, y: 4)
+        GeometryReader { geo in
+            ZStack {
+                // Hard-offset shadow: a template-tinted copy of the real
+                // artwork (its own alpha channel as the mask), not a
+                // hand-drawn shape. Offset is DESIGN_SYSTEM.md's fixed
+                // "primary elements" (6,4) token, same as AppButtonStyle.
+                Image("starburst")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(Color.inkStroke)
+                    .offset(x: 6, y: 4)
 
-            StarburstShape()
-                .fill(Color.brandYellow)
-                .overlay(StarburstShape().stroke(Color.inkStroke, lineWidth: 4))
+                // Full-color artwork, as-is — its own outline/glow is used
+                // directly, no extra .stroke() overlay.
+                Image("starburst")
+                    .resizable()
+                    .scaledToFit()
 
-            ComicOutlineText(
-                text: Strings.Home.title,
-                font: .displayLogo,
-                fillColor: .brandRed,
-                strokeColor: .inkStroke,
-                strokeWidth: 4
-            )
-            .minimumScaleFactor(0.4)
-            .lineLimit(1)
-            .padding(40)
+                ComicOutlineText(
+                    text: Strings.Home.title,
+                    font: .displayLogo,
+                    fillColor: .brandRed,
+                    strokeColor: .inkStroke,
+                    strokeWidth: 4
+                )
+                .minimumScaleFactor(0.4)
+                .lineLimit(1)
+                .padding(.horizontal, geo.size.width * 0.28)
+                .padding(.vertical, geo.size.height * 0.30)
+
+                subtitleRibbon
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+                    .frame(maxWidth: geo.size.width * 0.80)
+                    .position(x: geo.size.width / 2, y: geo.size.height * 0.87)
+            }
         }
-        .aspectRatio(1, contentMode: .fit)
-        .overlay(alignment: .bottom) {
-            subtitleRibbon
-                .offset(y: 14)
-        }
+        // Locks this view to the asset's real 3:2 ratio (1536x1024) so the
+        // fractional placements above always align with the rendered image,
+        // no matter what box HomeView offers this view.
+        .aspectRatio(3.0 / 2.0, contentMode: .fit)
     }
 
     private var subtitleRibbon: some View {
