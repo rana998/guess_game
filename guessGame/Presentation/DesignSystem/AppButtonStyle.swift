@@ -47,16 +47,16 @@ struct HardShadowButtonStyle: ButtonStyle {
     }
 }
 
-/// The How to Play button's dashed, content-hugging, de-emphasized treatment —
-/// no shadow, matching its secondary status in the mockup.
+/// The How to Play button's dashed, de-emphasized treatment — no shadow,
+/// matching its secondary status in the mockup. Fixed 228×46pt per Figma
+/// inspection (not content-hugging).
 struct TertiaryDashedButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
         configuration.label
             .font(.labelSection)
             .foregroundStyle(Color.inkStroke)
-            .padding(.horizontal, 16)
-            .frame(height: 44)
+            .frame(width: 228, height: 46)
             .background(Color.paper, in: shape)
             .overlay(
                 shape.strokeBorder(Color.inkStroke, style: StrokeStyle(lineWidth: 2, dash: [4, 3]))
@@ -96,6 +96,6 @@ extension ButtonStyle where Self == HardShadowButtonStyle {
 }
 
 extension ButtonStyle where Self == TertiaryDashedButtonStyle {
-    /// How to Play: dashed 2pt border, 44pt height, content-hugging, no shadow.
+    /// How to Play: dashed 2pt border, fixed 228×46pt, no shadow.
     static var appTertiaryDashed: TertiaryDashedButtonStyle { TertiaryDashedButtonStyle() }
 }
