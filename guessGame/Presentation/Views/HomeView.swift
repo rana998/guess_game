@@ -77,12 +77,13 @@ struct HomeView: View {
     }
 
     private var ellipsisBadge: some View {
-        Image(systemName: "ellipsis")
+        let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+        return Image(systemName: "ellipsis")
             .font(.labelSection)
             .foregroundStyle(Color.inkStroke)
             .frame(width: 46, height: 46)
-            .background(Color.paper, in: Circle())
-            .overlay(Circle().strokeBorder(Color.inkStroke, lineWidth: 2))
+            .background(Color.paper, in: shape)
+            .overlay(shape.strokeBorder(Color.inkStroke, lineWidth: 3))
     }
 }
 
