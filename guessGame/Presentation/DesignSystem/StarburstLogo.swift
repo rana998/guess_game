@@ -38,13 +38,11 @@ struct StarburstLogo: View {
                     text: Strings.Home.title,
                     font: .displayLogo,
                     fillColor: .brandRed,
-                    strokeColor: .inkStroke,
-                    strokeWidth: 4
+                    strokeColor: .black,
+                    strokeWidth: 3
                 )
-                .minimumScaleFactor(0.4)
                 .lineLimit(1)
-                .padding(.horizontal, geo.size.width * 0.28)
-                .padding(.vertical, geo.size.height * 0.30)
+                .frame(width: 221, height: 78)
 
                 subtitleRibbon
                     .minimumScaleFactor(0.6)
