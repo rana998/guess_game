@@ -80,7 +80,7 @@ struct HomeView: View {
         Image(systemName: "ellipsis")
             .font(.labelSection)
             .foregroundStyle(Color.inkStroke)
-            .frame(width: 44, height: 44)
+            .frame(width: 46, height: 46)
             .background(Color.paper, in: Circle())
             .overlay(Circle().strokeBorder(Color.inkStroke, lineWidth: 2))
     }
