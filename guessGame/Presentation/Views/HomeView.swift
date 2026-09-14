@@ -71,19 +71,28 @@ struct HomeView: View {
 
             Text(Strings.Home.playerCountCaption)
                 .font(.bodyMeta)
-                .foregroundStyle(Color.inkText.opacity(0.55))
+                // Figma specifies pure #000000 at 55% opacity here, not the
+                // InkText token (which lightens in Dark Mode for contrast) —
+                // this caption stays literally black per spec in both appearances.
+                .foregroundStyle(Color.black.opacity(0.55))
+                // Figma bounding box is 184pt wide; height is left to the text's
+                // own intrinsic size rather than the box's tight 13pt metrics box,
+                // which would clip Arabic descenders.
+                .frame(width: 184, alignment: .leading)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var ellipsisBadge: some View {
-        let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+        // Rounded square (not a circle) per Figma: 46x46pt, 14pt radius,
+        // #FFFFFF fill, 4pt #0A0A0A inside stroke.
+        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
         return Image(systemName: "ellipsis")
             .font(.labelSection)
             .foregroundStyle(Color.inkStroke)
             .frame(width: 46, height: 46)
-            .background(Color.paper, in: shape)
-            .overlay(shape.strokeBorder(Color.inkStroke, lineWidth: 3))
+            .background(Color.white, in: shape)
+            .overlay(shape.strokeBorder(Color.inkStroke, lineWidth: 4))
     }
 }
 

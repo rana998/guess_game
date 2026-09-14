@@ -11,7 +11,7 @@ extension Font {
     static let titleCard = Font.custom("Almarai-ExtraBold", size: 16, relativeTo: .title3)
     static let labelSection = Font.custom("Almarai-ExtraBold", size: 14, relativeTo: .headline)
     static let labelChip = Font.custom("Almarai-ExtraBold", size: 12.5, relativeTo: .caption)
-    static let bodyMeta = Font.custom("Almarai-Light", size: 11.5, relativeTo: .caption2)
+    static let bodyMeta = Font.custom("Almarai-Light", size: 12, relativeTo: .caption2)
     static let bodyRegular = Font.custom("Almarai-Regular", size: 12, relativeTo: .footnote)
 
     /// Room code & timer only, per DESIGN_SYSTEM.md — system monospaced, not Almarai.

@@ -3,16 +3,20 @@ import SwiftUI
 /// Comic-style button treatment shared by DESIGN_SYSTEM.md's button tokens: a solid
 /// ink-stroke border, a hard (never blurred) offset shadow rendered as a second flat
 /// shape behind the button rather than a blurred system shadow, and a press state
-/// that drops the shadow to 0 while the button shifts into its place.
+/// that drops the shadow to 0 while the button shifts into its place. Fixed
+/// width/height per Figma spec (not content-hugging) — the Home CTAs are a
+/// fixed 288x60pt regardless of label length.
 struct HardShadowButtonStyle: ButtonStyle {
     var fill: Color
+    var borderColor: Color
     var borderWidth: CGFloat
     var cornerRadius: CGFloat
+    var width: CGFloat
     var height: CGFloat
     var shadowOffset: CGSize
+    var shadowColor: Color
     var font: Font
-    var horizontalPadding: CGFloat
-    var fullWidth: Bool
+    var textColor: Color
 
     func makeBody(configuration: Configuration) -> some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
@@ -21,26 +25,19 @@ struct HardShadowButtonStyle: ButtonStyle {
         ZStack {
             if !isPressed {
                 shape
-                    .fill(Color.inkStroke)
-                    // Without an explicit frame, this shape has no intrinsic
-                    // size and greedily expands to fill whatever space the
-                    // ZStack's parent offers (invisible in a fixed-height
-                    // HStack row, but disastrous inside a VStack with extra
-                    // room to distribute, like the portrait ScrollView) —
-                    // must match the label's frame exactly.
-                    .frame(maxWidth: fullWidth ? .infinity : nil)
-                    .frame(height: height)
+                    .fill(shadowColor)
+                    .frame(width: width, height: height)
                     .offset(x: shadowOffset.width, y: shadowOffset.height)
             }
 
             configuration.label
                 .font(font)
-                .foregroundStyle(Color.inkStroke)
-                .padding(.horizontal, horizontalPadding)
-                .frame(maxWidth: fullWidth ? .infinity : nil)
-                .frame(height: height)
+                .foregroundStyle(textColor)
+                .frame(width: width, height: height)
                 .background(fill, in: shape)
-                .overlay(shape.strokeBorder(Color.inkStroke, lineWidth: borderWidth))
+                // strokeBorder insets the line inside the shape's bounds,
+                // matching Figma's "stroke position: inside" setting.
+                .overlay(shape.strokeBorder(borderColor, lineWidth: borderWidth))
                 .offset(x: isPressed ? shadowOffset.width : 0, y: isPressed ? shadowOffset.height : 0)
         }
         .animation(.easeOut(duration: 0.08), value: isPressed)
@@ -48,54 +45,64 @@ struct HardShadowButtonStyle: ButtonStyle {
 }
 
 /// The How to Play button's dashed, de-emphasized treatment — no shadow,
-/// matching its secondary status in the mockup. Fixed 228×46pt per Figma
-/// inspection (not content-hugging).
+/// matching its secondary status in the mockup. Fixed 228×46pt per Figma spec
+/// (not content-hugging).
 struct TertiaryDashedButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
-        let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
         configuration.label
             .font(.labelSection)
             .foregroundStyle(Color.inkStroke)
             .frame(width: 228, height: 46)
             .background(Color.paper, in: shape)
+            // Plain `.stroke` (not `.strokeBorder`) centers the dashed line on
+            // the shape's edge, matching Figma's "stroke position: center"
+            // setting for this element only.
             .overlay(
-                shape.strokeBorder(Color.inkStroke, style: StrokeStyle(lineWidth: 2, dash: [4, 3]))
+                shape.stroke(Color.black, style: StrokeStyle(lineWidth: 4, dash: [14, 7]))
             )
             .opacity(configuration.isPressed ? 0.6 : 1)
     }
 }
 
 extension ButtonStyle where Self == HardShadowButtonStyle {
-    /// Create Room: filled BrandLime, 3pt border, 50pt CTA height, (6,4) shadow.
+    /// إنشاء غرفة (Create Room), primary CTA. Exact Figma spec: 288x60pt, 14pt
+    /// radius, BrandLime fill, 4pt black inside stroke, hard (6,4) black shadow.
     static var appPrimary: HardShadowButtonStyle {
         HardShadowButtonStyle(
             fill: .brandLime,
-            borderWidth: 3,
-            cornerRadius: 12,
-            height: 50,
+            borderColor: .black,
+            borderWidth: 4,
+            cornerRadius: 14,
+            width: 288,
+            height: 60,
             shadowOffset: CGSize(width: 6, height: 4),
+            shadowColor: .black,
             font: .displayCTA,
-            horizontalPadding: 24,
-            fullWidth: true
+            textColor: .inkStroke
         )
     }
 
-    /// Join Room: filled Paper, 3pt border, 50pt CTA height, (4,4) shadow.
+    /// انضم إلى غرفة (Join Room), secondary CTA. Same 288x60pt/14pt-radius/
+    /// 4pt-stroke/(6,4)-shadow treatment as the primary button per Figma spec —
+    /// only the fill differs (white, not BrandLime).
     static var appSecondary: HardShadowButtonStyle {
         HardShadowButtonStyle(
-            fill: .paper,
-            borderWidth: 3,
-            cornerRadius: 12,
-            height: 50,
-            shadowOffset: CGSize(width: 4, height: 4),
+            fill: .white,
+            borderColor: .black,
+            borderWidth: 4,
+            cornerRadius: 14,
+            width: 288,
+            height: 60,
+            shadowOffset: CGSize(width: 6, height: 4),
+            shadowColor: .black,
             font: .displayCTA,
-            horizontalPadding: 24,
-            fullWidth: true
+            textColor: .inkStroke
         )
     }
 }
 
 extension ButtonStyle where Self == TertiaryDashedButtonStyle {
-    /// How to Play: dashed 2pt border, fixed 228×46pt, no shadow.
+    /// How to Play: dashed 4pt center border, fixed 228×46pt, no shadow.
     static var appTertiaryDashed: TertiaryDashedButtonStyle { TertiaryDashedButtonStyle() }
 }
