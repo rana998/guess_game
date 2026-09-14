@@ -41,6 +41,13 @@ struct HardShadowButtonStyle: ButtonStyle {
                 .offset(x: isPressed ? shadowOffset.width : 0, y: isPressed ? shadowOffset.height : 0)
         }
         .animation(.easeOut(duration: 0.08), value: isPressed)
+        // The app forces RTL globally for Arabic text flow (see guessGameApp),
+        // but SwiftUI also mirrors raw `.offset(x:)` under that environment —
+        // it silently flipped this hard shadow to bottom-LEFT instead of the
+        // Figma-specified bottom-RIGHT. Pinning this subtree back to LTR
+        // cancels that mirroring; it doesn't affect the label's Arabic glyph
+        // shaping, which comes from the string's own script, not this flag.
+        .environment(\.layoutDirection, .leftToRight)
     }
 }
 
