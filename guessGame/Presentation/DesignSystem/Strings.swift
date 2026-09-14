@@ -9,6 +9,9 @@ enum Strings {
         static let joinRoom = "انضم إلى غرفة"
         static let howToPlay = "كيف تلعب؟"
         static let playerCountCaption = "من ٣ إلى ٦ لاعبين كل لاعب على جهازة"
+        /// Accessibility label for the icon-only "..." button, which has no
+        /// visible text of its own (unlike Home's other buttons).
+        static let settingsAccessibilityLabel = "الإعدادات"
     }
 
     enum CreateRoom {

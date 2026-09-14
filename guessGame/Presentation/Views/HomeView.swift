@@ -88,12 +88,18 @@ struct HomeView: View {
         // Rounded square (not a circle) per Figma: 46x46pt, 14pt radius,
         // #FFFFFF fill, 4pt #0A0A0A inside stroke.
         let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
-        return Image(systemName: "ellipsis")
-            .font(.labelSection)
-            .foregroundStyle(Color.inkStroke)
-            .frame(width: 46, height: 46)
-            .background(Color.white, in: shape)
-            .overlay(shape.strokeBorder(Color.inkStroke, lineWidth: 4))
+        return Button { path.append(.homeSetting) } label: {
+            Image(systemName: "ellipsis")
+                .font(.labelSection)
+                .foregroundStyle(Color.inkStroke)
+                .frame(width: 46, height: 46)
+                .background(Color.white, in: shape)
+                .overlay(shape.strokeBorder(Color.inkStroke, lineWidth: 4))
+        }
+        // .plain keeps the exact custom look above — the default button style
+        // would otherwise tint/alter it on press.
+        .buttonStyle(.plain)
+        .accessibilityLabel(Strings.Home.settingsAccessibilityLabel)
     }
 }
 
