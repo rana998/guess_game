@@ -27,6 +27,7 @@ struct HomeView: View {
                 case .createRoom: CreateRoomView()
                 case .joinRoom: JoinRoomView()
                 case .howToPlay: HowPlayView()
+                case .homeSetting: HomeSettingView()
                 }
             }
         }

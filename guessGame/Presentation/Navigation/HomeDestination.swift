@@ -4,4 +4,5 @@ enum HomeDestination: Hashable {
     case createRoom
     case joinRoom
     case howToPlay
+    case homeSetting
 }

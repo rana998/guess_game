@@ -25,4 +25,9 @@ enum Strings {
         static let title = "كيف تلعب؟"
         static let comingSoon = "قريباً"
     }
+
+    enum HomeSetting {
+        static let title = "الإعدادات"
+        static let comingSoon = "قريباً"
+    }
 }
