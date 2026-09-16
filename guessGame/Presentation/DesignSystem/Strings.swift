@@ -31,6 +31,12 @@ enum Strings {
 
     enum HomeSetting {
         static let title = "الإعدادات"
-        static let comingSoon = "قريباً"
+        static let soundEffects = "المؤثرات الصوتية"
+        static let music = "الموسيقى"
+        static let vibration = "الاهتزاز"
+        static let howToPlay = "كيف تلعب؟"
+        static let caption = "تخمين · الإصدار 1.0 · الشروط والخصوصية"
+        /// Accessibility label for the icon-only back button (RoundedChevronButton).
+        static let backAccessibilityLabel = "رجوع"
     }
 }
