@@ -25,7 +25,9 @@ struct HomeSettingView: View {
 
     /// Dedicated to this screen only: reuses the generic HardShadowButtonStyle
     /// rendering engine with its own configuration, not Home's `.appPrimary`
-    /// or `.appTertiaryDashed` presets.
+    /// or `.appTertiaryDashed` presets. Height matches DESIGN_SYSTEM.md's
+    /// "Prominent CTA height: 50pt" (measured against the mockup directly,
+    /// not Home's own 60pt CTAs — Home's frame happens to be a different size).
     private var howToPlayButtonStyle: HardShadowButtonStyle {
         HardShadowButtonStyle(
             fill: .brandYellow,
@@ -33,7 +35,7 @@ struct HomeSettingView: View {
             borderWidth: 4,
             cornerRadius: 14,
             width: contentWidth,
-            height: 60,
+            height: 50,
             shadowOffset: CGSize(width: 6, height: 4),
             shadowColor: .black,
             font: .displayCTA,
@@ -79,11 +81,11 @@ struct HomeSettingView: View {
     private var content: some View {
         VStack(spacing: 0) {
             settingsCard
-                .padding(.top, 24)
+                .padding(.top, 16)
             howToPlayButton
                 .padding(.top, 16)
             captionText
-                .padding(.top, 8)
+                .padding(.top, 12)
                 .padding(.horizontal, 24)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
