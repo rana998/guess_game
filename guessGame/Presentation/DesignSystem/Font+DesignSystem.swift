@@ -6,7 +6,10 @@ import SwiftUI
 /// nearest matching text style while preserving the spec's base point size.
 extension Font {
     static let displayLogo = Font.custom("Almarai-ExtraBold", size: 78, relativeTo: .largeTitle)
-    static let displayCTA = Font.custom("Almarai-ExtraBold", size: 30, relativeTo: .title)
+    // Bold, not ExtraBold: the Home mockup's CTA labels measure as Bold 30
+    // (ink width 284px vs 299px for ExtraBold at the same size).
+    static let displayCTA = Font.custom("Almarai-Bold", size: 30, relativeTo: .title)
+    static let ctaTertiary = Font.custom("Almarai-Bold", size: 20, relativeTo: .headline)
     static let titleScreen = Font.custom("Almarai-ExtraBold", size: 20, relativeTo: .title2)
     static let titleCard = Font.custom("Almarai-ExtraBold", size: 16, relativeTo: .title3)
     static let labelSection = Font.custom("Almarai-ExtraBold", size: 14, relativeTo: .headline)
