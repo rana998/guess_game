@@ -43,6 +43,7 @@ guessGame/
 │   │   │   ├── HomeView.swift           # App entry point
 │   │   │   ├── CreateRoomView.swift     # Placeholder — no room logic yet
 │   │   │   ├── JoinRoomView.swift       # Placeholder — no room logic yet
+│   │   │   ├── HomeSettingView.swift    # Settings (UI-only toggles), landscape 852×393 Figma spec
 │   │   │   └── HowPlayView.swift        # Placeholder
 │   │   ├── Navigation/
 │   │   │   └── HomeDestination.swift    # Hashable enum for Home's NavigationStack
@@ -50,7 +51,9 @@ guessGame/
 │   │       ├── Color+DesignSystem.swift
 │   │       ├── Font+DesignSystem.swift
 │   │       ├── Strings.swift            # Hardcoded Arabic strings, namespaced per screen
-│   │       ├── AppButtonStyle.swift     # Primary/secondary/tertiary-dashed button styles
+│   │       ├── AppButtonStyle.swift     # Primary/secondary/tertiary-dashed + flat-outline button styles
+│   │       ├── CircleBackButton.swift   # 44pt yellow circular back button (HomeSettingView)
+│   │       ├── SettingsRowToggleStyle.swift # Full-row toggle with 64×28pt custom switch (HomeSettingView)
 │   │       ├── ComicOutlineText.swift   # Stroked-text technique for the wordmark
 │   │       ├── StarburstLogo.swift      # Real PNG starburst asset (Image("starburst"), template-tinted shadow copy) + wordmark lockup, GeometryReader-proportional layout
 │   │       └── PlaceholderDestinationView.swift
