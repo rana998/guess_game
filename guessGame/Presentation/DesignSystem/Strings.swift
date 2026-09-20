@@ -36,7 +36,10 @@ enum Strings {
         static let vibration = "الاهتزاز"
         static let howToPlay = "كيف تلعب؟"
         static let caption = "تخمين · الإصدار 1.0 · الشروط والخصوصية"
-        /// Accessibility label for the icon-only back button (RoundedChevronButton).
+        /// Accessibility label for the icon-only back button (CircleBackButton).
         static let backAccessibilityLabel = "رجوع"
+        /// VoiceOver values for the custom toggle rows, which have no native switch to announce them.
+        static let on = "مفعّل"
+        static let off = "معطّل"
     }
 }
