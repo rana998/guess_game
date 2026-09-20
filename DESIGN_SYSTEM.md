@@ -21,7 +21,8 @@ Font family is **Almarai** throughout (Arabic-first UI). All line-heights are 10
 | Token | Weight | Size |
 |---|---|---|
 | Display/Logo | ExtraBold | 78pt |
-| Display/CTA | ExtraBold | 30pt |
+| Display/CTA | Bold | 30pt |
+| CTA/Tertiary (Home "كيف تلعب؟") | Bold | 20pt |
 | Title/Screen | ExtraBold | 20pt |
 | Title/Card | ExtraBold | 16pt |
 | Label/Section | ExtraBold | 14pt |
@@ -51,7 +52,7 @@ Strict 8pt grid (Apple HIG). Never use odd values (7, 9, 11, 13, 18, 22).
 
 ## Corner Radii
 
-Continuous/squircle style in SwiftUI (`.continuous` corner style), not perfect circles.
+Continuous/squircle style in SwiftUI (`.continuous` corner style), not perfect circles. Exception: the Home screen's buttons, dashed button and ellipsis badge use `.circular` 14–15pt corners — that is what the Home mockup measures.
 
 | Element | Radius |
 |---|---|
