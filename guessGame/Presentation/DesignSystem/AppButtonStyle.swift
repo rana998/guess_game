@@ -51,31 +51,6 @@ struct HardShadowButtonStyle: ButtonStyle {
     }
 }
 
-/// Flat counterpart to HardShadowButtonStyle: same inside stroke, no hard
-/// shadow. Stretches to the width its container offers (callers cap it) and
-/// fades on press, since there is no shadow to drop.
-struct FlatOutlineButtonStyle: ButtonStyle {
-    var fill: Color
-    var borderColor: Color
-    var borderWidth: CGFloat
-    var cornerRadius: CGFloat
-    var height: CGFloat
-    var font: Font
-    var textColor: Color
-
-    func makeBody(configuration: Configuration) -> some View {
-        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-        configuration.label
-            .font(font)
-            .foregroundStyle(textColor)
-            .frame(maxWidth: .infinity)
-            .frame(height: height)
-            .background(fill, in: shape)
-            .overlay(shape.strokeBorder(borderColor, lineWidth: borderWidth))
-            .opacity(configuration.isPressed ? 0.6 : 1)
-    }
-}
-
 /// The How to Play button's dashed, de-emphasized treatment — no shadow,
 /// matching its secondary status in the mockup. Fixed 228×46pt per Figma spec
 /// (not content-hugging).
