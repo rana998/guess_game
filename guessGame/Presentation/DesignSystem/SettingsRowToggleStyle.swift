@@ -10,7 +10,10 @@ struct SettingsRowToggleStyle: ToggleStyle {
     private static let offColor = Color(red: 0x3C / 255, green: 0x3C / 255, blue: 0x43 / 255).opacity(0.3)
 
     private static let trackSize = CGSize(width: 64, height: 28)
-    private static let knobInset: CGFloat = 2
+    // The mockup is a native 51×31 switch stretched to 64×28, which leaves a
+    // wide pill knob outlined in the track color rather than a round one.
+    private static let knobSize = CGSize(width: 40, height: 26)
+    private static let knobInset: CGFloat = 1
 
     func makeBody(configuration: Configuration) -> some View {
         Button {
@@ -25,7 +28,11 @@ struct SettingsRowToggleStyle: ToggleStyle {
                 Spacer()
                 track(isOn: configuration.isOn)
             }
-            .padding(.horizontal, 20)
+            // Leading is the right edge under RTL, where the label sits; the
+            // switch side gets the smaller margin. Both are measured from the
+            // card's outer edge in the spec (switch x=201 in a card at x=187).
+            .padding(.leading, 26)
+            .padding(.trailing, 14)
             .frame(maxHeight: .infinity)
             .contentShape(Rectangle())
         }
@@ -35,14 +42,15 @@ struct SettingsRowToggleStyle: ToggleStyle {
     }
 
     private func track(isOn: Bool) -> some View {
-        let knobSize = Self.trackSize.height - Self.knobInset * 2
-        let travel = Self.trackSize.width - knobSize - Self.knobInset * 2
+        let trackColor = isOn ? Self.onColor : Self.offColor
+        let travel = Self.trackSize.width - Self.knobSize.width - Self.knobInset * 2
 
         return ZStack(alignment: .leading) {
-            Capsule().fill(isOn ? Self.onColor : Self.offColor)
-            Circle()
+            Capsule().fill(trackColor)
+            Capsule()
                 .fill(Color.white)
-                .frame(width: knobSize, height: knobSize)
+                .overlay(Capsule().strokeBorder(trackColor, lineWidth: 1))
+                .frame(width: Self.knobSize.width, height: Self.knobSize.height)
                 .offset(x: Self.knobInset + (isOn ? travel : 0))
         }
         .frame(width: Self.trackSize.width, height: Self.trackSize.height)
