@@ -51,8 +51,8 @@ guessGame/
 │   │       ├── Color+DesignSystem.swift
 │   │       ├── Font+DesignSystem.swift
 │   │       ├── Strings.swift            # Hardcoded Arabic strings, namespaced per screen
-│   │       ├── AppButtonStyle.swift     # Primary/secondary/tertiary-dashed + flat-outline button styles
-│   │       ├── CircleBackButton.swift   # 44pt yellow circular back button (HomeSettingView)
+│   │       ├── AppButtonStyle.swift     # Primary/secondary/tertiary-dashed button styles
+│   │       ├── RoundedChevronButton.swift # 44pt yellow rounded-square back button (HomeSettingView)
 │   │       ├── SettingsRowToggleStyle.swift # Full-row toggle with 64×28pt custom switch (HomeSettingView)
 │   │       ├── ComicOutlineText.swift   # Stroked-text technique for the wordmark
 │   │       ├── StarburstLogo.swift      # Real PNG starburst asset (Image("starburst"), template-tinted shadow copy) + wordmark lockup, GeometryReader-proportional layout
