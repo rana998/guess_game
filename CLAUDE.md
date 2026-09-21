@@ -44,7 +44,7 @@ guessGame/
 │   │   │   ├── CreateRoomView.swift     # Placeholder — no room logic yet
 │   │   │   ├── JoinRoomView.swift       # Placeholder — no room logic yet
 │   │   │   ├── HomeSettingView.swift    # Settings (UI-only toggles), landscape 852×393 Figma spec
-│   │   │   └── HowPlayView.swift        # Placeholder
+│   │   │   └── HowPlayView.swift        # Static rules screen: header + 5 InfoCards + points bar, landscape 852×393 mockup spec
 │   │   ├── Navigation/
 │   │   │   └── HomeDestination.swift    # Hashable enum for Home's NavigationStack
 │   │   └── DesignSystem/
@@ -52,11 +52,13 @@ guessGame/
 │   │       ├── Font+DesignSystem.swift
 │   │       ├── Strings.swift            # Hardcoded Arabic strings, namespaced per screen
 │   │       ├── AppButtonStyle.swift     # Primary/secondary/tertiary-dashed button styles
-│   │       ├── RoundedChevronButton.swift # 44pt yellow rounded-square back button (HomeSettingView)
+│   │       ├── RoundedChevronButton.swift # 44pt yellow rounded-square back button (used via ScreenHeader)
+│   │       ├── ScreenHeader.swift       # 85pt white header bar + 3pt rule with back button and title (HomeSettingView, HowPlayView)
+│   │       ├── InfoCard.swift           # Parameterized icon/title/description card, tall + compact variants (HowPlayView)
 │   │       ├── SettingsRowToggleStyle.swift # Full-row toggle with 64×28pt custom switch (HomeSettingView)
 │   │       ├── ComicOutlineText.swift   # Stroked-text technique for the wordmark
 │   │       ├── StarburstLogo.swift      # Real PNG starburst asset (Image("starburst"), template-tinted shadow copy) + wordmark lockup, GeometryReader-proportional layout
-│   │       └── PlaceholderDestinationView.swift
+│   │       └── PlaceholderDestinationView.swift # Shared stub for CreateRoomView / JoinRoomView
 │   ├── Resources/
 │   │   └── Fonts/                # Bundled Almarai .ttf weights (Light/Regular/Bold/ExtraBold)
 │   └── Assets.xcassets/          # App icon, accent color, design-system colors, badge icons
@@ -105,7 +107,7 @@ XCTest only (not Swift Testing) per project convention. There is currently no lo
 
 ## Design System
 
-See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full visual design system — colors, typography, spacing, and Apple HIG compliance rules. Follow it for every UI/frontend task; treat it as the source of truth over any values inferred from mockup images or screenshots. Token helpers live in `Presentation/DesignSystem/`. Note: DESIGN_SYSTEM.md's single `Ink/Stroke & Ink/Text` token was split into two color assets, `InkStroke` and `InkText` — identical in Light Mode, but `InkStroke` stays dark in Dark Mode (it's a comic-outline color around shapes) while `InkText` inverts to a warm off-white (it's body/label text color and needs contrast against the dark Paper background).
+See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full visual design system — colors, typography, spacing, and Apple HIG compliance rules. Follow it for every UI/frontend task; treat it as the source of truth over any values inferred from mockup images or screenshots. Token helpers live in `Presentation/DesignSystem/`. Note: DESIGN_SYSTEM.md's single `Ink/Stroke & Ink/Text` token was split into two color assets, `InkStroke` and `InkText` — identical in Light Mode, but `InkStroke` stays dark in Dark Mode (it's a comic-outline color around shapes) while `InkText` inverts to a warm off-white (it's body/label text color and needs contrast against the dark Paper background). The How to Play screen added three colors measured from its mockup: `BrandLimeDeep` (green card border) and the `TintRed` / `TintLime` card fills. Cards that are literally white or yellow in the mockup keep literal black text in both appearances; only the tinted cards use `InkText`.
 
 ## Multi-Agent Workflow Rule (Binding)
 
@@ -132,5 +134,5 @@ This project is connected to GitHub at `https://github.com/rana998/guess_game.gi
 - Swift 5 language mode, not Swift 6 strict concurrency.
 - iPhone-only device family.
 - Adaptive across portrait and landscape on all supported iPhone sizes — `HomeView` picks its arrangement live from a `GeometryReader` width-vs-height comparison (no fixed device breakpoints). `Home.png` is the pixel-exact reference for the landscape composition: it is laid out in fixed points (407×271pt logo, 288pt button column, 18pt gap) and centered on the *physical* 852×393 screen, ignoring the safe area, because the mockup has no safe-area concept (only the logo shrinks below ~780pt width, e.g. iPhone SE). The portrait arrangement is a proportional reflow of the same elements (not a separately designed screen) inside the safe area with a 16/24pt margin.
-- No real room/networking logic yet — Create Room, Join Room, and How to Play are UI-only placeholders that push to empty stub screens. See `/Users/rana/Desktop/Takhmeen Handoff Plan.pdf` for the planned full screen flow and the future `roomState`/`roundState` networking contract.
+- No real room/networking logic yet — Create Room and Join Room are UI-only placeholders that push to empty stub screens. How to Play is a real, static rules screen (`HowPlayView`) built to its mockup; it pins `.dynamicTypeSize(.large)` because its card and line heights are fixed pixel measurements, and it scales its content column down uniformly on screens narrower than 734pt (iPhone SE class). See `/Users/rana/Desktop/Takhmeen Handoff Plan.pdf` for the planned full screen flow and the future `roomState`/`roundState` networking contract.
 - No `Localizable.strings`/`NSLocalizedString` infrastructure — single hardcoded Arabic language via `Presentation/DesignSystem/Strings.swift`. A future real localization pass is a mechanical extraction from there, not a rewrite.
