@@ -26,6 +26,13 @@ extension Color {
     static let avatarBlue = Color("AvatarBlue")
     static let avatarGold = Color("AvatarGold")
 
+    /// Disabled ("locked") code boxes on Join Room's room-full state: a muted
+    /// surface, outline and digit that read as unavailable, not as an error.
+    /// They lift/darken in Dark Mode to stay distinguishable from the dark Paper.
+    static let lockedFill = Color("LockedFill")
+    static let lockedStroke = Color("LockedStroke")
+    static let lockedText = Color("LockedText")
+
     /// Comic-outline stroke color (buttons, wordmark, badges). Stays dark-ink-colored
     /// in both appearances — it mimics printed ink around a shape, not body text.
     static let inkStroke = Color("InkStroke")

@@ -28,6 +28,14 @@ extension Font {
     // ExtraBold, unlike Home's Bold `displayCTA`: this mockup's label fits
     // ExtraBold 30 (error 0.001 vs 0.50 for Bold).
     static let displayCTAHeavy = Font.custom("Almarai-ExtraBold", size: 30, relativeTo: .title)
+    // Join Room's sizes, fitted the same way (≤0.004 vs ≥0.05 for the neighbours).
+    static let codeDigit = Font.custom("Almarai-ExtraBold", size: 32, relativeTo: .largeTitle)
+    static let labelPrompt = Font.custom("Almarai-ExtraBold", size: 17, relativeTo: .headline)
+    static let messageBanner = Font.custom("Almarai-ExtraBold", size: 12, relativeTo: .caption)
+    static let bodyStrong = Font.custom("Almarai-Bold", size: 12, relativeTo: .caption)
+    // The room-full badge's "6/6" fits SF Mono Heavy, not Almarai (error 0.001
+    // vs 0.33) — the "SF Mono Heavy" DESIGN_SYSTEM.md's Numeric/Mono row names.
+    static let badgeMono = Font.system(size: 18, weight: .heavy, design: .monospaced)
 
     /// Room code & timer only, per DESIGN_SYSTEM.md — system monospaced, not Almarai.
     static let numericMono = Font.system(.body, design: .monospaced).weight(.bold)

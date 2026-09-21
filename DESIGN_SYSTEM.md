@@ -17,6 +17,9 @@ Extracted from the Figma spec. Use these exact values for all UI/frontend work �
 | Avatar/Pink | Player color swatch (Create Room) | `#FF6FA8` |
 | Avatar/Blue | Player color swatch (Create Room) | `#2C7BE5` |
 | Avatar/Gold | Player color swatch (Create Room) | `#F5C518` |
+| Locked/Fill | Disabled code-box surface (Join Room, room full) | `#E4E1DA` |
+| Locked/Stroke | Disabled code-box outline | `#969490` |
+| Locked/Text | Disabled code-box digit | `#898783` |
 | Ink/Stroke & Ink/Text | Outlines, text | `#0A0A0A` |
 | Paper | Background | `#FFF8EC` |
 
@@ -43,6 +46,11 @@ Font family is **Almarai** throughout (Arabic-first UI). All line-heights are 10
 | Label/Group (Create Room section labels) | ExtraBold | 15pt |
 | Pill/Value (Create Room pill numbers) | ExtraBold | 24pt |
 | Display/CTA Heavy (Create Room submit) | ExtraBold | 30pt |
+| Code/Digit (Join Room code boxes) | ExtraBold | 32pt |
+| Label/Prompt (Join Room "أدخل رمز الغرفة") | ExtraBold | 17pt |
+| Message/Banner (Join Room error banner) | ExtraBold | 12pt |
+| Body/Strong (Join Room card subtitle & message) | Bold | 12pt |
+| Badge/Mono (Join Room "6/6" badge) | SF Mono Heavy | 18pt |
 | Numeric/Mono (room code & timer only) | Bold, or SF Mono Heavy | 20/16pt, or 17pt (SF Mono Heavy) |
 
 Map each token to Dynamic Type where possible for accessibility, without breaking these exact sizes/weights.
