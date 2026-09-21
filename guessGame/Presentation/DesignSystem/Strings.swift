@@ -25,8 +25,27 @@ enum Strings {
     }
 
     enum HowPlay {
-        static let title = "كيف تلعب؟"
-        static let comingSoon = "قريباً"
+        static let title = "كيفية اللعبة؟"
+        /// Accessibility label for the icon-only back button (RoundedChevronButton).
+        static let backAccessibilityLabel = "رجوع"
+
+        // Descriptions carry the mockup's own line breaks ("\n"); the copy is
+        // transcribed verbatim from it, spelling included.
+        static let setIdeaTitle = "حدد الفكرة"
+        static let setIdeaDescription = "يختار الواصف صورة واحدة تمثل الفكرة الرئيسية\nللكلمة السرية."
+        static let addDetailsTitle = "أضف التفاصيل"
+        static let addDetailsDescription = "ثم يضع حتى 10 مكعاب على صور تشرح تفاصيل\nالفكرة بلا كلام او إشارات."
+        static let subIdeaTitle = "فكرة فرعية"
+        static let subIdeaDescription = "إذا احتاج يضيف فكرة فرعية واحدة لتوضيح جانب\nاخر من الكلمة."
+        static let describerTitle = "الواصف"
+        static let describerDescription = "يرى الكلمة ويختار الصور فقط. لايكتب ولا يتكلم"
+        static let guessersTitle = "المخمّنون"
+        static let guessersDescription = "يكتبو تخميناتهم في أي وقت. اول تخمين صحيح يأخذ النقاط."
+
+        static let pointsTitle = "النقاط"
+        static let pointsDescription = "سهل +1 · متوسط +2 · صعب +3 — والواصف يأخذ نقطة إذا خُمّنت كلمته"
+        /// Two spaces on purpose: the mockup's word-to-digit gap is about twice a single space.
+        static let rounds = "6  جولات"
     }
 
     enum HomeSetting {

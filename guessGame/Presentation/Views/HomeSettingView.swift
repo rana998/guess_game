@@ -20,10 +20,11 @@ struct HomeSettingView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            header
-            Color.black
-                .frame(height: 3)
-                .ignoresSafeArea(edges: .horizontal)
+            ScreenHeader(
+                title: Strings.HomeSetting.title,
+                backAccessibilityLabel: Strings.HomeSetting.backAccessibilityLabel,
+                onBack: { dismiss() }
+            )
 
             settingsCard
                 .padding(.top, 14)
@@ -37,27 +38,6 @@ struct HomeSettingView: View {
         .frame(maxWidth: .infinity)
         .background(Color.paper.ignoresSafeArea())
         .navigationBarHidden(true)
-    }
-
-    // MARK: - Header
-
-    private var header: some View {
-        // First child sits on the right under the app's forced RTL layout.
-        HStack(spacing: 6) {
-            RoundedChevronButton(action: { dismiss() })
-                .accessibilityLabel(Strings.HomeSetting.backAccessibilityLabel)
-            Text(Strings.HomeSetting.title)
-                .font(.titleScreen)
-                .foregroundStyle(Color.black)
-            Spacer(minLength: 0)
-        }
-        // Measured from the physical screen edge (59pt, which is where iPhone
-        // 16's landscape safe area ends), so the header lets its content run
-        // past the safe area instead of stacking a margin on top of it.
-        .padding(.horizontal, 59)
-        .frame(height: 85)
-        .background(Color.white.ignoresSafeArea(edges: .top))
-        .ignoresSafeArea(edges: .horizontal)
     }
 
     // MARK: - Content
