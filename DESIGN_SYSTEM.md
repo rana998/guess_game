@@ -40,7 +40,7 @@ Font family is **Almarai** throughout (Arabic-first UI). All line-heights are 10
 | Label/Chip | ExtraBold | 12–13pt |
 | Body/Meta | Light (300) | 11–12pt, color `rgba(0,0,0,0.55)` |
 | Body/Regular | Regular | 11–13pt |
-| Body/Small (How to Play card descriptions & points bar) | Regular | 11pt |
+| Body/Small (How to Play card descriptions & points bar; Enter Name owner caption & count footer at `rgba(0,0,0,0.45)`) | Regular | 11pt |
 | Body/Meta Small (Create Room pill captions) | Light (300) | 11pt, color `rgba(0,0,0,0.55)` |
 | Input/Text (Create Room name field & avatar initial) | ExtraBold | 22pt |
 | Label/Group (Create Room section labels) | ExtraBold | 15pt |
@@ -51,6 +51,7 @@ Font family is **Almarai** throughout (Arabic-first UI). All line-heights are 10
 | Message/Banner (Join Room error banner) | ExtraBold | 12pt |
 | Body/Strong (Join Room card subtitle & message) | Bold | 12pt |
 | Badge/Mono (Join Room "6/6" badge) | SF Mono Heavy | 18pt |
+| Avatar/Initial Small (Enter Name player-list avatars) | ExtraBold | 13pt |
 | Numeric/Mono (room code & timer only) | Bold, or SF Mono Heavy | 20/16pt, or 17pt (SF Mono Heavy) |
 
 Map each token to Dynamic Type where possible for accessibility, without breaking these exact sizes/weights.

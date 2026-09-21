@@ -36,6 +36,9 @@ extension Font {
     // The room-full badge's "6/6" fits SF Mono Heavy, not Almarai (error 0.001
     // vs 0.33) — the "SF Mono Heavy" DESIGN_SYSTEM.md's Numeric/Mono row names.
     static let badgeMono = Font.system(size: 18, weight: .heavy, design: .monospaced)
+    // The player-list avatars' initials fit ExtraBold 13 (error ≤0.015 vs ≥0.035
+    // for 12.5 and ≥0.08 for 14), smaller than any existing token.
+    static let avatarInitialSmall = Font.custom("Almarai-ExtraBold", size: 13, relativeTo: .caption)
 
     /// Room code & timer only, per DESIGN_SYSTEM.md — system monospaced, not Almarai.
     static let numericMono = Font.system(.body, design: .monospaced).weight(.bold)
