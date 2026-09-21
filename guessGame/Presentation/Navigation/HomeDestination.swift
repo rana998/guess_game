@@ -5,4 +5,6 @@ enum HomeDestination: Hashable {
     case joinRoom
     case howToPlay
     case homeSetting
+    /// Pushed once a room code is accepted; carries the room that was joined.
+    case enterName(Room)
 }

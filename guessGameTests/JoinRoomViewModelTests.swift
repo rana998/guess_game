@@ -68,18 +68,63 @@ final class JoinRoomViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.code, "870")
     }
 
-    func testConfirmWithFourDigitsUsesResolver() {
-        let outcomes: [JoinRoomState] = [.idle, .invalidCode, .roomFull(capacity: 6)]
-        for outcome in outcomes {
+    func testConfirmWithFourDigitsUsesResolverOutcome() {
+        let joinedRoom = Room(code: "8704", capacity: 6, players: [])
+        let cases: [(outcome: JoinOutcome, state: JoinRoomState)] = [
+            (.joined(joinedRoom), .idle),
+            (.invalidCode, .invalidCode),
+            (.roomFull(capacity: 6), .roomFull(capacity: 6)),
+        ]
+        for testCase in cases {
             var received: String?
             let viewModel = JoinRoomViewModel(code: "8704", resolve: { code in
                 received = code
-                return outcome
+                return testCase.outcome
             })
             viewModel.confirm()
             XCTAssertEqual(received, "8704")
-            XCTAssertEqual(viewModel.state, outcome)
+            XCTAssertEqual(viewModel.state, testCase.state)
         }
+    }
+
+    func testJoinedRoomIsHandedToOnJoinedOnce() {
+        let room = Room(code: "8701", capacity: 6, players: [Player(id: "1", name: "نهى", color: .green, isOwner: true)])
+        var joined: [Room] = []
+        let viewModel = JoinRoomViewModel(code: "8701", resolve: { _ in .joined(room) }, onJoined: { joined.append($0) })
+        viewModel.confirm()
+        XCTAssertEqual(joined, [room])
+        XCTAssertEqual(viewModel.state, .idle)
+    }
+
+    func testOnJoinedFiresOnEveryAcceptedConfirm() {
+        var count = 0
+        let viewModel = JoinRoomViewModel(code: "8701", resolve: { _ in .joined(Room(code: "8701", capacity: 6, players: [])) }, onJoined: { _ in count += 1 })
+        viewModel.confirm()
+        viewModel.confirm()
+        XCTAssertEqual(count, 2)
+    }
+
+    func testRejectedOutcomesDoNotCallOnJoined() {
+        for outcome in [JoinOutcome.invalidCode, .roomFull(capacity: 6)] {
+            var called = false
+            let viewModel = JoinRoomViewModel(code: "8704", resolve: { _ in outcome }, onJoined: { _ in called = true })
+            viewModel.confirm()
+            XCTAssertFalse(called)
+        }
+    }
+
+    func testIncompleteCodeCallsNeitherResolverNorOnJoined() {
+        var resolved = false
+        var joined = false
+        let viewModel = JoinRoomViewModel(
+            code: "870",
+            resolve: { _ in resolved = true; return .joined(Room(code: "870", capacity: 6, players: [])) },
+            onJoined: { _ in joined = true }
+        )
+        viewModel.confirm()
+        XCTAssertFalse(resolved)
+        XCTAssertFalse(joined)
+        XCTAssertEqual(viewModel.state, .invalidCode)
     }
 
     func testDefaultResolverAlwaysInvalidCode() {
@@ -89,9 +134,16 @@ final class JoinRoomViewModelTests: XCTestCase {
     }
 
     func testConfirmInRoomFullIsNoOp() {
-        let viewModel = JoinRoomViewModel(code: "8704", state: .roomFull(capacity: 6), resolve: { _ in .idle })
+        var joined = false
+        let viewModel = JoinRoomViewModel(
+            code: "8704",
+            state: .roomFull(capacity: 6),
+            resolve: { _ in .joined(Room(code: "8704", capacity: 6, players: [])) },
+            onJoined: { _ in joined = true }
+        )
         viewModel.confirm()
         XCTAssertEqual(viewModel.state, .roomFull(capacity: 6))
+        XCTAssertFalse(joined)
     }
 
     func testRetryClearsCodeAndReturnsToIdle() {

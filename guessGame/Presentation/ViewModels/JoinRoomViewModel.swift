@@ -6,9 +6,9 @@ import Observation
 /// rules are testable without a view.
 @Observable
 final class JoinRoomViewModel {
-    /// Maps a complete code to what the screen should show. The eventual join
-    /// use case plugs in here; `.idle` means the code was accepted.
-    typealias Resolver = (String) -> JoinRoomState
+    /// Maps a complete code to what the join produced. The eventual join use
+    /// case plugs in here.
+    typealias Resolver = (String) -> JoinOutcome
 
     static let codeLength = 4
 
@@ -22,13 +22,22 @@ final class JoinRoomViewModel {
     private(set) var state: JoinRoomState
 
     @ObservationIgnored private let resolve: Resolver
+    /// Called each time a code opens a room, so the owner of navigation can move
+    /// on to the next screen.
+    @ObservationIgnored private let onJoined: (Room) -> Void
 
     /// `code` and `state` let previews and tests start anywhere; the code is
     /// sanitized so they can't build one the keypad couldn't.
-    init(code: String = "", state: JoinRoomState = .idle, resolve: @escaping Resolver = JoinRoomViewModel.noRoomsYet) {
+    init(
+        code: String = "",
+        state: JoinRoomState = .idle,
+        resolve: @escaping Resolver = JoinRoomViewModel.noRoomsYet,
+        onJoined: @escaping (Room) -> Void = { _ in }
+    ) {
         self.code = String(code.filter { $0.isASCII && $0.isNumber }.prefix(Self.codeLength))
         self.state = state
         self.resolve = resolve
+        self.onJoined = onJoined
     }
 
     // MARK: - Derived UI
@@ -87,10 +96,24 @@ final class JoinRoomViewModel {
         }
     }
 
-    /// An incomplete code can't match a room, so it counts as invalid.
+    /// An incomplete code can't match a room, so it counts as invalid. A joined
+    /// room leaves this screen in `.idle` and is handed to `onJoined`; the
+    /// navigation that follows isn't a state of this screen.
     func confirm() {
         if case .roomFull = state { return }
-        state = code.count < Self.codeLength ? .invalidCode : resolve(code)
+        guard code.count == Self.codeLength else {
+            state = .invalidCode
+            return
+        }
+        switch resolve(code) {
+        case .joined(let room):
+            state = .idle
+            onJoined(room)
+        case .invalidCode:
+            state = .invalidCode
+        case .roomFull(let capacity):
+            state = .roomFull(capacity: capacity)
+        }
     }
 
     func retry() {

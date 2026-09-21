@@ -6,6 +6,13 @@ import SwiftUI
 /// from measured width vs. height — no fixed device breakpoints.
 struct HomeView: View {
     @State private var path: [HomeDestination] = []
+    private let joinResolver: JoinRoomViewModel.Resolver
+
+    /// `joinResolver` is the seam for the future join use case; until it
+    /// exists, every code is rejected (see `JoinRoomViewModel.noRoomsYet`).
+    init(joinResolver: @escaping JoinRoomViewModel.Resolver = JoinRoomViewModel.noRoomsYet) {
+        self.joinResolver = joinResolver
+    }
 
     /// Measurements taken from Home.png; the landscape composition is laid out
     /// in these points rather than proportionally.
@@ -51,9 +58,14 @@ struct HomeView: View {
             .navigationDestination(for: HomeDestination.self) { destination in
                 switch destination {
                 case .createRoom: CreateRoomView()
-                case .joinRoom: JoinRoomView()
+                case .joinRoom:
+                    JoinRoomView(viewModel: JoinRoomViewModel(
+                        resolve: joinResolver,
+                        onJoined: { path.append(.enterName($0)) }
+                    ))
                 case .howToPlay: HowPlayView()
                 case .homeSetting: HomeSettingView()
+                case .enterName(let room): EnterNameView(viewModel: EnterNameViewModel(room: room))
                 }
             }
         }
