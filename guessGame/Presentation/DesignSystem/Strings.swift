@@ -32,14 +32,37 @@ enum Strings {
 
         static let submit = "إنشاء غرفة"
         static let codeCaption = "تُنشأ الغرفة برمز من ٤ خانات شاركه مع أصدقائك"
+    }
 
-        /// VoiceOver names for the color swatches, which have no visible text.
-        static let swatchGreen = "أخضر"
-        static let swatchGold = "ذهبي"
-        static let swatchBlue = "أزرق"
-        static let swatchPink = "وردي"
-        static let swatchPurple = "بنفسجي"
-        static let swatchTeal = "تركوازي"
+    /// VoiceOver names for the player-color swatches, which have no visible text.
+    enum Swatch {
+        static let green = "أخضر"
+        static let gold = "ذهبي"
+        static let blue = "أزرق"
+        static let pink = "وردي"
+        static let purple = "بنفسجي"
+        static let teal = "تركوازي"
+    }
+
+    enum EnterName {
+        static let title = "اسمك في اللعبة"
+        /// Accessibility label for the icon-only back button (RoundedChevronButton).
+        static let backAccessibilityLabel = "رجوع"
+
+        static let roomCaption = "غرفة"
+        /// A sample name shown as the empty field's hint (and as the avatar's
+        /// initial until a real name is typed); the mockup's own text.
+        static let namePlaceholder = "ربى"
+        static let nameFieldLabel = "اسم اللاعب"
+        static let avatarColorLabel = "لون الصورة الرمزية"
+        /// VoiceOver name of the live avatar preview; its value is the initial.
+        static let avatarPreviewLabel = "معاينة الصورة الرمزية"
+        static let submit = "دخول الغرفة"
+
+        static let playersTitle = "في الغرفة الآن"
+        static let ownerCaption = "مالك الغرفة"
+        /// "3 من 6 لاعبين": computed from the room, never fixed text.
+        static func playersCount(count: Int, capacity: Int) -> String { "\(count) من \(capacity) لاعبين" }
     }
 
     enum JoinRoom {

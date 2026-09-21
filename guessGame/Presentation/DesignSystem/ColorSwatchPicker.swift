@@ -46,10 +46,10 @@ struct ColorSwatchPicker<Option: Hashable>: View {
 }
 
 #Preview {
-    @Previewable @State var selection = AvatarColor.green
+    @Previewable @State var selection = PlayerColor.green
 
     ColorSwatchPicker(
-        options: AvatarColor.allCases,
+        options: PlayerColor.allCases,
         selection: $selection,
         groupLabel: Strings.CreateRoom.avatarColorLabel,
         identifierPrefix: "preview.swatch",

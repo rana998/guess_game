@@ -100,6 +100,17 @@ struct TertiaryDashedButtonStyle: ButtonStyle {
     }
 }
 
+extension HardShadowButtonStyle {
+    /// The same style at another size, for buttons that share a treatment but
+    /// not a footprint (Enter Name's 377×56 green button is `appPrimaryHeavy`).
+    func sized(width: CGFloat, height: CGFloat) -> HardShadowButtonStyle {
+        var style = self
+        style.width = width
+        style.height = height
+        return style
+    }
+}
+
 extension ButtonStyle where Self == HardShadowButtonStyle {
     /// إنشاء غرفة (Create Room), primary CTA. Exact Figma spec: 288x60pt, 14pt
     /// circular radius, BrandLime fill, 4pt black inside stroke, hard (6,4) black

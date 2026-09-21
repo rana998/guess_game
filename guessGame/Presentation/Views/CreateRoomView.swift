@@ -12,7 +12,7 @@ struct CreateRoomView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var name = ""
-    @State private var avatarColor = AvatarColor.green
+    @State private var avatarColor = PlayerColor.green
     @State private var playerCount = 6
     @State private var roundSeconds = 60
     @FocusState private var isNameFocused: Bool
@@ -114,7 +114,7 @@ struct CreateRoomView: View {
             )
             nameField
             ColorSwatchPicker(
-                options: AvatarColor.allCases,
+                options: PlayerColor.allCases,
                 selection: $avatarColor,
                 groupLabel: Strings.CreateRoom.avatarColorLabel,
                 identifierPrefix: "createRoom.swatch",
@@ -125,36 +125,13 @@ struct CreateRoomView: View {
     }
 
     private var nameField: some View {
-        let shape = RoundedRectangle(cornerRadius: 13, style: .circular)
-
-        return TextField(
-            Strings.CreateRoom.nameFieldLabel,
+        NameField(
             text: $name,
-            prompt: Text(Strings.CreateRoom.namePlaceholder).foregroundStyle(Color.black.opacity(0.5))
+            isFocused: $isNameFocused,
+            label: Strings.CreateRoom.nameFieldLabel,
+            placeholder: Strings.CreateRoom.namePlaceholder,
+            identifier: "createRoom.nameField"
         )
-        .font(.inputText)
-        .foregroundStyle(Color.black)
-        .tint(.brandRed)
-        .multilineTextAlignment(.leading)
-        .textInputAutocapitalization(.never)
-        .autocorrectionDisabled()
-        .submitLabel(.done)
-        .onSubmit { isNameFocused = false }
-        .focused($isNameFocused)
-        // Leading is the physical right under RTL, where the text starts.
-        .padding(.leading, 18)
-        // UITextField centers its line box a little low against the mockup's
-        // ink (measured 0.7pt); this lifts the text by half the padding.
-        .padding(.bottom, 1.5)
-        .frame(maxWidth: .infinity)
-        .frame(height: 52)
-        .background(Color.white, in: shape)
-        .overlay(shape.strokeBorder(Color.inkStroke, lineWidth: 4))
-        .hardShadow(in: shape, offset: CGSize(width: 4, height: 4))
-        // The whole box focuses the field, not just the text's own frame.
-        .contentShape(Rectangle())
-        .onTapGesture { isNameFocused = true }
-        .accessibilityIdentifier("createRoom.nameField")
     }
 
     private var bottomRow: some View {

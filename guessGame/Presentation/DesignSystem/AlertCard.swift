@@ -101,25 +101,6 @@ struct AlertCard: View {
     }
 }
 
-/// The card's 3pt-tall dashed rule: 6pt dashes with 5.93pt gaps, the phase
-/// measured from the mockup so the dashes line up with its first one.
-private struct DashedRule: View {
-    var body: some View {
-        Line()
-            .stroke(Color.black.opacity(0.25), style: StrokeStyle(lineWidth: 3, lineCap: .butt, dash: [6, 5.93], dashPhase: 4))
-            .frame(height: 3)
-    }
-}
-
-private struct Line: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: rect.minX, y: rect.midY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
-        return path
-    }
-}
-
 #Preview {
     AlertCard(
         badge: Strings.JoinRoom.roomFullBadge(capacity: 6),
