@@ -100,30 +100,6 @@ struct TertiaryDashedButtonStyle: ButtonStyle {
     }
 }
 
-/// A rounded rectangle whose path starts at the top edge just after the
-/// top-left corner and runs clockwise. SwiftUI's own RoundedRectangle doesn't
-/// document its start point, and the dash phase measured from the mockup
-/// depends on it.
-private struct DashedRoundedRect: Shape {
-    let cornerRadius: CGFloat
-
-    func path(in rect: CGRect) -> Path {
-        let r = cornerRadius
-        var path = Path()
-        path.move(to: CGPoint(x: rect.minX + r, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX - r, y: rect.minY))
-        path.addArc(tangent1End: CGPoint(x: rect.maxX, y: rect.minY), tangent2End: CGPoint(x: rect.maxX, y: rect.minY + r), radius: r)
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - r))
-        path.addArc(tangent1End: CGPoint(x: rect.maxX, y: rect.maxY), tangent2End: CGPoint(x: rect.maxX - r, y: rect.maxY), radius: r)
-        path.addLine(to: CGPoint(x: rect.minX + r, y: rect.maxY))
-        path.addArc(tangent1End: CGPoint(x: rect.minX, y: rect.maxY), tangent2End: CGPoint(x: rect.minX, y: rect.maxY - r), radius: r)
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + r))
-        path.addArc(tangent1End: CGPoint(x: rect.minX, y: rect.minY), tangent2End: CGPoint(x: rect.minX + r, y: rect.minY), radius: r)
-        path.closeSubpath()
-        return path
-    }
-}
-
 extension ButtonStyle where Self == HardShadowButtonStyle {
     /// إنشاء غرفة (Create Room), primary CTA. Exact Figma spec: 288x60pt, 14pt
     /// circular radius, BrandLime fill, 4pt black inside stroke, hard (6,4) black
@@ -171,6 +147,44 @@ extension ButtonStyle where Self == HardShadowButtonStyle {
             textColor: .black,
             cornerStyle: .circular,
             labelOffsetY: -2
+        )
+    }
+
+    /// Join Room's keypad key: 86×52pt, 13pt circular radius, 4pt ink border, (4,4)
+    /// shadow, ExtraBold 22 label sitting 1pt above center per the mockup.
+    /// `fill`/`textColor` carry the three key roles (digit, delete, confirm).
+    static func appKey(fill: Color, textColor: Color) -> HardShadowButtonStyle {
+        HardShadowButtonStyle(
+            fill: fill,
+            borderColor: .inkStroke,
+            borderWidth: 4,
+            cornerRadius: 13,
+            width: 86,
+            height: 52,
+            shadowOffset: CGSize(width: 4, height: 4),
+            shadowColor: .black,
+            font: .inputText,
+            textColor: textColor,
+            cornerStyle: .circular,
+            labelOffsetY: -1
+        )
+    }
+
+    /// The room-full card's action buttons: 53pt tall, 13pt circular radius, 3pt
+    /// ink border, (3,3) shadow, ExtraBold 20 label. Only the width and fill differ.
+    static func appCardAction(fill: Color, width: CGFloat) -> HardShadowButtonStyle {
+        HardShadowButtonStyle(
+            fill: fill,
+            borderColor: .inkStroke,
+            borderWidth: 3,
+            cornerRadius: 13,
+            width: width,
+            height: 53,
+            shadowOffset: CGSize(width: 3, height: 3),
+            shadowColor: .black,
+            font: .titleScreen,
+            textColor: .black,
+            cornerStyle: .circular
         )
     }
 }
