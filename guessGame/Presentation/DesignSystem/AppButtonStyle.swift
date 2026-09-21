@@ -22,6 +22,8 @@ struct HardShadowButtonStyle: ButtonStyle {
     var cornerStyle: RoundedCornerStyle = .continuous
     /// Vertical nudge for labels the mockup places off their natural center.
     var labelOffsetY: CGFloat = 0
+    /// Physical (not RTL-mirrored) horizontal nudge: this style pins its subtree to LTR.
+    var labelOffsetX: CGFloat = 0
 
     func makeBody(configuration: Configuration) -> some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: cornerStyle)
@@ -38,7 +40,7 @@ struct HardShadowButtonStyle: ButtonStyle {
             configuration.label
                 .font(font)
                 .foregroundStyle(textColor)
-                .offset(y: labelOffsetY)
+                .offset(x: labelOffsetX, y: labelOffsetY)
                 .frame(width: width, height: height)
                 .background(fill, in: shape)
                 // strokeBorder insets the line inside the shape's bounds,
@@ -140,6 +142,15 @@ extension ButtonStyle where Self == HardShadowButtonStyle {
             textColor: .black,
             cornerStyle: .circular
         )
+    }
+
+    /// Create Room's submit button: `appPrimary`'s box, border and shadow, but the
+    /// mockup sets its label in ExtraBold and 3pt right of center.
+    static var appPrimaryHeavy: HardShadowButtonStyle {
+        var style = appPrimary
+        style.font = .displayCTAHeavy
+        style.labelOffsetX = 3
+        return style
     }
 
     /// انضم إلى غرفة (Join Room), secondary CTA. Same 288x60pt/14pt-radius/
