@@ -1,8 +1,7 @@
 import SwiftUI
 
 /// Shared layout for a pushed screen that has no real content yet — used by
-/// CreateRoomView and JoinRoomView until their real UI and logic are built in a
-/// later phase.
+/// JoinRoomView until its real UI and logic are built in a later phase.
 struct PlaceholderDestinationView: View {
     let title: String
     let comingSoonText: String

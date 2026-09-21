@@ -41,7 +41,7 @@ guessGame/
 │   ├── Presentation/
 │   │   ├── Views/
 │   │   │   ├── HomeView.swift           # App entry point
-│   │   │   ├── CreateRoomView.swift     # Placeholder — no room logic yet
+│   │   │   ├── CreateRoomView.swift     # Room setup screen: name field + avatar badge/swatches, player-count & round-duration pills, create button (UI-only), landscape 852×393 mockup spec
 │   │   │   ├── JoinRoomView.swift       # Placeholder — no room logic yet
 │   │   │   ├── HomeSettingView.swift    # Settings (UI-only toggles), landscape 852×393 Figma spec
 │   │   │   └── HowPlayView.swift        # Static rules screen: header + 5 InfoCards + points bar, landscape 852×393 mockup spec
@@ -55,6 +55,12 @@ guessGame/
 │   │       ├── RoundedChevronButton.swift # 44pt yellow rounded-square back button (used via ScreenHeader)
 │   │       ├── ScreenHeader.swift       # 85pt white header bar + 3pt rule with back button and title (HomeSettingView, HowPlayView)
 │   │       ├── InfoCard.swift           # Parameterized icon/title/description card, tall + compact variants (HowPlayView)
+│   │       ├── HardShadowModifier.swift # View.hardShadow(in:offset:color:) — flat offset shadow for non-button surfaces (name field, avatar badge)
+│   │       ├── SelectablePillButton.swift # Value-over-caption choice pill, white/green by selection (CreateRoomView)
+│   │       ├── SelectablePillGroup.swift # Titled row of pills bound to one selection — players and duration rows share it
+│   │       ├── ColorSwatchPicker.swift  # Generic row of 44pt color circles with a red selection ring
+│   │       ├── AvatarColor.swift        # The six selectable player colors, in reading order (first = physical right)
+│   │       ├── AvatarBadge.swift        # 52pt circular player preview: swatch color + first letter of the name
 │   │       ├── SettingsRowToggleStyle.swift # Full-row toggle with 64×28pt custom switch (HomeSettingView)
 │   │       ├── ComicOutlineText.swift   # Stroked-text technique for the wordmark
 │   │       ├── StarburstLogo.swift      # Real PNG starburst asset (Image("starburst"), template-tinted shadow copy) + wordmark lockup, GeometryReader-proportional layout
@@ -63,6 +69,7 @@ guessGame/
 │   │   └── Fonts/                # Bundled Almarai .ttf weights (Light/Regular/Bold/ExtraBold)
 │   └── Assets.xcassets/          # App icon, accent color, design-system colors, badge icons
 └── guessGameTests/
+    ├── AvatarBadgeTests.swift    # Avatar-initial derivation (trim, placeholder fallback, diacritics)
     └── PlaceholderTests.swift    # Keeps the target buildable; no Domain logic exists yet
 ```
 
@@ -103,11 +110,11 @@ After regenerating, open `guessGame.xcodeproj` in Xcode to run the app in the Si
 
 ## Testing Strategy
 
-XCTest only (not Swift Testing) per project convention. There is currently no logic-bearing Domain code to test — `guessGameTests/PlaceholderTests.swift` exists solely to keep the test target buildable and should be removed once the first real use case (and its real tests) ships. `HomeView` and its placeholder destinations are pure declarative SwiftUI with no logic to assert, so they're intentionally untested; `Font+DesignSystem`/`Color+DesignSystem` are trivial accessors wrapping platform APIs, also intentionally untested.
+XCTest only (not Swift Testing) per project convention. There is currently no logic-bearing Domain code to test — `guessGameTests/PlaceholderTests.swift` exists solely to keep the test target buildable and should be removed once the first real use case (and its real tests) ships. `HomeView` and its placeholder destinations are pure declarative SwiftUI with no logic to assert, so they're intentionally untested; `Font+DesignSystem`/`Color+DesignSystem` are trivial accessors wrapping platform APIs, also intentionally untested. The one piece of Presentation logic with real branching — `AvatarBadge.initial(from:placeholder:)`, which derives the avatar letter from the entered name — is covered by `AvatarBadgeTests`. Test on this machine with `-destination 'id=<simulator UDID>'` from `xcodebuild -showdestinations` when the name-based destination above doesn't resolve.
 
 ## Design System
 
-See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full visual design system — colors, typography, spacing, and Apple HIG compliance rules. Follow it for every UI/frontend task; treat it as the source of truth over any values inferred from mockup images or screenshots. Token helpers live in `Presentation/DesignSystem/`. Note: DESIGN_SYSTEM.md's single `Ink/Stroke & Ink/Text` token was split into two color assets, `InkStroke` and `InkText` — identical in Light Mode, but `InkStroke` stays dark in Dark Mode (it's a comic-outline color around shapes) while `InkText` inverts to a warm off-white (it's body/label text color and needs contrast against the dark Paper background). The How to Play screen added three colors measured from its mockup: `BrandLimeDeep` (green card border) and the `TintRed` / `TintLime` card fills. Cards that are literally white or yellow in the mockup keep literal black text in both appearances; only the tinted cards use `InkText`.
+See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full visual design system — colors, typography, spacing, and Apple HIG compliance rules. Follow it for every UI/frontend task; treat it as the source of truth over any values inferred from mockup images or screenshots. Token helpers live in `Presentation/DesignSystem/`. Note: DESIGN_SYSTEM.md's single `Ink/Stroke & Ink/Text` token was split into two color assets, `InkStroke` and `InkText` — identical in Light Mode, but `InkStroke` stays dark in Dark Mode (it's a comic-outline color around shapes) while `InkText` inverts to a warm off-white (it's body/label text color and needs contrast against the dark Paper background). The Create Room screen added five swatch colors (`AvatarTeal`, `AvatarPurple`, `AvatarPink`, `AvatarBlue`, `AvatarGold`, identical in both appearances because they identify a player) — its greens and reds reuse `BrandLime`/`BrandRed`. The How to Play screen added three colors measured from its mockup: `BrandLimeDeep` (green card border) and the `TintRed` / `TintLime` card fills. Cards that are literally white or yellow in the mockup keep literal black text in both appearances; only the tinted cards use `InkText`.
 
 ## Multi-Agent Workflow Rule (Binding)
 
@@ -134,5 +141,5 @@ This project is connected to GitHub at `https://github.com/rana998/guess_game.gi
 - Swift 5 language mode, not Swift 6 strict concurrency.
 - iPhone-only device family.
 - Adaptive across portrait and landscape on all supported iPhone sizes — `HomeView` picks its arrangement live from a `GeometryReader` width-vs-height comparison (no fixed device breakpoints). `Home.png` is the pixel-exact reference for the landscape composition: it is laid out in fixed points (407×271pt logo, 288pt button column, 18pt gap) and centered on the *physical* 852×393 screen, ignoring the safe area, because the mockup has no safe-area concept (only the logo shrinks below ~780pt width, e.g. iPhone SE). The portrait arrangement is a proportional reflow of the same elements (not a separately designed screen) inside the safe area with a 16/24pt margin.
-- No real room/networking logic yet — Create Room and Join Room are UI-only placeholders that push to empty stub screens. How to Play is a real, static rules screen (`HowPlayView`) built to its mockup; it pins `.dynamicTypeSize(.large)` because its card and line heights are fixed pixel measurements, and it scales its content column down uniformly on screens narrower than 734pt (iPhone SE class). See `/Users/rana/Desktop/Takhmeen Handoff Plan.pdf` for the planned full screen flow and the future `roomState`/`roundState` networking contract.
+- No real room/networking logic yet — Join Room is a UI-only placeholder that pushes to an empty stub screen. Create Room is a real screen built to its mockup, but UI-only: name, avatar color, player count and round duration live in local `@State`, and its create button is a deliberate no-op until the create-room use case exists. It pins `.dynamicTypeSize(.large)` and scales its column down below 734pt for the same reasons as How to Play. How to Play is a real, static rules screen (`HowPlayView`) built to its mockup; it pins `.dynamicTypeSize(.large)` because its card and line heights are fixed pixel measurements, and it scales its content column down uniformly on screens narrower than 734pt (iPhone SE class). See `/Users/rana/Desktop/Takhmeen Handoff Plan.pdf` for the planned full screen flow and the future `roomState`/`roundState` networking contract.
 - No `Localizable.strings`/`NSLocalizedString` infrastructure — single hardcoded Arabic language via `Presentation/DesignSystem/Strings.swift`. A future real localization pass is a mechanical extraction from there, not a rewrite.
