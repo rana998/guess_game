@@ -1,4 +1,4 @@
-/// Pushable destinations from the Home screen. UI-only placeholders for now —
+/// Pushable destinations from the Home screen. The screens are UI-only for now —
 /// real room creation/joining logic is a later phase.
 enum HomeDestination: Hashable {
     case createRoom

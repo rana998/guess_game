@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-guessGame (product name **تخمين**) is a SwiftUI party game for iOS: a picture-description guessing game for 3–6 players, each on their own device. The Xcode project is generated via XcodeGen from `project.yml` (the source of truth — never edit `guessGame.xcodeproj` directly). It's built as a strict Clean Architecture with three layers — Presentation, Domain, and Data — organized within a single Xcode target; only the Presentation layer is populated so far (Home screen + placeholder navigation), with Domain/Data waiting on the first real use case (room creation, gameplay, etc.) in a later phase.
+guessGame (product name **تخمين**) is a SwiftUI party game for iOS: a picture-description guessing game for 3–6 players, each on their own device. The Xcode project is generated via XcodeGen from `project.yml` (the source of truth — never edit `guessGame.xcodeproj` directly). It's built as a strict Clean Architecture with three layers — Presentation, Domain, and Data — organized within a single Xcode target; only the Presentation layer is populated so far (the Home, Settings, How to Play, Create Room and Join Room screens), with Domain/Data waiting on the first real use case (room creation, gameplay, etc.) in a later phase.
 
 ## Architecture
 
@@ -23,7 +23,7 @@ All three layers live in **one Xcode target/module** (`guessGame`) — there are
 | Design tokens & reusable UI components | Presentation | `Presentation/DesignSystem` |
 | Navigation destinations | Presentation | `Presentation/Navigation` |
 
-`Domain/` and `Data/` currently contain no files — the app's only screens so far (Home and its placeholder destinations) have no business logic or external data dependency. This is deliberate and temporary, not an oversight, mirroring how earlier limitations were flagged rather than left silent (see Non-Goals below). The first real use case (e.g. room creation) will re-populate both folders following this table.
+`Domain/` and `Data/` currently contain no files — the app's screens so far are UI-only, with no business logic beyond Join Room's entry rules (which live in a Presentation view-model behind an injectable resolver) and no external data dependency. This is deliberate and temporary, not an oversight, mirroring how earlier limitations were flagged rather than left silent (see Non-Goals below). The first real use case (e.g. room creation) will re-populate both folders following this table.
 
 ## Folder Structure
 
@@ -42,16 +42,19 @@ guessGame/
 │   │   ├── Views/
 │   │   │   ├── HomeView.swift           # App entry point
 │   │   │   ├── CreateRoomView.swift     # Room setup screen: name field + avatar badge/swatches, player-count & round-duration pills, create button (UI-only), landscape 852×393 mockup spec
-│   │   │   ├── JoinRoomView.swift       # Placeholder — no room logic yet
+│   │   │   ├── JoinRoomView.swift       # Room-code entry: 4 code boxes + keypad, error banner or room-full card by JoinRoomState, landscape 852×393 mockup spec
 │   │   │   ├── HomeSettingView.swift    # Settings (UI-only toggles), landscape 852×393 Figma spec
 │   │   │   └── HowPlayView.swift        # Static rules screen: header + 5 InfoCards + points bar, landscape 852×393 mockup spec
+│   │   ├── ViewModels/
+│   │   │   ├── JoinRoomState.swift      # idle / invalidCode / roomFull(capacity:) — the single enum Join Room's UI follows
+│   │   │   └── JoinRoomViewModel.swift  # @Observable code-entry rules, submit via injectable resolver (default: every code invalid — no rooms exist yet), per-box styles
 │   │   ├── Navigation/
 │   │   │   └── HomeDestination.swift    # Hashable enum for Home's NavigationStack
 │   │   └── DesignSystem/
 │   │       ├── Color+DesignSystem.swift
 │   │       ├── Font+DesignSystem.swift
 │   │       ├── Strings.swift            # Hardcoded Arabic strings, namespaced per screen
-│   │       ├── AppButtonStyle.swift     # Primary/secondary/tertiary-dashed button styles
+│   │       ├── AppButtonStyle.swift     # Primary/secondary/tertiary-dashed button styles + keypad-key and card-action factories
 │   │       ├── RoundedChevronButton.swift # 44pt yellow rounded-square back button (used via ScreenHeader)
 │   │       ├── ScreenHeader.swift       # 85pt white header bar + 3pt rule with back button and title (HomeSettingView, HowPlayView)
 │   │       ├── InfoCard.swift           # Parameterized icon/title/description card, tall + compact variants (HowPlayView)
@@ -61,16 +64,22 @@ guessGame/
 │   │       ├── ColorSwatchPicker.swift  # Generic row of 44pt color circles with a red selection ring
 │   │       ├── AvatarColor.swift        # The six selectable player colors, in reading order (first = physical right)
 │   │       ├── AvatarBadge.swift        # 52pt circular player preview: swatch color + first letter of the name
+│   │       ├── KeypadKey.swift          # One keypad key (digit / red delete / green confirm) on HardShadowButtonStyle
+│   │       ├── NumericKeypad.swift      # 3×4 left-to-right keypad reporting taps through callbacks (JoinRoomView)
+│   │       ├── CodeDigitBox.swift       # One 56×70 room-code box: filled / active (caret) / empty (dashed) / error / locked styles
+│   │       ├── CodeDigitRow.swift       # The four code boxes in entry order (first digit at the physical left)
+│   │       ├── MessageBanner.swift      # Red pill with a white "!" badge and hard shadow (invalid-code message)
+│   │       ├── AlertCard.swift          # White card with red border: count badge, headline, dashed rule, message, two actions (room full)
+│   │       ├── DashedRoundedRect.swift  # Rounded-rect path with a known start point for measured dash phases (Home's dashed button, empty code box)
 │   │       ├── SettingsRowToggleStyle.swift # Full-row toggle with 64×28pt custom switch (HomeSettingView)
 │   │       ├── ComicOutlineText.swift   # Stroked-text technique for the wordmark
-│   │       ├── StarburstLogo.swift      # Real PNG starburst asset (Image("starburst"), template-tinted shadow copy) + wordmark lockup, GeometryReader-proportional layout
-│   │       └── PlaceholderDestinationView.swift # Shared stub for CreateRoomView / JoinRoomView
+│   │       └── StarburstLogo.swift      # Real PNG starburst asset (Image("starburst"), template-tinted shadow copy) + wordmark lockup, GeometryReader-proportional layout
 │   ├── Resources/
 │   │   └── Fonts/                # Bundled Almarai .ttf weights (Light/Regular/Bold/ExtraBold)
 │   └── Assets.xcassets/          # App icon, accent color, design-system colors, badge icons
 └── guessGameTests/
     ├── AvatarBadgeTests.swift    # Avatar-initial derivation (trim, placeholder fallback, diacritics)
-    └── PlaceholderTests.swift    # Keeps the target buildable; no Domain logic exists yet
+    └── JoinRoomViewModelTests.swift # Code-entry rules, transitions, resolver, per-box styles
 ```
 
 ## Coding Conventions
@@ -110,11 +119,11 @@ After regenerating, open `guessGame.xcodeproj` in Xcode to run the app in the Si
 
 ## Testing Strategy
 
-XCTest only (not Swift Testing) per project convention. There is currently no logic-bearing Domain code to test — `guessGameTests/PlaceholderTests.swift` exists solely to keep the test target buildable and should be removed once the first real use case (and its real tests) ships. `HomeView` and its placeholder destinations are pure declarative SwiftUI with no logic to assert, so they're intentionally untested; `Font+DesignSystem`/`Color+DesignSystem` are trivial accessors wrapping platform APIs, also intentionally untested. The one piece of Presentation logic with real branching — `AvatarBadge.initial(from:placeholder:)`, which derives the avatar letter from the entered name — is covered by `AvatarBadgeTests`. Test on this machine with `-destination 'id=<simulator UDID>'` from `xcodebuild -showdestinations` when the name-based destination above doesn't resolve.
+XCTest only (not Swift Testing) per project convention. There is still no Domain code to test, but the Presentation layer now has real logic and real tests (the old `PlaceholderTests` stub is gone). The screens themselves are pure declarative SwiftUI with no logic to assert, so they're intentionally untested; `Font+DesignSystem`/`Color+DesignSystem` are trivial accessors wrapping platform APIs, also intentionally untested. Presentation logic with real branching is covered: `AvatarBadge.initial(from:placeholder:)`, which derives the avatar letter from the entered name, by `AvatarBadgeTests`, and Join Room's entry rules (capacity, delete, error clearing on edit, submit with an incomplete or complete code via an injected resolver, retry, per-box styles, announcements) by `JoinRoomViewModelTests`. Test on this machine with `-destination 'id=<simulator UDID>'` from `xcodebuild -showdestinations` when the name-based destination above doesn't resolve.
 
 ## Design System
 
-See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full visual design system — colors, typography, spacing, and Apple HIG compliance rules. Follow it for every UI/frontend task; treat it as the source of truth over any values inferred from mockup images or screenshots. Token helpers live in `Presentation/DesignSystem/`. Note: DESIGN_SYSTEM.md's single `Ink/Stroke & Ink/Text` token was split into two color assets, `InkStroke` and `InkText` — identical in Light Mode, but `InkStroke` stays dark in Dark Mode (it's a comic-outline color around shapes) while `InkText` inverts to a warm off-white (it's body/label text color and needs contrast against the dark Paper background). The Create Room screen added five swatch colors (`AvatarTeal`, `AvatarPurple`, `AvatarPink`, `AvatarBlue`, `AvatarGold`, identical in both appearances because they identify a player) — its greens and reds reuse `BrandLime`/`BrandRed`. The How to Play screen added three colors measured from its mockup: `BrandLimeDeep` (green card border) and the `TintRed` / `TintLime` card fills. Cards that are literally white or yellow in the mockup keep literal black text in both appearances; only the tinted cards use `InkText`.
+See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full visual design system — colors, typography, spacing, and Apple HIG compliance rules. Follow it for every UI/frontend task; treat it as the source of truth over any values inferred from mockup images or screenshots. Token helpers live in `Presentation/DesignSystem/`. Note: DESIGN_SYSTEM.md's single `Ink/Stroke & Ink/Text` token was split into two color assets, `InkStroke` and `InkText` — identical in Light Mode, but `InkStroke` stays dark in Dark Mode (it's a comic-outline color around shapes) while `InkText` inverts to a warm off-white (it's body/label text color and needs contrast against the dark Paper background). The Create Room screen added five swatch colors (`AvatarTeal`, `AvatarPurple`, `AvatarPink`, `AvatarBlue`, `AvatarGold`, identical in both appearances because they identify a player) — its greens and reds reuse `BrandLime`/`BrandRed`. The How to Play screen added three colors measured from its mockup: `BrandLimeDeep` (green card border) and the `TintRed` / `TintLime` card fills. Cards that are literally white or yellow in the mockup keep literal black text in both appearances; only the tinted cards use `InkText`. The Join Room screen added `LockedFill` / `LockedStroke` / `LockedText` for its disabled (room-full) code boxes, plus five fonts (`codeDigit`, `labelPrompt`, `messageBanner`, `bodyStrong`, `badgeMono`); its red, green and yellow surfaces reuse `BrandRed`, `TintRed`, `BrandLime` and `BrandYellow`.
 
 ## Multi-Agent Workflow Rule (Binding)
 
@@ -141,5 +150,5 @@ This project is connected to GitHub at `https://github.com/rana998/guess_game.gi
 - Swift 5 language mode, not Swift 6 strict concurrency.
 - iPhone-only device family.
 - Adaptive across portrait and landscape on all supported iPhone sizes — `HomeView` picks its arrangement live from a `GeometryReader` width-vs-height comparison (no fixed device breakpoints). `Home.png` is the pixel-exact reference for the landscape composition: it is laid out in fixed points (407×271pt logo, 288pt button column, 18pt gap) and centered on the *physical* 852×393 screen, ignoring the safe area, because the mockup has no safe-area concept (only the logo shrinks below ~780pt width, e.g. iPhone SE). The portrait arrangement is a proportional reflow of the same elements (not a separately designed screen) inside the safe area with a 16/24pt margin.
-- No real room/networking logic yet — Join Room is a UI-only placeholder that pushes to an empty stub screen. Create Room is a real screen built to its mockup, but UI-only: name, avatar color, player count and round duration live in local `@State`, and its create button is a deliberate no-op until the create-room use case exists. It pins `.dynamicTypeSize(.large)` and scales its column down below 734pt for the same reasons as How to Play. How to Play is a real, static rules screen (`HowPlayView`) built to its mockup; it pins `.dynamicTypeSize(.large)` because its card and line heights are fixed pixel measurements, and it scales its content column down uniformly on screens narrower than 734pt (iPhone SE class). See `/Users/rana/Desktop/Takhmeen Handoff Plan.pdf` for the planned full screen flow and the future `roomState`/`roundState` networking contract.
+- No real room/networking logic yet — Join Room is a real screen built to its three mockups (entering, invalid code, room full), driven by one `JoinRoomState` enum and a `JoinRoomViewModel`, but its join step is a stub: the injectable resolver defaults to "no rooms exist, so every submitted code is invalid" until the join use case lands, and the room-full state is reachable only through an injected resolver or previews. Create Room is a real screen built to its mockup, but UI-only: name, avatar color, player count and round duration live in local `@State`, and its create button is a deliberate no-op until the create-room use case exists. It pins `.dynamicTypeSize(.large)` and scales its column down below 734pt for the same reasons as How to Play. How to Play is a real, static rules screen (`HowPlayView`) built to its mockup; it pins `.dynamicTypeSize(.large)` because its card and line heights are fixed pixel measurements, and it scales its content column down uniformly on screens narrower than 734pt (iPhone SE class). See `/Users/rana/Desktop/Takhmeen Handoff Plan.pdf` for the planned full screen flow and the future `roomState`/`roundState` networking contract.
 - No `Localizable.strings`/`NSLocalizedString` infrastructure — single hardcoded Arabic language via `Presentation/DesignSystem/Strings.swift`. A future real localization pass is a mechanical extraction from there, not a rewrite.
