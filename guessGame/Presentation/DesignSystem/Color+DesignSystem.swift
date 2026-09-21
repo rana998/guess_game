@@ -17,6 +17,15 @@ extension Color {
     static let tintRed = Color("TintRed")
     static let tintLime = Color("TintLime")
 
+    /// Player-identity swatch colors (Create Room's color picker). They keep the
+    /// same value in Dark Mode: like `brandYellow`, they identify a player and
+    /// still clear 3:1 against the dark Paper background.
+    static let avatarTeal = Color("AvatarTeal")
+    static let avatarPurple = Color("AvatarPurple")
+    static let avatarPink = Color("AvatarPink")
+    static let avatarBlue = Color("AvatarBlue")
+    static let avatarGold = Color("AvatarGold")
+
     /// Comic-outline stroke color (buttons, wordmark, badges). Stays dark-ink-colored
     /// in both appearances — it mimics printed ink around a shape, not body text.
     static let inkStroke = Color("InkStroke")

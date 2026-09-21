@@ -19,6 +19,15 @@ extension Font {
     // The How to Play cards' descriptions measure as Regular 11, not 12
     // (ink fit error 0.011 vs 0.74), so they can't reuse `bodyRegular`.
     static let bodySmall = Font.custom("Almarai-Regular", size: 11, relativeTo: .caption2)
+    // Create Room's sizes, each fitted against the mockup's ink (fit error
+    // ≤0.004 for the chosen size/weight, ≥0.1 for its neighbours).
+    static let inputText = Font.custom("Almarai-ExtraBold", size: 22, relativeTo: .title3)
+    static let labelGroup = Font.custom("Almarai-ExtraBold", size: 15, relativeTo: .headline)
+    static let pillValue = Font.custom("Almarai-ExtraBold", size: 24, relativeTo: .title2)
+    static let bodyMetaSmall = Font.custom("Almarai-Light", size: 11, relativeTo: .caption2)
+    // ExtraBold, unlike Home's Bold `displayCTA`: this mockup's label fits
+    // ExtraBold 30 (error 0.001 vs 0.50 for Bold).
+    static let displayCTAHeavy = Font.custom("Almarai-ExtraBold", size: 30, relativeTo: .title)
 
     /// Room code & timer only, per DESIGN_SYSTEM.md — system monospaced, not Almarai.
     static let numericMono = Font.system(.body, design: .monospaced).weight(.bold)

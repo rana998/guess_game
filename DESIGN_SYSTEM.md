@@ -12,6 +12,11 @@ Extracted from the Figma spec. Use these exact values for all UI/frontend work �
 | Brand/Lime Deep | Green info-card border (How to Play) | `#2E9B1F` |
 | Tint/Red | Red info-card fill (How to Play) | `#FFE9E7` |
 | Tint/Lime | Green info-card fill (How to Play) | `#F0FFE4` |
+| Avatar/Teal | Player color swatch (Create Room) | `#00B0C7` |
+| Avatar/Purple | Player color swatch (Create Room) | `#7B4DFF` |
+| Avatar/Pink | Player color swatch (Create Room) | `#FF6FA8` |
+| Avatar/Blue | Player color swatch (Create Room) | `#2C7BE5` |
+| Avatar/Gold | Player color swatch (Create Room) | `#F5C518` |
 | Ink/Stroke & Ink/Text | Outlines, text | `#0A0A0A` |
 | Paper | Background | `#FFF8EC` |
 
@@ -33,6 +38,11 @@ Font family is **Almarai** throughout (Arabic-first UI). All line-heights are 10
 | Body/Meta | Light (300) | 11–12pt, color `rgba(0,0,0,0.55)` |
 | Body/Regular | Regular | 11–13pt |
 | Body/Small (How to Play card descriptions & points bar) | Regular | 11pt |
+| Body/Meta Small (Create Room pill captions) | Light (300) | 11pt, color `rgba(0,0,0,0.55)` |
+| Input/Text (Create Room name field & avatar initial) | ExtraBold | 22pt |
+| Label/Group (Create Room section labels) | ExtraBold | 15pt |
+| Pill/Value (Create Room pill numbers) | ExtraBold | 24pt |
+| Display/CTA Heavy (Create Room submit) | ExtraBold | 30pt |
 | Numeric/Mono (room code & timer only) | Bold, or SF Mono Heavy | 20/16pt, or 17pt (SF Mono Heavy) |
 
 Map each token to Dynamic Type where possible for accessibility, without breaking these exact sizes/weights.
