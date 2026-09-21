@@ -9,6 +9,9 @@ Extracted from the Figma spec. Use these exact values for all UI/frontend work �
 | Brand/Lime | Primary, main concept | `#5CD62B` |
 | Brand/Red | Danger, sub-concept | `#EE1C25` |
 | Brand/Yellow | Accent, celebrate | `#FFE300` |
+| Brand/Lime Deep | Green info-card border (How to Play) | `#2E9B1F` |
+| Tint/Red | Red info-card fill (How to Play) | `#FFE9E7` |
+| Tint/Lime | Green info-card fill (How to Play) | `#F0FFE4` |
 | Ink/Stroke & Ink/Text | Outlines, text | `#0A0A0A` |
 | Paper | Background | `#FFF8EC` |
 
@@ -29,6 +32,7 @@ Font family is **Almarai** throughout (Arabic-first UI). All line-heights are 10
 | Label/Chip | ExtraBold | 12–13pt |
 | Body/Meta | Light (300) | 11–12pt, color `rgba(0,0,0,0.55)` |
 | Body/Regular | Regular | 11–13pt |
+| Body/Small (How to Play card descriptions & points bar) | Regular | 11pt |
 | Numeric/Mono (room code & timer only) | Bold, or SF Mono Heavy | 20/16pt, or 17pt (SF Mono Heavy) |
 
 Map each token to Dynamic Type where possible for accessibility, without breaking these exact sizes/weights.

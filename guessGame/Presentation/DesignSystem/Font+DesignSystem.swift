@@ -16,6 +16,9 @@ extension Font {
     static let labelChip = Font.custom("Almarai-ExtraBold", size: 12.5, relativeTo: .caption)
     static let bodyMeta = Font.custom("Almarai-Light", size: 12, relativeTo: .caption2)
     static let bodyRegular = Font.custom("Almarai-Regular", size: 12, relativeTo: .footnote)
+    // The How to Play cards' descriptions measure as Regular 11, not 12
+    // (ink fit error 0.011 vs 0.74), so they can't reuse `bodyRegular`.
+    static let bodySmall = Font.custom("Almarai-Regular", size: 11, relativeTo: .caption2)
 
     /// Room code & timer only, per DESIGN_SYSTEM.md — system monospaced, not Almarai.
     static let numericMono = Font.system(.body, design: .monospaced).weight(.bold)

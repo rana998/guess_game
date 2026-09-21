@@ -8,6 +8,15 @@ extension Color {
     static let brandRed = Color("BrandRed")
     static let brandYellow = Color("BrandYellow")
 
+    /// Darker green used only for the "Set the idea" info card's border, where
+    /// `brandLime` is too light to read as an outline. Lifts slightly in Dark Mode.
+    static let brandLimeDeep = Color("BrandLimeDeep")
+
+    /// Pale card fills paired with `brandRed` / `brandLime`-family borders.
+    /// They darken in Dark Mode so `inkText` keeps its contrast on them.
+    static let tintRed = Color("TintRed")
+    static let tintLime = Color("TintLime")
+
     /// Comic-outline stroke color (buttons, wordmark, badges). Stays dark-ink-colored
     /// in both appearances — it mimics printed ink around a shape, not body text.
     static let inkStroke = Color("InkStroke")
