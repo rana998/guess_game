@@ -44,7 +44,30 @@ enum Strings {
 
     enum JoinRoom {
         static let title = "انضم إلى غرفة"
-        static let comingSoon = "قريباً"
+        /// Accessibility label for the icon-only back button (RoundedChevronButton).
+        static let backAccessibilityLabel = "رجوع"
+
+        static let codePrompt = "أدخل رمز الغرفة"
+        static let codeCaption = "اطلب الرمز من صاحب الغرفة"
+        static let deleteKey = "حذف"
+        static let confirmKey = "تم"
+
+        // Copied from the mockups verbatim, spelling and punctuation included.
+        static let invalidCodeMessage = "رمز غير صحيح - تأكد من الرمز وحاول مرة أخرى"
+        static let roomFullTitle = "الغرفة ممتلئة"
+        static let roomFullSubtitle = "وصلت للحد الأقصى من اللاعبين"
+        static let retryButton = "جرّب رمزاً اخر"
+        static let homeButton = "الرئيسية"
+
+        /// The room's capacity is the joined room's own fact, not a constant.
+        static func roomFullBadge(capacity: Int) -> String { "\(capacity)/\(capacity)" }
+        static func roomFullMessage(capacity: Int) -> String {
+            "الحد الاقصى \(capacity) لاعبين. انتظر خروج احد اللاعبين أو اطلب رمز غرفة أخرى."
+        }
+
+        /// VoiceOver name and empty value of a code box ("box 1 of 4" / "empty").
+        static func boxLabel(position: Int, of count: Int) -> String { "الخانة \(position) من \(count)" }
+        static let boxEmptyValue = "فارغة"
     }
 
     enum HowPlay {
