@@ -16,7 +16,30 @@ enum Strings {
 
     enum CreateRoom {
         static let title = "إنشاء غرفة"
-        static let comingSoon = "قريباً"
+        /// Accessibility label for the icon-only back button (RoundedChevronButton).
+        static let backAccessibilityLabel = "رجوع"
+
+        /// A sample name shown as the empty field's hint (and as the avatar's
+        /// initial until a real name is typed).
+        static let namePlaceholder = "نهى"
+        static let nameFieldLabel = "اسم اللاعب"
+        static let avatarColorLabel = "لون الصورة الرمزية"
+
+        static let playersTitle = "عدد اللاعبين"
+        static let playersCaption = "لاعبين"
+        static let durationTitle = "مدة الجولة"
+        static let durationCaption = "ثانية"
+
+        static let submit = "إنشاء غرفة"
+        static let codeCaption = "تُنشأ الغرفة برمز من ٤ خانات شاركه مع أصدقائك"
+
+        /// VoiceOver names for the color swatches, which have no visible text.
+        static let swatchGreen = "أخضر"
+        static let swatchGold = "ذهبي"
+        static let swatchBlue = "أزرق"
+        static let swatchPink = "وردي"
+        static let swatchPurple = "بنفسجي"
+        static let swatchTeal = "تركوازي"
     }
 
     enum JoinRoom {
