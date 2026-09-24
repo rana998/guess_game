@@ -19,9 +19,10 @@ enum Strings {
         /// Accessibility label for the icon-only back button (RoundedChevronButton).
         static let backAccessibilityLabel = "رجوع"
 
-        /// A sample name shown as the empty field's hint (and as the avatar's
-        /// initial until a real name is typed).
-        static let namePlaceholder = "نهى"
+        /// An instructional (not a sample-name) hint for the empty field, so no
+        /// fake player name is ever shown; also the avatar's initial-letter
+        /// fallback until a real name is typed.
+        static let namePlaceholder = "اكتب اسمك"
         static let nameFieldLabel = "اسم اللاعب"
         static let avatarColorLabel = "لون الصورة الرمزية"
 
@@ -50,9 +51,10 @@ enum Strings {
         static let backAccessibilityLabel = "رجوع"
 
         static let roomCaption = "غرفة"
-        /// A sample name shown as the empty field's hint (and as the avatar's
-        /// initial until a real name is typed); the mockup's own text.
-        static let namePlaceholder = "ربى"
+        /// An instructional (not a sample-name) hint for the empty field, so no
+        /// fake player name is ever shown; also the avatar's initial-letter
+        /// fallback until a real name is typed.
+        static let namePlaceholder = "اكتب اسمك"
         static let nameFieldLabel = "اسم اللاعب"
         static let avatarColorLabel = "لون الصورة الرمزية"
         /// VoiceOver name of the live avatar preview; its value is the initial.
