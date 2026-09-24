@@ -67,6 +67,40 @@ enum Strings {
         static func playersCount(count: Int, capacity: Int) -> String { "\(count) من \(capacity) لاعبين" }
     }
 
+    enum WaitingRoom {
+        static let title = "غرفة الانتظار"
+        /// Accessibility label for the icon-only back button (RoundedChevronButton).
+        static let backAccessibilityLabel = "رجوع"
+
+        static let roomCaption = "غرفة"
+        static let copy = "نسخ"
+        static let copied = "تم النسخ"
+        static let copyAccessibilityLabel = "نسخ رمز الغرفة"
+        /// Accessibility label for the icon-only kebab button.
+        static let moreAccessibilityLabel = "المزيد"
+        static let leaveRoom = "مغادرة الغرفة"
+
+        // Copied from the mockup verbatim, missing hamza included.
+        static let ownerSelfCaption = "انت صاحب الغرفة"
+        static let selfCaption = "أنت"
+        static let ownerCaption = "مالك الغرفة"
+        static let ready = "جاهز"
+        static let waiting = "في الانتظار"
+        static let emptySlot = "بانتظار لاعب"
+
+        static let markReady = "جاهز الآن"
+        static let cancelReady = "إلغاء الجاهزية"
+        static let startGame = "ابدأ اللعبة"
+        static let startingGame = "جارٍ بدء اللعبة…"
+        static let startHint = "يلزم ٣ لاعبين على الأقل لبدء اللعبة"
+        static let durationTitle = "مدة الجولة"
+        static let autoStartCaption = "تبدأ اللعبة تلقائيًا عندما يجهز الجميع"
+
+        /// "4 من 6 جاهزين": out of the players present, never the capacity.
+        static func readyCount(ready: Int, total: Int) -> String { "\(ready) من \(total) جاهزين" }
+        static func removeAccessibilityLabel(name: String) -> String { "إزالة \(name)" }
+    }
+
     enum JoinRoom {
         static let title = "انضم إلى غرفة"
         /// Accessibility label for the icon-only back button (RoundedChevronButton).
