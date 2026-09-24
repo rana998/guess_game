@@ -33,6 +33,10 @@ extension Color {
     static let lockedStroke = Color("LockedStroke")
     static let lockedText = Color("LockedText")
 
+    /// The current player's card fill. The Paper tone, kept light in Dark Mode
+    /// because the card's text stays literal black.
+    static let cardHighlight = Color("CardHighlight")
+
     /// Comic-outline stroke color (buttons, wordmark, badges). Stays dark-ink-colored
     /// in both appearances — it mimics printed ink around a shape, not body text.
     static let inkStroke = Color("InkStroke")
