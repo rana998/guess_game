@@ -137,17 +137,11 @@ struct HomeView: View {
         // radius, #FFFFFF fill, 4pt #0A0A0A inside stroke, no shadow.
         let shape = RoundedRectangle(cornerRadius: 14, style: .circular)
         return Button { path.append(.homeSetting) } label: {
-            // Drawn as circles: the mockup's dots (5pt, 11pt pitch) are much
-            // larger than SF Symbols' "ellipsis" glyph at any nearby size.
-            HStack(spacing: 6) {
-                ForEach(0..<3, id: \.self) { _ in
-                    Circle().fill(Color.black).frame(width: 5, height: 5)
-                }
-            }
-            .offset(y: 1.5)
-            .frame(width: 46, height: 46)
-            .background(Color.white, in: shape)
-            .overlay(shape.strokeBorder(Color.inkStroke, lineWidth: 4))
+            EllipsisDots()
+                .offset(y: 1.5)
+                .frame(width: 46, height: 46)
+                .background(Color.white, in: shape)
+                .overlay(shape.strokeBorder(Color.inkStroke, lineWidth: 4))
         }
         // .plain keeps the exact custom look above — the default button style
         // would otherwise tint/alter it on press.

@@ -198,6 +198,34 @@ extension ButtonStyle where Self == HardShadowButtonStyle {
             cornerStyle: .circular
         )
     }
+
+    /// The waiting room's 44pt white header button (the participant's kebab):
+    /// `appCardAction`'s 13pt radius, 3pt border and (3,3) shadow.
+    static var appHeaderIcon: HardShadowButtonStyle {
+        var style = appCardAction(fill: .white, width: 44)
+        style.height = 44
+        return style
+    }
+
+    /// The owner's "نسخ" chip beside the room code: 83×44, 20pt radius,
+    /// ExtraBold 14 label. The text-and-burst label sits 1pt right of center.
+    static var appCopyChip: HardShadowButtonStyle {
+        var style = appCardAction(fill: .white, width: 83)
+        style.height = 44
+        style.cornerRadius = 20
+        style.font = .labelSection
+        style.labelOffsetX = 1
+        return style
+    }
+
+    /// The waiting room's footer action (start game / ready toggle): 192×53,
+    /// 16pt radius. Only the fill differs between roles and states.
+    static func appLobbyAction(fill: Color) -> HardShadowButtonStyle {
+        var style = appCardAction(fill: fill, width: 192)
+        style.height = 53
+        style.cornerRadius = 16
+        return style
+    }
 }
 
 extension ButtonStyle where Self == TertiaryDashedButtonStyle {

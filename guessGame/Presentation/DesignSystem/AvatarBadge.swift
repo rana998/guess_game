@@ -2,21 +2,64 @@ import SwiftUI
 
 /// A player's round avatar: the chosen color with the first letter of their
 /// name. `large` is the 52pt live preview next to a name field (Create Room,
-/// Enter Name); `small` is the 30pt marker in a player-list row.
+/// Enter Name); `medium` is the 36pt waiting-room card avatar; `small` is the
+/// 30pt marker in a player-list row.
 struct AvatarBadge: View {
     enum Size {
         case large
+        case medium
         case small
 
-        var diameter: CGFloat { self == .large ? 52 : 30 }
-        var borderWidth: CGFloat { self == .large ? 4 : 2 }
-        /// The small avatar is flat; only the large one casts the hard shadow.
-        var shadowOffset: CGFloat? { self == .large ? 3 : nil }
-        var font: Font { self == .large ? .inputText : .avatarInitialSmall }
+        var diameter: CGFloat {
+            switch self {
+            case .large: 52
+            case .medium: 36
+            case .small: 30
+            }
+        }
+
+        var borderWidth: CGFloat {
+            switch self {
+            case .large: 4
+            case .medium: 3
+            case .small: 2
+            }
+        }
+
+        /// Only the large avatar casts the hard shadow; the others are flat.
+        var shadowOffset: CGFloat? {
+            switch self {
+            case .large: 3
+            case .medium, .small: nil
+            }
+        }
+
+        var font: Font {
+            switch self {
+            case .large: .inputText
+            case .medium: .labelSection
+            case .small: .avatarInitialSmall
+            }
+        }
+
         /// Leading is the physical right under RTL, so these move the glyph
-        /// left of center, where the mockups place it.
-        var glyphLeadingInset: CGFloat { self == .large ? 3 : 1.5 }
-        var glyphLift: CGFloat { self == .large ? 1 : 0.5 }
+        /// left of center, where the mockups place it. The waiting-room
+        /// mockup centers its glyph, so `medium` needs no nudge.
+        var glyphLeadingInset: CGFloat {
+            switch self {
+            case .large: 3
+            case .medium: 0
+            case .small: 1.5
+            }
+        }
+
+        var glyphLift: CGFloat {
+            switch self {
+            case .large: 1
+            case .medium: 0
+            case .small: 0.5
+            }
+        }
     }
 
     let initial: String
@@ -61,6 +104,7 @@ struct AvatarBadge: View {
     HStack(spacing: 16) {
         AvatarBadge(initial: "ن", color: .brandLime)
         AvatarBadge(initial: "S", color: .avatarBlue)
+        AvatarBadge(initial: "ر", color: .avatarPink, size: .medium)
         AvatarBadge(initial: "س", color: .avatarTeal, size: .small)
     }
     .padding(24)
