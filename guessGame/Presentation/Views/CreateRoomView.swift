@@ -3,19 +3,20 @@ import SwiftUI
 /// Room setup screen pushed from Home's "إنشاء غرفة" button: player name and
 /// avatar color, player count, round duration, and the create button.
 ///
-/// Built to the landscape 852×393pt mockup. UI-only for now — selections live
-/// in local state and the create button does nothing until room logic exists
-/// (see CLAUDE.md's Non-Goals). Surfaces that are white or green in the mockup
+/// Built to the landscape 852×393pt mockup. `CreateRoomViewModel` holds the
+/// choices and builds a local room from them when the button is tapped (no
+/// create-room use case exists yet; see CLAUDE.md's Non-Goals). Surfaces that are white or green in the mockup
 /// stay literal in Dark Mode (same precedent as HomeSettingView), so text on
 /// them uses literal black; only text sitting on Paper uses `inkText`.
 struct CreateRoomView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @State private var name = ""
-    @State private var avatarColor = PlayerColor.green
-    @State private var playerCount = 6
-    @State private var roundSeconds = 60
+    @State private var viewModel: CreateRoomViewModel
     @FocusState private var isNameFocused: Bool
+
+    init(viewModel: CreateRoomViewModel) {
+        _viewModel = State(initialValue: viewModel)
+    }
 
     private enum Metrics {
         static let columnWidth: CGFloat = 724
@@ -80,8 +81,8 @@ struct CreateRoomView: View {
                 SelectablePillGroup(
                     title: Strings.CreateRoom.durationTitle,
                     caption: Strings.CreateRoom.durationCaption,
-                    values: [30, 60, 90],
-                    selection: $roundSeconds,
+                    values: viewModel.roundSecondsOptions,
+                    selection: Bindable(viewModel).roundSeconds,
                     pillWidth: Metrics.durationPillWidth,
                     pillSpacing: Metrics.durationPillSpacing,
                     identifierPrefix: "createRoom.duration"
@@ -89,8 +90,8 @@ struct CreateRoomView: View {
                 SelectablePillGroup(
                     title: Strings.CreateRoom.playersTitle,
                     caption: Strings.CreateRoom.playersCaption,
-                    values: [3, 4, 5, 6],
-                    selection: $playerCount,
+                    values: viewModel.playerCountOptions,
+                    selection: Bindable(viewModel).playerCount,
                     pillWidth: Metrics.playerPillWidth,
                     pillSpacing: Metrics.playerPillSpacing,
                     identifierPrefix: "createRoom.players"
@@ -109,13 +110,13 @@ struct CreateRoomView: View {
     private var topRow: some View {
         HStack(spacing: Metrics.topRowSpacing) {
             AvatarBadge(
-                initial: AvatarBadge.initial(from: name, placeholder: Strings.CreateRoom.namePlaceholder),
-                color: avatarColor.color
+                initial: AvatarBadge.initial(from: viewModel.name, placeholder: Strings.CreateRoom.namePlaceholder),
+                color: viewModel.avatarColor.color
             )
             nameField
             ColorSwatchPicker(
                 options: PlayerColor.allCases,
-                selection: $avatarColor,
+                selection: Bindable(viewModel).avatarColor,
                 groupLabel: Strings.CreateRoom.avatarColorLabel,
                 identifierPrefix: "createRoom.swatch",
                 color: \.color,
@@ -126,7 +127,7 @@ struct CreateRoomView: View {
 
     private var nameField: some View {
         NameField(
-            text: $name,
+            text: Bindable(viewModel).name,
             isFocused: $isNameFocused,
             label: Strings.CreateRoom.nameFieldLabel,
             placeholder: Strings.CreateRoom.namePlaceholder,
@@ -142,7 +143,12 @@ struct CreateRoomView: View {
                 .padding(.top, Metrics.captionTop)
             Spacer(minLength: 16)
             Button(Strings.CreateRoom.submit) {
-                // No room logic exists yet; wired when the create-room use case lands.
+                if viewModel.canSubmit {
+                    viewModel.submit()
+                } else {
+                    // Nothing to create the room under yet: ask for the name instead.
+                    isNameFocused = true
+                }
             }
             .buttonStyle(.appPrimaryHeavy)
             .accessibilityIdentifier("createRoom.submit")
@@ -152,7 +158,7 @@ struct CreateRoomView: View {
 
 #Preview("iPhone 16 — Landscape", traits: .landscapeLeft) {
     NavigationStack {
-        CreateRoomView()
+        CreateRoomView(viewModel: CreateRoomViewModel())
     }
     .environment(\.layoutDirection, .rightToLeft)
 }

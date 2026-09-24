@@ -10,7 +10,7 @@ final class CreateRoomSnapshotTests: XCTestCase {
     func testRenderCreateRoom() throws {
         let directory = try SnapshotRenderer.outputDirectory()
         XCTAssertNotNil(UIFont(name: "Almarai-ExtraBold", size: 12))
-        let data = try SnapshotRenderer.render(CreateRoomView())
+        let data = try SnapshotRenderer.render(CreateRoomView(viewModel: CreateRoomViewModel()))
         try data.write(to: directory.appendingPathComponent("CreateRoom.png"))
     }
 }

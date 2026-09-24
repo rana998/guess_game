@@ -57,7 +57,7 @@ struct HomeView: View {
             .navigationBarHidden(true)
             .navigationDestination(for: HomeDestination.self) { destination in
                 switch destination {
-                case .createRoom: CreateRoomView()
+                case .createRoom: CreateRoomView(viewModel: CreateRoomViewModel())
                 case .joinRoom:
                     JoinRoomView(viewModel: JoinRoomViewModel(
                         resolve: joinResolver,
