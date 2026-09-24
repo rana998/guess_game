@@ -57,6 +57,10 @@ struct ReadyStatusPill: View {
 
     /// The mockup's check, traced in a 17×13 box and scaled to the frame.
     struct Checkmark: Shape {
+        /// A check reads the same way in Arabic: without this, iOS 17 mirrors
+        /// shapes under RTL and the long arm would point up-left.
+        var layoutDirectionBehavior: LayoutDirectionBehavior { .fixed }
+
         func path(in rect: CGRect) -> Path {
             let sx = rect.width / 17
             let sy = rect.height / 13
