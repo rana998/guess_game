@@ -11,7 +11,7 @@ final class EnterNameViewModel {
     var color: PlayerColor
 
     /// Called with the trimmed name and chosen color when the player enters the
-    /// room. No lobby exists yet, so the default does nothing.
+    /// room; HomeView turns it into a waiting-room session.
     @ObservationIgnored private let onSubmit: (String, PlayerColor) -> Void
 
     init(

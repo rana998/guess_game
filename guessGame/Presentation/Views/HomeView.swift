@@ -57,7 +57,8 @@ struct HomeView: View {
             .navigationBarHidden(true)
             .navigationDestination(for: HomeDestination.self) { destination in
                 switch destination {
-                case .createRoom: CreateRoomView(viewModel: CreateRoomViewModel())
+                case .createRoom:
+                    CreateRoomView(viewModel: CreateRoomViewModel(onCreate: { path.append(.waitingRoom($0)) }))
                 case .joinRoom:
                     JoinRoomView(viewModel: JoinRoomViewModel(
                         resolve: joinResolver,
@@ -65,7 +66,22 @@ struct HomeView: View {
                     ))
                 case .howToPlay: HowPlayView()
                 case .homeSetting: HomeSettingView()
-                case .enterName(let room): EnterNameView(viewModel: EnterNameViewModel(room: room))
+                case .enterName(let room):
+                    EnterNameView(viewModel: EnterNameViewModel(room: room, onSubmit: { name, color in
+                        // A full room yields no session; Join Room already turns those away.
+                        if let session = WaitingRoomSession.joining(room, name: name, color: color, playerId: UUID().uuidString) {
+                            path.append(.waitingRoom(session))
+                        }
+                    }))
+                case .waitingRoom(let session):
+                    WaitingRoomView(viewModel: WaitingRoomViewModel(
+                        session: session,
+                        copyToPasteboard: { UIPasteboard.general.string = $0 },
+                        // Path B seam: no gameplay screen exists yet, so starting only shows
+                        // the waiting room's "starting" state. The round:start hand-off plugs in here.
+                        onStartGame: { _ in },
+                        onLeave: { path.removeAll() }
+                    ))
                 }
             }
         }
