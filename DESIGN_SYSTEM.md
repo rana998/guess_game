@@ -22,6 +22,7 @@ Extracted from the Figma spec. Use these exact values for all UI/frontend work �
 | Locked/Text | Disabled code-box digit | `#898783` |
 | Ink/Stroke & Ink/Text | Outlines, text | `#0A0A0A` |
 | Paper | Background | `#FFF8EC` |
+| Card/Highlight | The current player's card fill (Waiting Room); fixed in both appearances, since the card's text stays black | `#FFF8EC` |
 
 Define these as named Color assets/tokens (Assets.xcassets color sets or a `Color` extension). Add sensible Dark Mode variants even though the source design is Light Mode only — the source spec does not define them, so choose values that preserve contrast and brand identity rather than inverting mechanically.
 
@@ -53,6 +54,8 @@ Font family is **Almarai** throughout (Arabic-first UI). All line-heights are 10
 | Badge/Mono (Join Room "6/6" badge) | SF Mono Heavy | 18pt |
 | Avatar/Initial Small (Enter Name player-list avatars) | ExtraBold | 13pt |
 | Numeric/Mono (room code & timer only) | Bold, or SF Mono Heavy | 20/16pt, or 17pt (SF Mono Heavy) |
+
+The Waiting Room adds no font token: it reuses Label/Section (avatar initials, "نسخ", the ready count and "مدة الجولة"), Message/Banner ("جاهز"), Body/Small (captions, "في الانتظار", "بانتظار لاعب"), Body/Meta (the auto-start caption), Input/Text (the compact duration pills), Title/Screen (footer buttons) and Title/Card (player names).
 
 Map each token to Dynamic Type where possible for accessibility, without breaking these exact sizes/weights.
 
@@ -92,6 +95,24 @@ Brand style — keep as-is, these are **not** HIG-governed.
 - Strokes: 2/3/4pt
 - Hard offset shadow, never blurred: `(6,4)` for primary elements, `(4,4)` elsewhere
 - On press: shadow drops to 0 and the element shifts 3pt
+
+## Components
+
+Measured sizes of the reusable pieces, beyond the tokens above (all `.circular` corners, ink border, hard black shadow unless noted).
+
+| Component | Size | Radius | Stroke | Shadow |
+|---|---|---|---|---|
+| Selectable pill, regular (Create Room) | width × 64 | 14pt | 4pt | (5,5) |
+| Selectable pill, compact (Waiting Room duration) | 49 × 44 | 11pt | 3pt | (3,3) |
+| Lobby action (Waiting Room start / ready toggle) | 192 × 53 | 16pt | 3pt | (3,3) |
+| Header icon (Waiting Room kebab) | 44 × 44 | 13pt | 3pt | (3,3) |
+| Copy chip (Waiting Room "نسخ") | 83 × 44 | 20pt | 3pt | (3,3) |
+| Avatar, medium (Waiting Room player card) | 36pt circle | — | 3pt | none |
+| Player card (Waiting Room) | 242 × 89 | 14pt | 4pt (Brand/Yellow on your own card) | (5,5) |
+| Remove button (Waiting Room) | 39 × 39 visual, 44 × 44 hit area | 11pt | 3pt Brand/Red on Tint/Red | none |
+| Ready status pill | 63 × 30 capsule | — | 2pt ink (ready) / 2pt dashed Locked/Text (waiting) | none |
+
+The copy chip's burst is a vector (`CopyBurstIcon`, 22 × 18): a 12-point Brand/Yellow star with a 0.75pt ink outline and a Brand/Lime oval, not an image asset.
 
 ## Safe Areas & Layout
 
