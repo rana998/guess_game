@@ -53,9 +53,10 @@ Font family is **Almarai** throughout (Arabic-first UI). All line-heights are 10
 | Body/Strong (Join Room card subtitle & message) | Bold | 12pt |
 | Badge/Mono (Join Room "6/6" badge) | SF Mono Heavy | 18pt |
 | Avatar/Initial Small (Enter Name player-list avatars) | ExtraBold | 13pt |
+| Body/Small Strong (Waiting Room card captions & auto-start caption, `rgba(0,0,0,0.5)`) | Bold | 11pt |
 | Numeric/Mono (room code & timer only) | Bold, or SF Mono Heavy | 20/16pt, or 17pt (SF Mono Heavy) |
 
-The Waiting Room adds no font token: it reuses Label/Section (avatar initials, "نسخ", the ready count and "مدة الجولة"), Message/Banner ("جاهز"), Body/Small (captions, "في الانتظار", "بانتظار لاعب"), Body/Meta (the auto-start caption), Input/Text (the compact duration pills), Title/Screen (footer buttons) and Title/Card (player names).
+The Waiting Room adds one font token, Body/Small Strong (its card captions and the auto-start caption measure as Bold 11 at 50% black), and otherwise reuses Label/Section (avatar initials, "نسخ", the ready count and "مدة الجولة"), Message/Banner ("جاهز"), Body/Small ("في الانتظار", "بانتظار لاعب"), Input/Text (the compact duration pills), Title/Screen (footer buttons) and Title/Card (player names).
 
 Map each token to Dynamic Type where possible for accessibility, without breaking these exact sizes/weights.
 

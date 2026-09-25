@@ -39,6 +39,9 @@ extension Font {
     // The player-list avatars' initials fit ExtraBold 13 (error ≤0.015 vs ≥0.035
     // for 12.5 and ≥0.08 for 14), smaller than any existing token.
     static let avatarInitialSmall = Font.custom("Almarai-ExtraBold", size: 13, relativeTo: .caption)
+    // The waiting room's card captions and auto-start caption fit Bold 11
+    // (error ≤0.007 vs ≥0.05 for Regular 11/11.5, Bold 10.5 and Light 12).
+    static let bodySmallStrong = Font.custom("Almarai-Bold", size: 11, relativeTo: .caption2)
 
     /// Room code & timer only, per DESIGN_SYSTEM.md — system monospaced, not Almarai.
     static let numericMono = Font.system(.body, design: .monospaced).weight(.bold)

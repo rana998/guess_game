@@ -240,8 +240,8 @@ struct WaitingRoomView: View {
         VStack(alignment: .leading, spacing: Metrics.participantTextSpacing) {
             readyCount
             Text(viewModel.participantCaption)
-                .font(.bodyMeta)
-                .foregroundStyle(Color.black.opacity(0.55))
+                .font(.bodySmallStrong)
+                .foregroundStyle(Color.black.opacity(0.5))
         }
         .padding(.top, Metrics.participantTextTop)
         .frame(maxHeight: .infinity, alignment: .top)

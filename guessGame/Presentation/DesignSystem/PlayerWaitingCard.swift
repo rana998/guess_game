@@ -61,8 +61,8 @@ struct PlayerWaitingCard: View {
                     .lineLimit(1)
                 if let caption = model.caption {
                     Text(caption)
-                        .font(.bodySmall)
-                        .foregroundStyle(Color.black.opacity(0.45))
+                        .font(.bodySmallStrong)
+                        .foregroundStyle(Color.black.opacity(0.5))
                         .lineLimit(1)
                 }
             }
