@@ -92,7 +92,7 @@ struct SelectablePillButton: View {
                 height: 44,
                 shadowOffset: CGSize(width: 3, height: 3),
                 shadowColor: .black,
-                font: .inputText,
+                font: .pillMono,
                 textColor: .black,
                 cornerStyle: .circular
             )

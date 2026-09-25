@@ -42,6 +42,10 @@ extension Font {
     // The waiting room's card captions and auto-start caption fit Bold 11
     // (error ≤0.007 vs ≥0.05 for Regular 11/11.5, Bold 10.5 and Light 12).
     static let bodySmallStrong = Font.custom("Almarai-Bold", size: 11, relativeTo: .caption2)
+    // The waiting room's duration pills ("30"/"60"/"90", with a slashed zero)
+    // fit SF Mono Semibold 20 (error ≤0.006 vs ≥0.0077 for Bold 20, ≥0.046 for
+    // Heavy and ≥0.14 for Almarai ExtraBold 22).
+    static let pillMono = Font.system(size: 20, weight: .semibold, design: .monospaced)
 
     /// Room code & timer only, per DESIGN_SYSTEM.md — system monospaced, not Almarai.
     static let numericMono = Font.system(.body, design: .monospaced).weight(.bold)
