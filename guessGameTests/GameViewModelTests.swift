@@ -77,13 +77,10 @@ final class GameViewModelTests: XCTestCase {
         date.now = startDate.addingTimeInterval(59)
         viewModel.tick()
         XCTAssertEqual(repository.game?.currentRound.phase, .describing)
-        XCTAssertNil(viewModel.roundEnded)
         date.now = startDate.addingTimeInterval(60)
         viewModel.tick()
         XCTAssertEqual(repository.game?.currentRound.phase, .ended(.timeUp))
-        XCTAssertFalse(viewModel.isTicking)
-        XCTAssertEqual(viewModel.roundEnded?.title, "انتهى الوقت")
-        XCTAssertEqual(viewModel.roundEnded?.pointsLine, "لا نقاط في هذه الجولة")
+        XCTAssertTrue(viewModel.isTicking, "keeps ticking to move on after the pause")
     }
 
     func testTickingBeforeDescribingDoesNothing() {
@@ -96,29 +93,6 @@ final class GameViewModelTests: XCTestCase {
 
     // MARK: - Round end
 
-    func testACorrectGuessShowsTheWinnerAndPoints() {
-        let repository = GameRepositoryFake(game: GameFixtures.game(playerCount: 3, marks: [ClueMark(tileIndex: 0, tag: .mainIdea)]))
-        let viewModel = makeViewModel(repository: repository)
-        GameFixtures.makeUseCases(repository: repository).guess.submit("وحيد القرن", by: guesserId, now: startDate)
-        XCTAssertEqual(viewModel.roundEnded, RoundEndedCard.Model(
-            title: "تخمين صحيح من لاعب1!",
-            wordLine: "الكلمة: وحيد القرن",
-            pointsLine: "+2 لـلاعب1 · +1 لـلاعب0",
-            buttonTitle: "الجولة التالية"
-        ))
-    }
-
-    func testTheDescriberEndingTheRoundGivesNoPoints() {
-        let viewModel = makeViewModel(repository: repository(phase: .ended(.endedByDescriber)))
-        XCTAssertEqual(viewModel.roundEnded?.title, "انتهت الجولة")
-        XCTAssertEqual(viewModel.roundEnded?.pointsLine, "لا نقاط في هذه الجولة")
-    }
-
-    func testTheLastRoundOffersToFinishTheGame() {
-        let viewModel = makeViewModel(repository: repository(phase: .ended(.timeUp), playerCount: 3, roundIndex: 2))
-        XCTAssertEqual(viewModel.roundEnded?.buttonTitle, "إنهاء اللعبة")
-    }
-
     func testContinuingOpensTheNextDescribersRound() {
         let repository = repository(phase: .ended(.timeUp))
         let exits = ExitCounter()
@@ -127,7 +101,6 @@ final class GameViewModelTests: XCTestCase {
         XCTAssertEqual(repository.game?.currentRound.index, 1)
         XCTAssertEqual(repository.game?.currentRound.describerId, guesserId)
         XCTAssertEqual(viewModel.screen, .difficultyPicker, "the viewer describes next")
-        XCTAssertNil(viewModel.roundEnded)
         XCTAssertEqual(exits.count, 0)
     }
 
@@ -141,6 +114,84 @@ final class GameViewModelTests: XCTestCase {
         viewModel.continueAfterRound()
         viewModel.confirmLeave()
         XCTAssertEqual(exits.count, 1)
+    }
+
+    // MARK: - Moving on after a round
+
+    private func endedRepository(reason: RoundEndReason = .endedByDescriber, roundIndex: Int = 0, endedAt: Date?) -> GameRepositoryFake {
+        GameRepositoryFake(game: GameFixtures.game(playerCount: 3, roundIndex: roundIndex, phase: .ended(reason), endedAt: endedAt))
+    }
+
+    func testAnEndedRoundStaysUntilThePauseIsOver() {
+        let repository = endedRepository(endedAt: startDate)
+        let date = MutableDate(startDate.addingTimeInterval(3.9))
+        let viewModel = makeViewModel(repository: repository, date: date)
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.index, 0)
+        XCTAssertEqual(viewModel.screen, .guesserBoard)
+        date.now = startDate.addingTimeInterval(GameViewModel.roundEndPause)
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.index, 1)
+        XCTAssertEqual(repository.game?.currentRound.phase, .choosingWord)
+    }
+
+    func testTimeRunningOutMovesOnAfterThePause() {
+        let repository = repository(phase: .describing)
+        let date = MutableDate(startDate.addingTimeInterval(60))
+        let viewModel = makeViewModel(repository: repository, date: date)
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.phase, .ended(.timeUp))
+        date.now = startDate.addingTimeInterval(63.9)
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.index, 0)
+        date.now = startDate.addingTimeInterval(64)
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.index, 1)
+    }
+
+    func testACorrectGuessMovesOnAfterThePause() {
+        let repository = GameRepositoryFake(game: GameFixtures.game(playerCount: 3, marks: [ClueMark(tileIndex: 0, tag: .mainIdea)]))
+        let date = MutableDate(startDate.addingTimeInterval(10))
+        let viewModel = makeViewModel(repository: repository, date: date)
+        GameFixtures.makeUseCases(repository: repository).guess.submit("وحيد القرن", by: guesserId, now: date.now)
+        date.now = startDate.addingTimeInterval(13.9)
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.guesses.last?.isCorrect, true, "the checked guess stays on show")
+        XCTAssertEqual(repository.game?.currentRound.index, 0)
+        date.now = startDate.addingTimeInterval(14)
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.index, 1)
+    }
+
+    func testTheLastRoundReturnsHomeAfterThePause() {
+        let repository = endedRepository(roundIndex: 2, endedAt: startDate)
+        let exits = ExitCounter()
+        let date = MutableDate(startDate.addingTimeInterval(4))
+        let viewModel = makeViewModel(repository: repository, date: date, exits: exits)
+        viewModel.tick()
+        XCTAssertEqual(exits.count, 1)
+        XCTAssertNil(repository.game)
+        XCTAssertFalse(viewModel.isTicking)
+        viewModel.tick()
+        XCTAssertEqual(exits.count, 1)
+    }
+
+    func testNoMovingOnWhileLeavingIsBeingConfirmed() {
+        let repository = endedRepository(endedAt: startDate)
+        let viewModel = makeViewModel(repository: repository, date: MutableDate(startDate.addingTimeInterval(10)))
+        viewModel.requestLeave()
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.index, 0)
+        viewModel.isConfirmingLeave = false
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.index, 1)
+    }
+
+    func testAnEndedRoundWithoutAnEndTimeMovesOnAtOnce() {
+        let repository = endedRepository(endedAt: nil)
+        let viewModel = makeViewModel(repository: repository)
+        viewModel.tick()
+        XCTAssertEqual(repository.game?.currentRound.index, 1)
     }
 
     // MARK: - Leaving

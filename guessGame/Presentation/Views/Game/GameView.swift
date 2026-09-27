@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// The round flow's host: shows the viewer's screen for the round's phase,
-/// runs the round timer, puts the round-ended card over everyone's screen and
-/// asks before leaving. Screens get a fresh state (typed guess, open picker)
+/// runs the round timer, moves on a short pause after a round ends and asks
+/// before leaving. Screens get a fresh state (typed guess, open picker)
 /// whenever the round, viewer or screen changes.
 struct GameView: View {
     @State private var viewModel: GameViewModel
@@ -16,10 +16,6 @@ struct GameView: View {
             Color.paper
             screenLayer
                 .id(viewModel.screenIdentity)
-                .accessibilityHidden(viewModel.roundEnded != nil)
-            if let roundEnded = viewModel.roundEnded {
-                RoundEndedCard(model: roundEnded) { viewModel.continueAfterRound() }
-            }
             #if DEBUG
             if let viewer = viewModel.viewerAvatar {
                 ViewerSwitcher(viewer: viewer, choices: viewModel.viewerChoices) { playerId in
@@ -45,11 +41,6 @@ struct GameView: View {
             while !Task.isCancelled && viewModel.isTicking {
                 viewModel.tick()
                 try? await Task.sleep(for: .milliseconds(250))
-            }
-        }
-        .onChange(of: viewModel.roundEnded?.title) { _, title in
-            if let title {
-                AccessibilityNotification.Announcement(title).post()
             }
         }
     }

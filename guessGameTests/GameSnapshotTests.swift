@@ -4,8 +4,7 @@ import XCTest
 
 /// Renders each round screen in its mockup's state for comparing against the
 /// mockups by hand. The screens render on their own, without GameView's
-/// development-only viewer switcher over them; the round-ended card, which
-/// has no mockup, renders through GameView.
+/// development-only viewer switcher over them.
 @MainActor
 final class GameSnapshotTests: XCTestCase {
     private let clock = GameClock(currentDate: { Game.sampleNow })
@@ -82,13 +81,5 @@ final class GameSnapshotTests: XCTestCase {
         let useCases = GameUseCases.preview(seededWith: .sample(phase: .ended(.guessed(winnerId: "lobby-2")), marks: marks, guesses: guesses))
         let viewModel = GuesserBoardViewModel(useCases: useCases, viewerId: "lobby-3", clock: clock)
         try render(GuesserBoardView(viewModel: viewModel, onBack: {}), as: "guesser")
-    }
-
-    func testRenderRoundEnded() throws {
-        let guesses = [Guess(id: 0, playerId: "lobby-2", text: "وحيد القرن", isCorrect: true)]
-        var game = Game.sample(phase: .ended(.guessed(winnerId: "lobby-2")), marks: [ClueMark(tileIndex: 19, tag: .mainIdea)], guesses: guesses)
-        game.currentRound.awardedPoints = ["lobby-2": 2, "lobby-0": 1]
-        let viewModel = GameViewModel(useCases: .preview(seededWith: game), viewerId: "lobby-3", clock: clock, onExit: {})
-        try render(GameView(viewModel: viewModel), as: "roundEnded")
     }
 }

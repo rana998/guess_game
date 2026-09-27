@@ -1,3 +1,4 @@
+import Foundation
 import Observation
 
 /// The round flow for one viewer: which screen they see as the game moves
@@ -43,46 +44,39 @@ final class GameViewModel {
 
     // MARK: - Time
 
-    /// While the timer runs, the view calls `tick()` a few times a second.
-    var isTicking: Bool { game?.currentRound.isDescribing == true }
+    /// While the timer runs, and while an ended round waits to move on, the
+    /// view calls `tick()` a few times a second.
+    var isTicking: Bool {
+        guard let game, !game.isFinished else { return false }
+        return game.currentRound.isDescribing || game.currentRound.isEnded
+    }
 
+    /// Ends the round when its time is up, and opens the next round once an
+    /// ended round's pause is over. Never while the leave alert is up, so the
+    /// screen can't change underneath it.
     func tick() {
-        useCases.roundTimer.expireIfDue(now: clock.refresh())
+        let now = clock.refresh()
+        guard let round = game?.currentRound else { return }
+        if round.isDescribing {
+            useCases.roundTimer.expireIfDue(now: now)
+            return
+        }
+        guard round.isEnded, !isConfirmingLeave,
+              now >= (round.endedAt ?? .distantPast).addingTimeInterval(Self.roundEndPause) else { return }
+        continueAfterRound()
     }
 
     // MARK: - Round end
 
-    var roundEnded: RoundEndedCard.Model? {
-        guard let game, let reason = game.currentRound.endReason else { return nil }
-        let round = game.currentRound
-        let title: String
-        let pointsLine: String
-        switch reason {
-        case .guessed(let winnerId):
-            let winnerName = game.player(id: winnerId)?.name ?? ""
-            title = Strings.RoundEnded.correctGuessTitle(name: winnerName)
-            pointsLine = Strings.RoundEnded.points(
-                guesser: winnerName,
-                guesserPoints: round.awardedPoints[winnerId] ?? 0,
-                describer: game.describer?.name ?? "",
-                describerPoints: round.awardedPoints[round.describerId] ?? 0
-            )
-        case .timeUp:
-            title = Strings.RoundEnded.timeUp
-            pointsLine = Strings.RoundEnded.noPoints
-        case .endedByDescriber:
-            title = Strings.RoundEnded.endedByDescriber
-            pointsLine = Strings.RoundEnded.noPoints
-        }
-        return RoundEndedCard.Model(
-            title: title,
-            wordLine: Strings.RoundEnded.wordLine(word: round.word ?? ""),
-            pointsLine: pointsLine,
-            buttonTitle: game.isLastRound ? Strings.RoundEnded.finishGame : Strings.RoundEnded.nextRound
-        )
-    }
+    /// How long an ended round stays on screen (the correct guess checked in
+    /// the list, the board and timer frozen) before the next round opens. It
+    /// stands in for the round-result screen still to be designed; once games
+    /// span devices the host decides when to move on.
+    static let roundEndPause: TimeInterval = 4
 
     /// The next describer's round, or out of the game after the last one.
+    /// Called by `tick()` after `roundEndPause` for now; the round-result
+    /// screen will call it instead.
     func continueAfterRound() {
         useCases.lifecycle.advanceToNextRound()
         if game?.isFinished == true {

@@ -275,19 +275,6 @@ enum Strings {
         static func slotLabel(number: Int) -> String { "الصورة \(number)" }
     }
 
-    enum RoundEnded {
-        static func correctGuessTitle(name: String) -> String { "تخمين صحيح من \(name)!" }
-        static let timeUp = "انتهى الوقت"
-        static let endedByDescriber = "انتهت الجولة"
-        static func wordLine(word: String) -> String { "الكلمة: \(word)" }
-        static func points(guesser: String, guesserPoints: Int, describer: String, describerPoints: Int) -> String {
-            "+\(guesserPoints) لـ\(guesser) · +\(describerPoints) لـ\(describer)"
-        }
-        static let noPoints = "لا نقاط في هذه الجولة"
-        static let nextRound = "الجولة التالية"
-        static let finishGame = "إنهاء اللعبة"
-    }
-
     enum LeaveGame {
         static let title = "مغادرة اللعبة؟"
         static let message = "ستنتهي اللعبة على هذا الجهاز."
