@@ -47,6 +47,11 @@ extension Font {
     // Heavy and ≥0.14 for Almarai ExtraBold 22).
     static let pillMono = Font.system(size: 20, weight: .semibold, design: .monospaced)
 
+    // The round screens' sizes, measured from their mockups the same way.
+    static let wordDisplay = Font.custom("Almarai-ExtraBold", size: 40, relativeTo: .largeTitle)
+    static let timerMono = Font.system(size: 22, weight: .heavy, design: .monospaced)
+    static let counterMono = Font.system(size: 20, weight: .heavy, design: .monospaced)
+
     /// Room code & timer only, per DESIGN_SYSTEM.md — system monospaced, not Almarai.
     static let numericMono = Font.system(.body, design: .monospaced).weight(.bold)
 }

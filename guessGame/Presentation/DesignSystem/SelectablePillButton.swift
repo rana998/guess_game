@@ -3,11 +3,13 @@ import SwiftUI
 /// A comic-style choice pill, white when unselected and brand green when
 /// selected. Selection changes the fill only — the border, shadow and label
 /// colors are identical in both states. `regular` is Create Room's big value
-/// over a small caption; `compact` is the waiting room's 49×44 value-only pill.
+/// over a small caption; `compact` is the waiting room's 49×44 value-only pill;
+/// `large` is the difficulty picker's 94pt-tall card with its points below.
 struct SelectablePillButton: View {
     enum Size {
         case regular
         case compact
+        case large
     }
 
     let value: String
@@ -38,6 +40,7 @@ struct SelectablePillButton: View {
             switch size {
             case .regular: regular
             case .compact: compact
+            case .large: large
             }
         }
         .accessibilityAddTraits(isSelected ? .isSelected : [])
@@ -70,6 +73,38 @@ struct SelectablePillButton: View {
                 width: width,
                 height: 64,
                 shadowOffset: CGSize(width: 5, height: 5),
+                shadowColor: .black,
+                font: .pillValue,
+                textColor: .black,
+                cornerStyle: .circular
+            )
+        )
+    }
+
+    private var large: some View {
+        Button(action: action) {
+            // The value sits on the card's center line with the caption below it.
+            ZStack {
+                Text(value)
+                    .font(.pillValue)
+                    .foregroundStyle(Color.black)
+                if let caption {
+                    Text(caption)
+                        .font(.bodySmallStrong)
+                        .foregroundStyle(Color.black.opacity(0.5))
+                        .offset(y: 21)
+                }
+            }
+        }
+        .buttonStyle(
+            HardShadowButtonStyle(
+                fill: isSelected ? .brandLime : .white,
+                borderColor: .black,
+                borderWidth: 4,
+                cornerRadius: 14,
+                width: width,
+                height: 94,
+                shadowOffset: CGSize(width: 6, height: 6),
                 shadowColor: .black,
                 font: .pillValue,
                 textColor: .black,

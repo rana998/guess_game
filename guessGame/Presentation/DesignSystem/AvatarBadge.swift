@@ -3,26 +3,31 @@ import SwiftUI
 /// A player's round avatar: the chosen color with the first letter of their
 /// name. `large` is the 52pt live preview next to a name field (Create Room,
 /// Enter Name); `medium` is the 36pt waiting-room card avatar; `small` is the
-/// 30pt marker in a player-list row.
+/// 30pt marker in a player-list row; `strip` is the 34pt guesser row of the
+/// round screens and `mini` the 26pt avatar inside a name capsule.
 struct AvatarBadge: View {
     enum Size {
         case large
         case medium
         case small
+        case strip
+        case mini
 
         var diameter: CGFloat {
             switch self {
             case .large: 52
             case .medium: 36
             case .small: 30
+            case .strip: 34
+            case .mini: 26
             }
         }
 
         var borderWidth: CGFloat {
             switch self {
             case .large: 4
-            case .medium: 3
-            case .small: 2
+            case .medium, .strip: 3
+            case .small, .mini: 2
             }
         }
 
@@ -30,15 +35,15 @@ struct AvatarBadge: View {
         var shadowOffset: CGFloat? {
             switch self {
             case .large: 3
-            case .medium, .small: nil
+            case .medium, .small, .strip, .mini: nil
             }
         }
 
         var font: Font {
             switch self {
             case .large: .inputText
-            case .medium: .labelSection
-            case .small: .avatarInitialSmall
+            case .medium, .strip: .labelSection
+            case .small, .mini: .avatarInitialSmall
             }
         }
 
@@ -48,7 +53,7 @@ struct AvatarBadge: View {
         var glyphLeadingInset: CGFloat {
             switch self {
             case .large: 3
-            case .medium: 0
+            case .medium, .strip, .mini: 0
             case .small: 1.5
             }
         }
@@ -56,7 +61,7 @@ struct AvatarBadge: View {
         var glyphLift: CGFloat {
             switch self {
             case .large: 1
-            case .medium: 0
+            case .medium, .strip, .mini: 0
             case .small: 0.5
             }
         }

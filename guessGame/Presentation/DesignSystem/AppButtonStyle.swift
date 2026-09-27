@@ -228,6 +228,77 @@ extension ButtonStyle where Self == HardShadowButtonStyle {
     }
 }
 
+extension ButtonStyle where Self == HardShadowButtonStyle {
+    /// The round screens' main actions (draw the word, start describing, next
+    /// round): 4pt ink border, 14pt circular radius, (6,6) shadow, ExtraBold 22.
+    static func appGameAction(fill: Color, width: CGFloat, height: CGFloat) -> HardShadowButtonStyle {
+        HardShadowButtonStyle(
+            fill: fill,
+            borderColor: .black,
+            borderWidth: 4,
+            cornerRadius: 14,
+            width: width,
+            height: height,
+            shadowOffset: CGSize(width: 6, height: 6),
+            shadowColor: .black,
+            font: .inputText,
+            textColor: .black,
+            cornerStyle: .circular
+        )
+    }
+
+    /// The describer's red "إنهاء جولة": 100×44, 12pt radius, 3pt border, (4,4) shadow.
+    static var appEndRound: HardShadowButtonStyle {
+        HardShadowButtonStyle(
+            fill: .brandRed,
+            borderColor: .black,
+            borderWidth: 3,
+            cornerRadius: 12,
+            width: 100,
+            height: 44,
+            shadowOffset: CGSize(width: 4, height: 4),
+            shadowColor: .black,
+            font: .labelPrompt,
+            textColor: .white,
+            cornerStyle: .circular
+        )
+    }
+
+    /// The guess panel's green send button beside the text field: 52×44.
+    static var appSend: HardShadowButtonStyle {
+        HardShadowButtonStyle(
+            fill: .brandLime,
+            borderColor: .black,
+            borderWidth: 3,
+            cornerRadius: 12,
+            width: 52,
+            height: 44,
+            shadowOffset: CGSize(width: 3, height: 3),
+            shadowColor: .black,
+            font: .labelSection,
+            textColor: .black,
+            cornerStyle: .circular
+        )
+    }
+
+    /// The tag picker's red "إلغاء": 204×44.
+    static var appPickerCancel: HardShadowButtonStyle {
+        HardShadowButtonStyle(
+            fill: .brandRed,
+            borderColor: .black,
+            borderWidth: 3,
+            cornerRadius: 12,
+            width: 204,
+            height: 44,
+            shadowOffset: CGSize(width: 3, height: 3),
+            shadowColor: .black,
+            font: .titleScreen,
+            textColor: .white,
+            cornerStyle: .circular
+        )
+    }
+}
+
 extension ButtonStyle where Self == TertiaryDashedButtonStyle {
     /// How to Play: dashed 4pt round-capped center border, fixed 228×46pt, no shadow.
     static var appTertiaryDashed: TertiaryDashedButtonStyle { TertiaryDashedButtonStyle() }

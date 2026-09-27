@@ -166,4 +166,43 @@ enum Strings {
         static let on = "مفعّل"
         static let off = "معطّل"
     }
+
+    /// The difficulty names shown on the picker cards and the word card's chip.
+    enum Difficulties {
+        static let easy = "سهل"
+        static let medium = "متوسط"
+        static let hard = "صعب"
+
+        static func points(_ points: Int) -> String { "+\(points)" }
+        /// "متوسط +2"
+        static func chip(name: String, points: Int) -> String { "\(name) +\(points)" }
+        static func accessibilityLabel(name: String, points: Int) -> String {
+            switch points {
+            case 1: "\(name)، نقطة واحدة"
+            case 2: "\(name)، نقطتان"
+            default: "\(name)، \(points) نقاط"
+            }
+        }
+    }
+
+    /// The three image tags, named for what they mean (the tag picker's labels).
+    enum ClueTags {
+        static let mainIdea = "الفكرة الرئيسية"
+        static let detail = "تفصيل إضافي"
+        static let secondaryIdea = "فكرة فرعية"
+    }
+
+    /// Shared by both round boards.
+    enum Round {
+        static let timerLabel = "الوقت المتبقي"
+    }
+
+    enum WordCard {
+        static let title = "انت الواصف"
+        static let secretCaption = "كلمتك السرية"
+        static let mainIdeaRule = "الفكرة الرئيسية (صورة واحدة)"
+        static func detailRule(limit: Int) -> String { "تفاصيل إضافية للفكرة الرئيسية (\(limit) مكعبات)" }
+        static let secondaryRule = "فكرة فرعية (واحدة، اختيارية)"
+        static let start = "ابدأ الوصف"
+    }
 }
