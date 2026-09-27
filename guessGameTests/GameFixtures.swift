@@ -54,4 +54,19 @@ enum GameFixtures {
             scores: Dictionary(uniqueKeysWithValues: turnOrder.map { playerId in (playerId, 0) })
         )
     }
+
+    /// Real use cases over the given store, with fixed randomness.
+    static func makeUseCases(
+        repository: GameRepository,
+        words: [Difficulty: [String]] = [.easy: ["قطة"], .medium: ["وحيد القرن", "زرافة"], .hard: ["حرية"]],
+        firstDescriberIndex: Int = 0,
+        wordIndex: Int = 0
+    ) -> GameUseCases {
+        GameUseCases.make(
+            gameRepository: repository,
+            wordRepository: WordRepositoryStub(wordsByDifficulty: words),
+            firstDescriberPicker: RandomIndexPicker { _ in firstDescriberIndex },
+            wordPicker: RandomIndexPicker { _ in wordIndex }
+        )
+    }
 }
