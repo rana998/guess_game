@@ -15,8 +15,12 @@ final class WaitingForWordViewModelTests: XCTestCase {
     func testNamesTheDescriber() {
         let viewModel = makeViewModel(viewer: 4)
         XCTAssertEqual(viewModel.describerAvatar?.id, "player-2")
-        XCTAssertEqual(viewModel.describerPillText, "بانتظار كلمة لاعب2")
+        XCTAssertEqual(viewModel.describerPillText, "\u{200F}لاعب2 تختار الكلمة")
         XCTAssertEqual(viewModel.message, "لم يبدأ العدّ بعد. سيبدأ المؤقت لحظة ضغط لاعب2 على \"ابدأ الوصف\"")
+    }
+
+    func testDescriberPillStaysRightToLeftForALatinName() {
+        XCTAssertEqual(Strings.WaitingForWord.describerChoosing(name: "Sara"), "\u{200F}Sara تختار الكلمة")
     }
 
     func testGuessersAreEveryoneButTheDescriberInRoomOrder() {

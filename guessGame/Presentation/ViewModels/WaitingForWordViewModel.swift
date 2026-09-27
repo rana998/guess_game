@@ -16,7 +16,7 @@ final class WaitingForWordViewModel {
 
     var describerAvatar: AvatarModel? { game?.describer.map(AvatarModel.init(player:)) }
 
-    var describerPillText: String { Strings.WaitingForWord.describerPill(name: game?.describer?.name ?? "") }
+    var describerPillText: String { Strings.WaitingForWord.describerChoosing(name: game?.describer?.name ?? "") }
 
     var message: String { Strings.WaitingForWord.message(describerName: game?.describer?.name ?? "") }
 

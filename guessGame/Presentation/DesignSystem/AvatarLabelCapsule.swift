@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// A capsule carrying a player's small avatar and a line of text about them:
-/// the black "who's choosing the word" pill and the green "describing now" one.
+/// the guesser board's green "يصف الآن" (describing now) capsule.
 struct AvatarLabelCapsule: View {
     let avatar: AvatarModel
     let text: String

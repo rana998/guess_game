@@ -13,6 +13,8 @@ struct WaitingForWordView: View {
     /// Vertical centers measured on the mockup canvas; everything is centered on x.
     private enum Metrics {
         static let centerX: CGFloat = 425
+        static let pillCenterX: CGFloat = 425.5
+        static let pillMaxWidth: CGFloat = 360
         static let pillY: CGFloat = 116
         static let dotsY: CGFloat = 152.5
         static let messageY: CGFloat = 177.5
@@ -28,16 +30,11 @@ struct WaitingForWordView: View {
         GameCanvas {
             ZStack {
                 if let describer = viewModel.describerAvatar {
-                    AvatarLabelCapsule(
-                        avatar: describer,
-                        text: viewModel.describerPillText,
-                        fill: .black,
-                        textColor: .white,
-                        font: .titleCard,
-                        borderWidth: 0
-                    )
-                    .accessibilityIdentifier("game.waiting.describerPill")
-                    .canvasCenter(x: Metrics.centerX, y: Metrics.pillY)
+                    DescriberStatusPill(avatar: describer, text: viewModel.describerPillText)
+                        .accessibilityIdentifier("game.waiting.describerPill")
+                        // Caps the hugging pill so a very long name truncates.
+                        .frame(width: Metrics.pillMaxWidth)
+                        .canvasCenter(x: Metrics.pillCenterX, y: Metrics.pillY)
                 }
                 WaitingDots()
                     .canvasCenter(x: Metrics.centerX, y: Metrics.dotsY)

@@ -212,9 +212,12 @@ enum Strings {
         static let draw = "اسحب الكلمة"
     }
 
-    /// Worded without the describer's gender, which the game doesn't know.
+    /// The pill follows the mockup's wording exactly; the message below it is
+    /// worded without the describer's gender, which the game doesn't know.
     enum WaitingForWord {
-        static func describerPill(name: String) -> String { "بانتظار كلمة \(name)" }
+        /// The leading right-to-left mark keeps the line right-to-left even when
+        /// the name, which comes first, is written in Latin letters.
+        static func describerChoosing(name: String) -> String { "\u{200F}\(name) تختار الكلمة" }
         static func message(describerName: String) -> String {
             "لم يبدأ العدّ بعد. سيبدأ المؤقت لحظة ضغط \(describerName) على \"ابدأ الوصف\""
         }
