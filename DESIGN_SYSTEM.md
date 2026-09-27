@@ -127,7 +127,8 @@ Measured sizes of the reusable pieces, beyond the tokens above (all `.circular` 
 | Tag option card (tag picker) | 152 × 98 | 16pt | 3pt ink; used up: Locked/Fill + Locked/Stroke | (4,4); none when used up |
 | Round timer pill | 90 × 40 capsule | — | 3pt | (3,3) |
 | Word pill / cube counter (describer header) | hugging × 44 / 84 × 44 | 12pt / capsule | 3pt | none |
-| Game action (draw word 298 × 54, start describing 242 × 56, next round 224 × 48) | as listed | 14pt | 4pt | (6,6) |
+| Game action (draw word 298 × 54, start describing 242 × 56) | as listed | 14pt | 4pt | (6,6) |
+| Describer status pill (waiting for the word) | hugs its text × 40, black capsule; 26pt avatar disc with no ring, 12pt from the right; white ExtraBold 16 (Title/Card), 11pt after the avatar, 23pt before the left end | capsule | none | none |
 | End round | 100 × 44, Brand/Red | 12pt | 3pt | (4,4) |
 | Send guess | 52 × 44, Brand/Lime | 12pt | 3pt | (3,3) |
 | Tag picker cancel | 204 × 44, Brand/Red | 12pt | 3pt | (3,3) |
@@ -136,7 +137,7 @@ Measured sizes of the reusable pieces, beyond the tokens above (all `.circular` 
 | Guess row | 252 × 31 (39 when correct) | 10pt | 2pt ink 18% / Brand/Lime | none |
 | Board scroll bar | 4pt wide, ink thumb on ink 35% track | — | — | none |
 
-A tag's badge is pinned on a tile's physical top-left corner, its center 3pt right of and 5pt below the corner, in every layout direction. The round screens are laid out on their mockups' 852×393 canvas with each view's measured values in a private `Metrics` enum (like the earlier screens); the 8pt grid applies to surfaces with no mockup (the round-ended card, the development-only viewer switcher). The waiting-for-word dots step from dark to light and hold still under Reduce Motion.
+A tag's badge is pinned on a tile's physical top-left corner, its center 3pt right of and 5pt below the corner, in every layout direction. The round screens are laid out on their mockups' 852×393 canvas with each view's measured values in a private `Metrics` enum (like the earlier screens); the 8pt grid applies to surfaces with no mockup (the development-only viewer switcher). The waiting-for-word dots step from dark to light and hold still under Reduce Motion.
 
 The copy chip's burst is a vector (`CopyBurstIcon`, 22 × 18): a 12-point Brand/Yellow star with a 0.75pt ink outline and a Brand/Lime oval, not an image asset.
 
