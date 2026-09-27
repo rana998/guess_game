@@ -3,7 +3,8 @@ import SwiftUI
 /// Hosts a round screen's 852×393 layout: Paper everywhere, the white top band
 /// running edge to edge behind the layout's own header, and the layout scaled
 /// down (never up) to fit narrower screens. `contentAlignment` lets the guess
-/// screen keep its bottom edge in view above the keyboard.
+/// screen keep its bottom edge in view above the keyboard. The layout is placed
+/// with `canvasCenter(x:y:)` in the mockup's physical coordinates.
 struct GameCanvas<Content: View>: View {
     var topBarHeight: CGFloat?
     var referenceWidth: CGFloat = GameLayout.canvasSize.width
@@ -26,6 +27,9 @@ struct GameCanvas<Content: View>: View {
                 }
                 content
                     .frame(width: GameLayout.canvasSize.width, height: GameLayout.canvasSize.height)
+                    // Left to right so canvas points aren't mirrored; each placed
+                    // view switches back to RTL (see canvasCenter).
+                    .environment(\.layoutDirection, .leftToRight)
                     .scaleEffect(scale, anchor: anchor)
                     .frame(
                         width: geometry.size.width,

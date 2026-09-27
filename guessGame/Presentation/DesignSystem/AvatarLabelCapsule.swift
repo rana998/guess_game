@@ -10,18 +10,21 @@ struct AvatarLabelCapsule: View {
     let font: Font
     let borderWidth: CGFloat
     var height: CGFloat = 40
+    /// The avatar's distance from the capsule's reading-start end, and from the text.
+    var avatarInset: CGFloat = 12
+    var avatarSpacing: CGFloat = 11
 
     var body: some View {
         // The mockup whitens a green avatar on the green pill so it stays visible.
         let badgeColor = avatar.color == .green && fill == .brandLime ? Color.white : avatar.color.color
-        HStack(spacing: 8) {
+        HStack(spacing: avatarSpacing) {
             AvatarBadge(initial: avatar.initial, color: badgeColor, size: .mini)
             Text(text)
                 .font(font)
                 .foregroundStyle(textColor)
                 .lineLimit(1)
         }
-        .padding(.leading, 7)
+        .padding(.leading, avatarInset)
         .padding(.trailing, 16)
         .frame(height: height)
         .background(fill, in: Capsule())

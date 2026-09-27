@@ -201,8 +201,32 @@ enum Strings {
         static let title = "انت الواصف"
         static let secretCaption = "كلمتك السرية"
         static let mainIdeaRule = "الفكرة الرئيسية (صورة واحدة)"
-        static func detailRule(limit: Int) -> String { "تفاصيل إضافية للفكرة الرئيسية (\(limit) مكعبات)" }
+        static func detailRule(limit: Int) -> String { "تفصيل إضافي للفكرة الرئيسية (\(limit) مكعبات)" }
         static let secondaryRule = "فكرة فرعية (واحدة، اختيارية)"
         static let start = "ابدأ الوصف"
+    }
+
+    enum DifficultyPicker {
+        static let title = "أنت الواصف في هذه الجولة"
+        static let subtitle = "اختر مستوى الصعوبة - الأصعب يعطي نقاطاً أكثر"
+        static let draw = "اسحب الكلمة"
+    }
+
+    /// Worded without the describer's gender, which the game doesn't know.
+    enum WaitingForWord {
+        static func describerPill(name: String) -> String { "بانتظار كلمة \(name)" }
+        static func message(describerName: String) -> String {
+            "لم يبدأ العدّ بعد. سيبدأ المؤقت لحظة ضغط \(describerName) على \"ابدأ الوصف\""
+        }
+        static func turnBadge(roundsAway: Int) -> String {
+            switch roundsAway {
+            case 1: "دورك في الوصف في الجولة التالية"
+            case 2: "دورك في الوصف بعد جولتين"
+            default: "دورك في الوصف بعد \(roundsAway) جولات"
+            }
+        }
+        static func guessersReady(count: Int) -> String {
+            count == 2 ? "مخمنان جاهزان" : "\(count) مخمنين جاهزين"
+        }
     }
 }

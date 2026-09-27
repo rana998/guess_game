@@ -47,8 +47,15 @@ extension Font {
     // Heavy and ≥0.14 for Almarai ExtraBold 22).
     static let pillMono = Font.system(size: 20, weight: .semibold, design: .monospaced)
 
-    // The round screens' sizes, measured from their mockups the same way.
+    // The round screens' sizes, each fitted against its mockup's ink width
+    // (e.g. "وحيد القرن" 188pt = ExtraBold 40 vs 178 at 38; "انت الواصف" 136pt
+    // = ExtraBold 26; the difficulty subtitle 272pt = Regular 14; the waiting
+    // message 337pt = Regular 13; "كلمتك السرية" 79pt = Bold 13).
     static let wordDisplay = Font.custom("Almarai-ExtraBold", size: 40, relativeTo: .largeTitle)
+    static let titleLarge = Font.custom("Almarai-ExtraBold", size: 26, relativeTo: .title)
+    static let bodyLarge = Font.custom("Almarai-Regular", size: 14, relativeTo: .body)
+    static let bodyMedium = Font.custom("Almarai-Regular", size: 13, relativeTo: .footnote)
+    static let captionStrong = Font.custom("Almarai-Bold", size: 13, relativeTo: .footnote)
     static let timerMono = Font.system(size: 22, weight: .heavy, design: .monospaced)
     static let counterMono = Font.system(size: 20, weight: .heavy, design: .monospaced)
 

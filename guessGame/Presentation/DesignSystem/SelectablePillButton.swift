@@ -86,7 +86,7 @@ struct SelectablePillButton: View {
             // The value sits on the card's center line with the caption below it.
             ZStack {
                 Text(value)
-                    .font(.pillValue)
+                    .font(.inputText)
                     .foregroundStyle(Color.black)
                 if let caption {
                     Text(caption)

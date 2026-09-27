@@ -9,7 +9,7 @@ struct SecretWordCard: View {
         let shape = RoundedRectangle(cornerRadius: 18, style: .circular)
         VStack(spacing: 0) {
             Text(Strings.WordCard.secretCaption)
-                .font(.bodyStrong)
+                .font(.captionStrong)
                 .foregroundStyle(Color.black.opacity(0.5))
                 .padding(.top, 20)
             Text(word)
@@ -18,7 +18,7 @@ struct SecretWordCard: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
                 .padding(.horizontal, 16)
-                .padding(.top, 10)
+                .padding(.top, 5)
                 .accessibilityIdentifier("game.secretWord")
             Text(chipText)
                 .font(.messageBanner)
