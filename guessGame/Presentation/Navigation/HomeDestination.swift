@@ -9,4 +9,7 @@ enum HomeDestination: Hashable {
     case enterName(Room)
     /// Pushed after creating or entering a room.
     case waitingRoom(WaitingRoomSession)
+    /// Pushed when the waiting room starts the game; the game itself lives in
+    /// the shared game store, seen as this player.
+    case game(viewerId: String)
 }

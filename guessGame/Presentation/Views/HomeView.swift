@@ -6,11 +6,14 @@ import SwiftUI
 /// from measured width vs. height — no fixed device breakpoints.
 struct HomeView: View {
     @State private var path: [HomeDestination] = []
+    private let gameUseCases: GameUseCases
     private let joinResolver: JoinRoomViewModel.Resolver
 
-    /// `joinResolver` is the seam for the future join use case; until it
-    /// exists, every code is rejected (see `JoinRoomViewModel.noRoomsYet`).
-    init(joinResolver: @escaping JoinRoomViewModel.Resolver = JoinRoomViewModel.noRoomsYet) {
+    /// `gameUseCases` runs the rounds once a waiting room starts. `joinResolver`
+    /// is the seam for the future join use case; until it exists, every code
+    /// is rejected (see `JoinRoomViewModel.noRoomsYet`).
+    init(gameUseCases: GameUseCases, joinResolver: @escaping JoinRoomViewModel.Resolver = JoinRoomViewModel.noRoomsYet) {
+        self.gameUseCases = gameUseCases
         self.joinResolver = joinResolver
     }
 
@@ -77,10 +80,19 @@ struct HomeView: View {
                     WaitingRoomView(viewModel: WaitingRoomViewModel(
                         session: session,
                         copyToPasteboard: { UIPasteboard.general.string = $0 },
-                        // Path B seam: no gameplay screen exists yet, so starting only shows
-                        // the waiting room's "starting" state. The round:start hand-off plugs in here.
-                        onStartGame: { _ in },
+                        onStartGame: { room in
+                            if gameUseCases.lifecycle.start(room: room) != nil {
+                                path.append(.game(viewerId: session.currentPlayerId))
+                            }
+                        },
                         onLeave: { path.removeAll() }
+                    ))
+                case .game(let viewerId):
+                    GameView(viewModel: GameViewModel(
+                        useCases: gameUseCases,
+                        viewerId: viewerId,
+                        clock: GameClock(currentDate: { Date() }),
+                        onExit: { path.removeAll() }
                     ))
                 }
             }
@@ -167,16 +179,16 @@ struct HomeView: View {
 }
 
 #Preview("iPhone SE — Portrait") {
-    HomeView()
+    HomeView(gameUseCases: .live())
         .previewDevice(PreviewDevice(rawValue: "iPhone SE (3rd generation)"))
 }
 
 #Preview("iPhone 16 — Portrait") {
-    HomeView()
+    HomeView(gameUseCases: .live())
         .previewDevice(PreviewDevice(rawValue: "iPhone 16"))
 }
 
 #Preview("iPhone 16 — Landscape", traits: .landscapeLeft) {
-    HomeView()
+    HomeView(gameUseCases: .live())
         .previewDevice(PreviewDevice(rawValue: "iPhone 16"))
 }

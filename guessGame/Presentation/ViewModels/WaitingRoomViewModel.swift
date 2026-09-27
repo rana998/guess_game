@@ -17,8 +17,8 @@ final class WaitingRoomViewModel {
     private(set) var copyConfirmationToken = 0
 
     @ObservationIgnored private let copyToPasteboard: (String) -> Void
-    /// Called once, with the room as it stands, when the game starts. No
-    /// gameplay screen exists yet, so HomeView passes a no-op.
+    /// Called once, with the room as it stands, when the game starts; HomeView
+    /// starts the game from it and opens the round screens.
     @ObservationIgnored private let onStartGame: (Room) -> Void
     @ObservationIgnored private let onLeave: () -> Void
 
