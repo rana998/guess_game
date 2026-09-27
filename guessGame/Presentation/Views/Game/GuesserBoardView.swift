@@ -30,6 +30,7 @@ struct GuesserBoardView: View {
         static let panelSize = CGSize(width: 282, height: 276)
         static let listHeight: CGFloat = 207
         static let listTopInset: CGFloat = 16
+        static let listBottomInset: CGFloat = 14
         static let rowSpacing: CGFloat = 4
         static let emptyTitleY: CGFloat = 94.5
         static let emptySubtitleY: CGFloat = 123.5
@@ -202,10 +203,13 @@ struct GuesserBoardView: View {
                                 .accessibilityIdentifier("game.guessRow.\(row.id)")
                         }
                     }
-                    .frame(maxWidth: .infinity)
                     .padding(.top, Metrics.listTopInset - 3)
-                    .padding(.bottom, 8)
+                    .padding(.bottom, Metrics.listBottomInset)
+                    // Newest guesses sit just above the field, so they stay in
+                    // view while the keyboard hides the top of the panel.
+                    .frame(maxWidth: .infinity, minHeight: Metrics.listHeight, alignment: .bottom)
                 }
+                .defaultScrollAnchor(.bottom)
                 .scrollIndicators(.hidden)
                 .onChange(of: viewModel.lastGuessId) { _, lastGuessId in
                     guard let lastGuessId else { return }

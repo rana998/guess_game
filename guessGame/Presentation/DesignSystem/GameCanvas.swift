@@ -17,7 +17,10 @@ struct GameCanvas<Content: View>: View {
             let anchor: UnitPoint = contentAlignment == .bottom ? .bottom : .top
             ZStack(alignment: .top) {
                 Color.paper
-                if let topBarHeight {
+                // While the layout sits bottom-aligned above the keyboard, its own
+                // header has moved up out of view; a band left at the top would
+                // cut across the content.
+                if let topBarHeight, contentAlignment == .top {
                     VStack(spacing: 0) {
                         Color.white
                             .frame(height: topBarHeight * scale)
