@@ -92,6 +92,9 @@ final class DescriberBoardViewModel {
         pickerTileIndex = nil
     }
 
+    /// Only while the timer runs; an ended round stays on screen until the next one.
+    var canEndRound: Bool { round?.isDescribing == true }
+
     @discardableResult
     func endRound() -> Bool {
         useCases.describerTurn.endRound(by: viewerId, now: clock.refresh())

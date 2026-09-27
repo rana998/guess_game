@@ -83,6 +83,8 @@ struct DescriberBoardView: View {
                 .canvasCenter(x: Metrics.controlsRight - Metrics.controlsWidth / 2, y: Metrics.controlsCenterY)
             Button(Strings.DescriberBoard.endRound) { viewModel.endRound() }
                 .buttonStyle(.appEndRound)
+                .disabled(!viewModel.canEndRound)
+                .opacity(viewModel.canEndRound ? 1 : 0.5)
                 .accessibilityIdentifier("game.endRound")
                 .canvasCenter(x: Metrics.endRoundCenter.x, y: Metrics.endRoundCenter.y)
             DashedRule()
