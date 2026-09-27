@@ -43,6 +43,7 @@ struct NumericKeypad: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NumericKeypad(
         deleteTitle: Strings.JoinRoom.deleteKey,
@@ -55,3 +56,4 @@ struct NumericKeypad: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

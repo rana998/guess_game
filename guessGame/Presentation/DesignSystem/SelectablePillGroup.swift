@@ -62,6 +62,7 @@ struct SelectablePillGroup<Value: Hashable & CustomStringConvertible>: View {
     }
 }
 
+#if DEBUG
 #Preview {
     @Previewable @State var selection = 60
 
@@ -90,3 +91,4 @@ struct SelectablePillGroup<Value: Hashable & CustomStringConvertible>: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

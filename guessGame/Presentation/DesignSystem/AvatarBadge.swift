@@ -105,6 +105,7 @@ struct AvatarBadge: View {
     }
 }
 
+#if DEBUG
 #Preview {
     HStack(spacing: 16) {
         AvatarBadge(initial: "ن", color: .brandLime)
@@ -116,3 +117,4 @@ struct AvatarBadge: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

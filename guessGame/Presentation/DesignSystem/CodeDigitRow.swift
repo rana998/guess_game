@@ -31,6 +31,7 @@ struct CodeDigitRow: View {
     }
 }
 
+#if DEBUG
 #Preview {
     CodeDigitRow(
         slots: [
@@ -47,3 +48,4 @@ struct CodeDigitRow: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

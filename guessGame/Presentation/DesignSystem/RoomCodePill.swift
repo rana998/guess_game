@@ -27,9 +27,11 @@ struct RoomCodePill: View {
     }
 }
 
+#if DEBUG
 #Preview {
     RoomCodePill(caption: Strings.EnterName.roomCaption, code: "8701")
         .padding(24)
         .background(Color.white)
         .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

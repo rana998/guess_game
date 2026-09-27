@@ -50,6 +50,7 @@ struct NameField: View {
     }
 }
 
+#if DEBUG
 #Preview {
     @Previewable @State var name = ""
     @Previewable @FocusState var isFocused: Bool
@@ -66,3 +67,4 @@ struct NameField: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

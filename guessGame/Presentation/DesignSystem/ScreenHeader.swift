@@ -80,9 +80,11 @@ extension ScreenHeader where Trailing == EmptyView {
     }
 }
 
+#if DEBUG
 #Preview {
     ScreenHeader(title: Strings.HowPlay.title, backAccessibilityLabel: Strings.HowPlay.backAccessibilityLabel, horizontalInset: 41, titleSpacing: 10, onBack: {})
         .frame(maxHeight: .infinity, alignment: .top)
         .background(Color.paper)
         .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

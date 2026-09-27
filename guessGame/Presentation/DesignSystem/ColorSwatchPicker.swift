@@ -45,6 +45,7 @@ struct ColorSwatchPicker<Option: Hashable>: View {
     }
 }
 
+#if DEBUG
 #Preview {
     @Previewable @State var selection = PlayerColor.green
 
@@ -60,3 +61,4 @@ struct ColorSwatchPicker<Option: Hashable>: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

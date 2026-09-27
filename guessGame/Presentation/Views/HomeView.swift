@@ -178,6 +178,7 @@ struct HomeView: View {
     }
 }
 
+#if DEBUG
 #Preview("iPhone SE — Portrait") {
     HomeView(gameUseCases: .live())
         .previewDevice(PreviewDevice(rawValue: "iPhone SE (3rd generation)"))
@@ -192,3 +193,4 @@ struct HomeView: View {
     HomeView(gameUseCases: .live())
         .previewDevice(PreviewDevice(rawValue: "iPhone 16"))
 }
+#endif

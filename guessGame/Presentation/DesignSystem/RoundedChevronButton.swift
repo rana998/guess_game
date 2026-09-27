@@ -30,8 +30,10 @@ struct RoundedChevronButton: View {
     }
 }
 
+#if DEBUG
 #Preview {
     RoundedChevronButton(action: {})
         .padding(40)
         .background(Color.white)
 }
+#endif

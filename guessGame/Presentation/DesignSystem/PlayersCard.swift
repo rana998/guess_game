@@ -71,6 +71,7 @@ struct PlayersCard: View {
     }
 }
 
+#if DEBUG
 #Preview {
     PlayersCard(
         title: Strings.EnterName.playersTitle,
@@ -86,3 +87,4 @@ struct PlayersCard: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

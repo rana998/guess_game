@@ -20,9 +20,11 @@ private struct Line: Shape {
     }
 }
 
+#if DEBUG
 #Preview {
     DashedRule()
         .frame(width: 262)
         .padding(24)
         .background(Color.white)
 }
+#endif

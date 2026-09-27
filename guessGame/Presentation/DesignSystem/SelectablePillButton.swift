@@ -135,6 +135,7 @@ struct SelectablePillButton: View {
     }
 }
 
+#if DEBUG
 #Preview {
     HStack(spacing: 13) {
         SelectablePillButton(value: "3", caption: Strings.CreateRoom.playersCaption, isSelected: false, width: 76, action: {})
@@ -145,3 +146,4 @@ struct SelectablePillButton: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

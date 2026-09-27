@@ -135,9 +135,11 @@ private struct ShadowCompensatedColumn: ViewModifier {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         HomeSettingView()
     }
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

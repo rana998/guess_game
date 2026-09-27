@@ -41,6 +41,7 @@ struct KeypadKey: View {
     }
 }
 
+#if DEBUG
 #Preview {
     HStack(spacing: 9) {
         KeypadKey(kind: .delete, title: Strings.JoinRoom.deleteKey, action: {})
@@ -51,3 +52,4 @@ struct KeypadKey: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

@@ -149,6 +149,7 @@ extension InfoCard.Style {
     static let whiteBlack = InfoCard.Style(fill: .white, border: .black, borderWidth: 3, text: .black)
 }
 
+#if DEBUG
 #Preview {
     VStack(alignment: .trailing, spacing: 16) {
         HStack(spacing: 8) {
@@ -165,3 +166,4 @@ extension InfoCard.Style {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

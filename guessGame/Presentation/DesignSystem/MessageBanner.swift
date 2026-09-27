@@ -51,9 +51,11 @@ private struct ExclamationBadge: View {
     }
 }
 
+#if DEBUG
 #Preview {
     MessageBanner(text: Strings.JoinRoom.invalidCodeMessage)
         .padding(24)
         .background(Color.paper)
         .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

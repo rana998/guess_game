@@ -166,6 +166,7 @@ struct JoinRoomView: View {
     }
 }
 
+#if DEBUG
 #Preview("Idle") {
     NavigationStack {
         JoinRoomView(viewModel: JoinRoomViewModel(code: "87"))
@@ -186,3 +187,4 @@ struct JoinRoomView: View {
     }
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

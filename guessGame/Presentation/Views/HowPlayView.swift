@@ -142,9 +142,11 @@ struct HowPlayView: View {
     }
 }
 
+#if DEBUG
 #Preview("iPhone 16 — Landscape", traits: .landscapeLeft) {
     NavigationStack {
         HowPlayView()
     }
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

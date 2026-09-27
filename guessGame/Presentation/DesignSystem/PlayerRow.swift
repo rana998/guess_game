@@ -56,6 +56,7 @@ struct PlayerRow: View {
     }
 }
 
+#if DEBUG
 #Preview {
     VStack(spacing: 0) {
         PlayerRow(model: .init(player: Player(id: "1", name: "نهى", color: .green, isOwner: true), ownerCaption: Strings.EnterName.ownerCaption))
@@ -66,3 +67,4 @@ struct PlayerRow: View {
     .padding(24)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

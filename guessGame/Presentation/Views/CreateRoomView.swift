@@ -156,9 +156,11 @@ struct CreateRoomView: View {
     }
 }
 
+#if DEBUG
 #Preview("iPhone 16 — Landscape", traits: .landscapeLeft) {
     NavigationStack {
         CreateRoomView(viewModel: CreateRoomViewModel())
     }
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif

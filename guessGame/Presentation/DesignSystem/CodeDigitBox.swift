@@ -120,6 +120,7 @@ private struct BoxShadow: ViewModifier {
     }
 }
 
+#if DEBUG
 #Preview {
     HStack(spacing: 10) {
         CodeDigitBox(digit: "8", style: .filled)
@@ -132,3 +133,4 @@ private struct BoxShadow: ViewModifier {
     .background(Color.paper)
     .environment(\.layoutDirection, .leftToRight)
 }
+#endif

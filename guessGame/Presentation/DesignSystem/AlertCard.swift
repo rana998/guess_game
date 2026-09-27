@@ -101,6 +101,7 @@ struct AlertCard: View {
     }
 }
 
+#if DEBUG
 #Preview {
     AlertCard(
         badge: Strings.JoinRoom.roomFullBadge(capacity: 6),
@@ -119,3 +120,4 @@ struct AlertCard: View {
     .background(Color.paper)
     .environment(\.layoutDirection, .rightToLeft)
 }
+#endif
