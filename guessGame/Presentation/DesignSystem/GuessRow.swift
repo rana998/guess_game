@@ -32,7 +32,8 @@ struct GuessRow: View {
         }
         .padding(.leading, 10)
         .padding(.trailing, 8)
-        .frame(width: 252, height: 30)
+        // The mockup's correct row is taller, to fit its check badge.
+        .frame(width: 252, height: model.isCorrect ? 39 : 31)
         .background(model.isCorrect ? Color.tintLime : Color.paper, in: shape)
         // 18% black is the mockup's hairline around an ordinary guess.
         .overlay(shape.strokeBorder(model.isCorrect ? Color.brandLime : Color.black.opacity(0.18), lineWidth: 2))

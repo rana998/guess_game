@@ -13,6 +13,8 @@ struct AvatarLabelCapsule: View {
     /// The avatar's distance from the capsule's reading-start end, and from the text.
     var avatarInset: CGFloat = 12
     var avatarSpacing: CGFloat = 11
+    /// The text's distance from the capsule's other end.
+    var textInset: CGFloat = 16
 
     var body: some View {
         // The mockup whitens a green avatar on the green pill so it stays visible.
@@ -25,7 +27,7 @@ struct AvatarLabelCapsule: View {
                 .lineLimit(1)
         }
         .padding(.leading, avatarInset)
-        .padding(.trailing, 16)
+        .padding(.trailing, textInset)
         .frame(height: height)
         .background(fill, in: Capsule())
         .overlay(Capsule().strokeBorder(Color.black, lineWidth: borderWidth))

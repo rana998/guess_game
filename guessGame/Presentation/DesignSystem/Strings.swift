@@ -250,4 +250,25 @@ enum Strings {
         static let used = "استُخدمت"
         static let cancel = "إلغاء"
     }
+
+    enum GuesserBoard {
+        /// "الجولة 3/6"
+        static func round(number: Int, total: Int) -> String { "الجولة \(number)/\(total)" }
+        static let describingNow = "يصف الآن"
+        static let emptyTitle = "لا توجد تخمينات بعد"
+        static let emptySubtitle = "يمكنك التخمين في أي وقت عند ظهور اول صورة"
+        static let emptyReadySubtitle = "ظهرت أول صورة. اكتب تخمينك الآن"
+        static let placeholder = "اكتب تخمينك..."
+        static let send = "إرسال التخمين"
+        static let waitingFirstTile = "بانتظار اول صورة"
+        /// Worded by the user, with its hamzas, over the mockup's "اذا اضافها".
+        static let secondaryPlaceholder = "تظهر الفكرة الفرعية هنا إذا أضافها الواصف"
+        static let secondaryCaption = "فكرة فرعية واحدة كحد اقصى"
+        /// Worded without the describer's gender, which the game doesn't know.
+        static func waitingForFirstTile(name: String) -> String { "بانتظار أول صورة من \(name)…" }
+        static let correct = "تخمين صحيح"
+        static func newClueAnnouncement(tagName: String) -> String { "صورة جديدة: \(tagName)" }
+        static func guessLabel(name: String, text: String) -> String { "\(name): \(text)" }
+        static func slotLabel(number: Int) -> String { "الصورة \(number)" }
+    }
 }
