@@ -2,16 +2,18 @@ import SwiftUI
 
 /// A tag's badge art ("?", cube, "!"). `pin` is the size pinned on a tile's
 /// corner and shown in How to Play; `legend` the small one beside text;
-/// `option` the tag picker's. Decorative: the text beside it names the tag.
+/// `counter` the cube counter's; `option` the tag picker's. Decorative: the text beside it names the tag.
 struct ClueTagIcon: View {
     enum Size {
         case legend
+        case counter
         case pin
         case option
 
         var scale: CGFloat {
             switch self {
             case .legend: 0.62
+            case .counter: 0.8
             case .pin: 1
             case .option: 1.35
             }

@@ -56,8 +56,9 @@ extension Font {
     static let bodyLarge = Font.custom("Almarai-Regular", size: 14, relativeTo: .body)
     static let bodyMedium = Font.custom("Almarai-Regular", size: 13, relativeTo: .footnote)
     static let captionStrong = Font.custom("Almarai-Bold", size: 13, relativeTo: .footnote)
-    static let timerMono = Font.system(size: 22, weight: .heavy, design: .monospaced)
-    static let counterMono = Font.system(size: 20, weight: .heavy, design: .monospaced)
+    // DESIGN_SYSTEM.md's Numeric/Mono pair: the round timer and the cube counter.
+    static let timerMono = Font.system(size: 20, weight: .bold, design: .monospaced)
+    static let counterMono = Font.system(size: 16, weight: .bold, design: .monospaced)
 
     /// Room code & timer only, per DESIGN_SYSTEM.md — system monospaced, not Almarai.
     static let numericMono = Font.system(.body, design: .monospaced).weight(.bold)

@@ -10,19 +10,23 @@ struct BadgeOptionCard: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 0) {
+            // Each line is centered on its measured height in the card: a zero-
+            // height frame centers its text on the frame's top edge.
+            ZStack(alignment: .top) {
                 ClueTagIcon(tag: tag, size: .option)
                     .opacity(isEnabled ? 1 : 0.4)
-                    .frame(height: 36)
-                    .padding(.top, 12)
+                    .frame(height: 0)
+                    .padding(.top, 26.5)
                 Text(tag.title)
-                    .font(.labelSection)
+                    .font(.labelChip)
                     .foregroundStyle(isEnabled ? Color.black : Color.lockedText)
-                    .padding(.top, 8)
+                    .frame(height: 0)
+                    .padding(.top, 57.5)
                 Text(caption)
                     .font(.bodySmall)
                     .foregroundStyle(isEnabled ? Color.black.opacity(0.55) : Color.lockedText)
-                    .padding(.top, 6)
+                    .frame(height: 0)
+                    .padding(.top, 74.5)
             }
             .frame(maxHeight: .infinity, alignment: .top)
         }

@@ -18,7 +18,7 @@ struct ClueTile: View {
         case secondaryIdea
         case preview
 
-        var side: CGFloat { self == .preview ? 57 : 84 }
+        var side: CGFloat { self == .preview ? 56 : 84 }
     }
 
     let model: Model

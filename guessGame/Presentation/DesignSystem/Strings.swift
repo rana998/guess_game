@@ -229,4 +229,25 @@ enum Strings {
             count == 2 ? "مخمنان جاهزان" : "\(count) مخمنين جاهزين"
         }
     }
+
+    enum DescriberBoard {
+        static let wordCaption = "الكلمة"
+        static let endRound = "إنهاء جولة"
+        static let backAccessibilityLabel = "مغادرة اللعبة"
+        static let detailCounterLabel = "التفاصيل الإضافية المتبقية"
+        /// "7/10": cubes left out of the round's limit.
+        static func detailCounter(remaining: Int, limit: Int) -> String { "\(remaining)/\(limit)" }
+        static func tileLabel(number: Int) -> String { "الصورة \(number)" }
+        static let untagged = "بدون شعار"
+        static let tileHint = "اضغط لاختيار شعار"
+    }
+
+    enum BadgePicker {
+        static let title = "اختر الشعار لهذي الصورة"
+        static func subtitle(number: Int, total: Int) -> String { "الصورة \(number) من \(total)" }
+        static let mainIdeaAvailable = "صورة واحدة"
+        static let secondaryAvailable = "اختيارية"
+        static let used = "استُخدمت"
+        static let cancel = "إلغاء"
+    }
 }
