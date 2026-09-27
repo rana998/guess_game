@@ -55,9 +55,16 @@ Font family is **Almarai** throughout (Arabic-first UI). All line-heights are 10
 | Avatar/Initial Small (Enter Name player-list avatars) | ExtraBold | 13pt |
 | Body/Small Strong (Waiting Room card captions & auto-start caption, `rgba(0,0,0,0.5)`) | Bold | 11pt |
 | Pill/Mono (Waiting Room duration pills) | SF Mono Semibold | 20pt |
+| Display/Word (the describer's secret word) | ExtraBold | 40pt |
+| Title/Large (Word card "انت الواصف") | ExtraBold | 26pt |
+| Body/Large (difficulty picker subtitle) | Regular | 14pt |
+| Body/Medium (waiting-for-word message and guesser count) | Regular | 13pt |
+| Caption/Strong (word card "كلمتك السرية") | Bold | 13pt |
 | Numeric/Mono (room code & timer only) | Bold, or SF Mono Heavy | 20/16pt, or 17pt (SF Mono Heavy) |
 
 The Waiting Room adds two font tokens, Body/Small Strong (its card captions and the auto-start caption measure as Bold 11 at 50% black) and Pill/Mono (its duration pills are SF Mono Semibold 20, slashed zero included), and otherwise reuses Label/Section (avatar initials, "نسخ", the ready count and "مدة الجولة"), Message/Banner ("جاهز"), Body/Small ("في الانتظار", "بانتظار لاعب"), Title/Screen (footer buttons) and Title/Card (player names).
+
+The round screens fit their text to these existing tokens where the ink matches (e.g. the difficulty title and card values are Input/Text ExtraBold 22, the tag picker's title Title/Screen, its option names Label/Chip, the guesser boxes' titles Message/Banner) and add the five rows above. Their timer is Numeric/Mono as SF Mono Bold 20 and the cube counter SF Mono Bold 16 (`timerMono` / `counterMono`).
 
 Map each token to Dynamic Type where possible for accessibility, without breaking these exact sizes/weights.
 
@@ -113,6 +120,23 @@ Measured sizes of the reusable pieces, beyond the tokens above (all `.circular` 
 | Player card (Waiting Room) | 242 × 89 | 14pt | 4pt (Brand/Yellow on your own card) | (5,5) |
 | Remove button (Waiting Room) | 39 × 39 visual, 44 × 44 hit area | 11pt | 3pt Brand/Red on Tint/Red | none |
 | Ready status pill | 63 × 30 capsule | — | 2pt ink (ready) / 2pt dashed Locked/Text (waiting) | none |
+
+| Clue tile (board / main idea / secondary idea) | 84 × 84 | 12pt | 3pt ink / Brand/Lime Deep / Brand/Red | (3,3) |
+| Clue tile, preview (tag picker) | 56 × 56 | 12pt | 3pt ink | (3,3) |
+| Empty clue slot (main-idea box) | 84 × 84, white 50% | 12pt | 3pt dashed ink 30% | none |
+| Tag option card (tag picker) | 152 × 98 | 16pt | 3pt ink; used up: Locked/Fill + Locked/Stroke | (4,4); none when used up |
+| Round timer pill | 90 × 40 capsule | — | 3pt | (3,3) |
+| Word pill / cube counter (describer header) | hugging × 44 / 84 × 44 | 12pt / capsule | 3pt | none |
+| Game action (draw word 298 × 54, start describing 242 × 56, next round 224 × 48) | as listed | 14pt | 4pt | (6,6) |
+| End round | 100 × 44, Brand/Red | 12pt | 3pt | (4,4) |
+| Send guess | 52 × 44, Brand/Lime | 12pt | 3pt | (3,3) |
+| Tag picker cancel | 204 × 44, Brand/Red | 12pt | 3pt | (3,3) |
+| Difficulty card (Selectable pill, large) | 226 × 94 | 14pt | 4pt | (6,6) |
+| Avatar, strip / mini | 34pt / 26pt circle | — | 3pt / 2pt | none |
+| Guess row | 252 × 31 (39 when correct) | 10pt | 2pt ink 18% / Brand/Lime | none |
+| Board scroll bar | 4pt wide, ink thumb on ink 35% track | — | — | none |
+
+A tag's badge is pinned on a tile's physical top-left corner, its center 3pt right of and 5pt below the corner, in every layout direction. The round screens are laid out on their mockups' 852×393 canvas with each view's measured values in a private `Metrics` enum (like the earlier screens); the 8pt grid applies to surfaces with no mockup (the round-ended card, the development-only viewer switcher). The waiting-for-word dots step from dark to light and hold still under Reduce Motion.
 
 The copy chip's burst is a vector (`CopyBurstIcon`, 22 × 18): a 12-point Brand/Yellow star with a 0.75pt ink outline and a Brand/Lime oval, not an image asset.
 
