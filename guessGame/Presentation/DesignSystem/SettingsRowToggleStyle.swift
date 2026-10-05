@@ -43,7 +43,7 @@ struct SettingsRowToggleStyle: ToggleStyle {
 
     private func track(isOn: Bool) -> some View {
         let trackColor = isOn ? Self.onColor : Self.offColor
-        let travel = Self.trackSize.width - Self.knobSize.width - Self.knobInset * 2
+        let knobTravelDistance = Self.trackSize.width - Self.knobSize.width - Self.knobInset * 2
 
         return ZStack(alignment: .leading) {
             Capsule().fill(trackColor)
@@ -51,7 +51,7 @@ struct SettingsRowToggleStyle: ToggleStyle {
                 .fill(Color.white)
                 .overlay(Capsule().strokeBorder(trackColor, lineWidth: 1))
                 .frame(width: Self.knobSize.width, height: Self.knobSize.height)
-                .offset(x: Self.knobInset + (isOn ? travel : 0))
+                .offset(x: Self.knobInset + (isOn ? knobTravelDistance : 0))
         }
         .frame(width: Self.trackSize.width, height: Self.trackSize.height)
         .animation(.easeOut(duration: 0.15), value: isOn)

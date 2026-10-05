@@ -198,7 +198,7 @@ struct DescriberBoardView: View {
         let trackHeight = GameLayout.canvasSize.height - Metrics.indicatorTop
         return BoardScrollIndicator(
             visibleFraction: Metrics.gridViewportHeight / Metrics.gridContentHeight,
-            progress: scrollableDistance > 0 ? -gridScrollOffset / scrollableDistance : 0
+            scrollProgress: scrollableDistance > 0 ? -gridScrollOffset / scrollableDistance : 0
         )
         .frame(height: trackHeight)
         .canvasCenter(x: Metrics.indicatorCenterX, y: Metrics.indicatorTop + trackHeight / 2)

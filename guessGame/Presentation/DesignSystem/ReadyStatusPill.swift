@@ -62,12 +62,12 @@ struct ReadyStatusPill: View {
         var layoutDirectionBehavior: LayoutDirectionBehavior { .fixed }
 
         func path(in rect: CGRect) -> Path {
-            let sx = rect.width / 17
-            let sy = rect.height / 13
+            let horizontalScale = rect.width / 17
+            let verticalScale = rect.height / 13
             var path = Path()
-            path.move(to: CGPoint(x: rect.minX + 1.5 * sx, y: rect.minY + 6.75 * sy))
-            path.addLine(to: CGPoint(x: rect.minX + 6.25 * sx, y: rect.minY + 11.5 * sy))
-            path.addLine(to: CGPoint(x: rect.minX + 15.5 * sx, y: rect.minY + 1.5 * sy))
+            path.move(to: CGPoint(x: rect.minX + 1.5 * horizontalScale, y: rect.minY + 6.75 * verticalScale))
+            path.addLine(to: CGPoint(x: rect.minX + 6.25 * horizontalScale, y: rect.minY + 11.5 * verticalScale))
+            path.addLine(to: CGPoint(x: rect.minX + 15.5 * horizontalScale, y: rect.minY + 1.5 * verticalScale))
             return path
         }
     }

@@ -6,13 +6,13 @@ struct BoardScrollIndicator: View {
     /// The visible share of the scrolled content, 0…1.
     let visibleFraction: CGFloat
     /// How far the content is scrolled, 0 (top) … 1 (bottom).
-    let progress: CGFloat
+    let scrollProgress: CGFloat
 
     var body: some View {
         GeometryReader { geometry in
             let trackHeight = geometry.size.height
             let thumbHeight = trackHeight * min(1, max(0, visibleFraction))
-            let thumbTop = (trackHeight - thumbHeight) * min(1, max(0, progress))
+            let thumbTop = (trackHeight - thumbHeight) * min(1, max(0, scrollProgress))
             ZStack(alignment: .top) {
                 // 35% black on Paper is the mockup's track grey.
                 Rectangle()

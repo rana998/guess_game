@@ -13,11 +13,11 @@ struct ComicOutlineText: View {
 
     var body: some View {
         ZStack {
-            ForEach(Array(strokeOffsets.enumerated()), id: \.offset) { _, point in
+            ForEach(Array(strokeOffsets.enumerated()), id: \.offset) { _, strokeOffset in
                 Text(text)
                     .font(font)
                     .foregroundStyle(strokeColor)
-                    .offset(x: point.x, y: point.y)
+                    .offset(x: strokeOffset.x, y: strokeOffset.y)
             }
             Text(text)
                 .font(font)

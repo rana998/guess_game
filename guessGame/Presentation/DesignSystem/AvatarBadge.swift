@@ -86,8 +86,8 @@ struct AvatarBadge: View {
             .overlay(Circle().strokeBorder(Color.black, lineWidth: size.borderWidth))
 
         Group {
-            if let shadow = size.shadowOffset {
-                badge.hardShadow(in: Circle(), offset: CGSize(width: shadow, height: shadow))
+            if let shadowOffset = size.shadowOffset {
+                badge.hardShadow(in: Circle(), offset: CGSize(width: shadowOffset, height: shadowOffset))
             } else {
                 badge
             }
@@ -99,9 +99,9 @@ struct AvatarBadge: View {
     /// badge never sits empty before anything is typed. Takes a whole
     /// `Character` (a grapheme), so a diacritic stays attached to its letter.
     static func initial(from name: String, placeholder: String) -> String {
-        let typed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        let source = typed.isEmpty ? placeholder.trimmingCharacters(in: .whitespacesAndNewlines) : typed
-        return source.first.map { String($0).uppercased() } ?? ""
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let textForInitial = trimmedName.isEmpty ? placeholder.trimmingCharacters(in: .whitespacesAndNewlines) : trimmedName
+        return textForInitial.first.map { firstCharacter in String(firstCharacter).uppercased() } ?? ""
     }
 }
 

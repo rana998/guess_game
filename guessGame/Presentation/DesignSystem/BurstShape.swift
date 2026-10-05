@@ -4,27 +4,27 @@ import SwiftUI
 /// frame (inset for the outline), with one spike straight up. The copy chip's
 /// icon and the word card's backdrop.
 struct BurstShape: Shape {
-    var points = 12
-    var innerRatio: CGFloat = 0.70
+    var pointCount = 12
+    var innerRadiusRatio: CGFloat = 0.70
     var inset: CGFloat = 0.5
 
     func path(in rect: CGRect) -> Path {
-        let box = rect.insetBy(dx: inset, dy: inset)
-        let center = CGPoint(x: box.midX, y: box.midY)
-        let step = CGFloat.pi * 2 / CGFloat(points)
+        let insetRect = rect.insetBy(dx: inset, dy: inset)
+        let center = CGPoint(x: insetRect.midX, y: insetRect.midY)
+        let anglePerPoint = CGFloat.pi * 2 / CGFloat(pointCount)
         var path = Path()
-        for index in 0..<(points * 2) {
-            let isOuter = index.isMultiple(of: 2)
-            let scale = isOuter ? 1 : innerRatio
-            let angle = -CGFloat.pi / 2 + CGFloat(index) * step / 2
-            let point = CGPoint(
-                x: center.x + box.width / 2 * scale * cos(angle),
-                y: center.y + box.height / 2 * scale * sin(angle)
+        for vertexIndex in 0..<(pointCount * 2) {
+            let isOuterVertex = vertexIndex.isMultiple(of: 2)
+            let radiusScale = isOuterVertex ? 1 : innerRadiusRatio
+            let angle = -CGFloat.pi / 2 + CGFloat(vertexIndex) * anglePerPoint / 2
+            let vertex = CGPoint(
+                x: center.x + insetRect.width / 2 * radiusScale * cos(angle),
+                y: center.y + insetRect.height / 2 * radiusScale * sin(angle)
             )
-            if index == 0 {
-                path.move(to: point)
+            if vertexIndex == 0 {
+                path.move(to: vertex)
             } else {
-                path.addLine(to: point)
+                path.addLine(to: vertex)
             }
         }
         path.closeSubpath()

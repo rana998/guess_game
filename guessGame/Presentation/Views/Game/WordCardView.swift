@@ -52,7 +52,7 @@ struct WordCardView: View {
     }
 
     private var burst: some View {
-        let shape = BurstShape(points: 14, innerRatio: 0.62, inset: 2)
+        let shape = BurstShape(pointCount: 14, innerRadiusRatio: 0.62, inset: 2)
         return ZStack {
             shape.fill(Color.brandYellow)
             shape.stroke(Color.black, style: StrokeStyle(lineWidth: 4, lineJoin: .miter))

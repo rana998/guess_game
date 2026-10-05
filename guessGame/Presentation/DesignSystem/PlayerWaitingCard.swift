@@ -21,14 +21,14 @@ struct PlayerWaitingCard: View {
         let removeAccessibilityLabel: String
 
         init(player: Player, currentPlayerId: String, viewerRole: RoomRole) {
-            let isOwn = player.id == currentPlayerId
-            let caption: String? = switch (isOwn, player.isOwner) {
+            let isCurrentPlayer = player.id == currentPlayerId
+            let caption: String? = switch (isCurrentPlayer, player.isOwner) {
             case (true, true): Strings.WaitingRoom.ownerSelfCaption
             case (true, false): Strings.WaitingRoom.selfCaption
             case (false, true): Strings.WaitingRoom.ownerCaption
             case (false, false): nil
             }
-            let state = player.isReady ? Strings.WaitingRoom.ready : Strings.WaitingRoom.waiting
+            let readinessText = player.isReady ? Strings.WaitingRoom.ready : Strings.WaitingRoom.waiting
 
             id = player.id
             name = player.name
@@ -36,9 +36,9 @@ struct PlayerWaitingCard: View {
             initial = AvatarBadge.initial(from: player.name, placeholder: "")
             self.caption = caption
             isReady = player.isReady
-            isHighlighted = isOwn
-            showsRemoveButton = viewerRole == .owner && !isOwn && !player.isOwner
-            accessibilityLabel = [player.name, caption, state].compactMap { $0 }.joined(separator: "، ")
+            isHighlighted = isCurrentPlayer
+            showsRemoveButton = viewerRole == .owner && !isCurrentPlayer && !player.isOwner
+            accessibilityLabel = [player.name, caption, readinessText].compactMap { $0 }.joined(separator: "، ")
             removeAccessibilityLabel = Strings.WaitingRoom.removeAccessibilityLabel(name: player.name)
         }
     }

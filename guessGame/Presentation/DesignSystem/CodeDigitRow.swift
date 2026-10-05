@@ -22,7 +22,7 @@ struct CodeDigitRow: View {
                 CodeDigitBox(digit: slot.digit, style: slot.style)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(boxLabel(index))
-                    .accessibilityValue(slot.digit.map { String($0) } ?? emptyValue)
+                    .accessibilityValue(slot.digit.map { digit in String(digit) } ?? emptyValue)
                     .accessibilityAddTraits(slot.style == .active ? .isSelected : [])
                     .accessibilityIdentifier("\(identifierPrefix).\(index)")
             }
@@ -40,7 +40,7 @@ struct CodeDigitRow: View {
             .init(digit: nil, style: .active),
             .init(digit: nil, style: .empty),
         ],
-        boxLabel: { Strings.JoinRoom.boxLabel(position: $0 + 1, of: 4) },
+        boxLabel: { boxIndex in Strings.JoinRoom.boxLabel(position: boxIndex + 1, of: 4) },
         emptyValue: Strings.JoinRoom.boxEmptyValue,
         identifierPrefix: "preview.box"
     )

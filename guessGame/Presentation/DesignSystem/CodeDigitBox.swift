@@ -24,7 +24,7 @@ struct CodeDigitBox: View {
     /// box: about 8pt dashes on the top and bottom, 10–12pt on the sides and
     /// corner arcs. Odd length like the Home button's: SwiftUI repeats the
     /// array, and the tail entry closes the path's seam.
-    private static let emptyDash: [CGFloat] = [
+    private static let emptyDashPattern: [CGFloat] = [
         4.0, 7.0, 8.0, 7.0, 8.53, 8.21, 10.37, 10.33, 11.67, 10.33, 10.37, 8.21,
         8.54, 7.0, 8.0, 7.0, 8.53, 8.22, 10.38, 10.33, 11.67, 10.33, 10.37, 8.2, 4.55,
     ]
@@ -100,7 +100,7 @@ struct CodeDigitBox: View {
             // Dashed line's center sits 2pt in from the edge so its 4pt
             // width fills the outer 4pt, like an inside stroke.
             DashedRoundedRect(cornerRadius: 11)
-                .stroke(Color.black.opacity(0.35), style: StrokeStyle(lineWidth: 4, lineCap: .butt, dash: Self.emptyDash))
+                .stroke(Color.black.opacity(0.35), style: StrokeStyle(lineWidth: 4, lineCap: .butt, dash: Self.emptyDashPattern))
                 .padding(2)
         }
     }

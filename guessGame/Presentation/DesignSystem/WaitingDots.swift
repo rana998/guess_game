@@ -10,11 +10,12 @@ struct WaitingDots: View {
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: Self.stepDuration)) { context in
-            let step = reduceMotion ? 0 : Int(context.date.timeIntervalSinceReferenceDate / Self.stepDuration) % Self.shades.count
+            let animationStep = reduceMotion ? 0 : Int(context.date.timeIntervalSinceReferenceDate / Self.stepDuration) % Self.shades.count
             HStack(spacing: 7) {
                 ForEach(Self.shades.indices, id: \.self) { position in
+                    let shadeIndex = (position + Self.shades.count - animationStep) % Self.shades.count
                     Circle()
-                        .fill(Color.black.opacity(Self.shades[(position + Self.shades.count - step) % Self.shades.count]))
+                        .fill(Color.black.opacity(Self.shades[shadeIndex]))
                         .frame(width: 12, height: 12)
                 }
             }

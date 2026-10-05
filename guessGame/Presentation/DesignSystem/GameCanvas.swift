@@ -14,7 +14,7 @@ struct GameCanvas<Content: View>: View {
     var body: some View {
         GeometryReader { geometry in
             let scale = GameLayout.fitScale(forWidth: geometry.size.width, referenceWidth: referenceWidth)
-            let anchor: UnitPoint = contentAlignment == .bottom ? .bottom : .top
+            let scaleAnchor: UnitPoint = contentAlignment == .bottom ? .bottom : .top
             ZStack(alignment: .top) {
                 Color.paper
                 // While the layout sits bottom-aligned above the keyboard, its own
@@ -33,7 +33,7 @@ struct GameCanvas<Content: View>: View {
                     // Left to right so canvas points aren't mirrored; each placed
                     // view switches back to RTL (see canvasCenter).
                     .environment(\.layoutDirection, .leftToRight)
-                    .scaleEffect(scale, anchor: anchor)
+                    .scaleEffect(scale, anchor: scaleAnchor)
                     .frame(
                         width: geometry.size.width,
                         height: geometry.size.height,
