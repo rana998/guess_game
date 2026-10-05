@@ -41,9 +41,9 @@ final class CreateRoomViewModel {
     /// owner's session.
     func submit() {
         guard canSubmit else { return }
-        let id = makePlayerId()
-        let owner = Player(id: id, name: trimmedName, color: avatarColor, isOwner: true, isReady: true)
+        let ownerId = makePlayerId()
+        let owner = Player(id: ownerId, name: trimmedName, color: avatarColor, isOwner: true, isReady: true)
         let room = Room(code: makeCode(), capacity: playerCount, players: [owner], roundSeconds: roundSeconds)
-        onCreate(WaitingRoomSession(room: room, role: .owner, currentPlayerId: id))
+        onCreate(WaitingRoomSession(room: room, role: .owner, currentPlayerId: ownerId))
     }
 }

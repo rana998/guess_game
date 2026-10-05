@@ -230,7 +230,7 @@ struct GuesserBoardView: View {
         return HStack(spacing: Metrics.fieldToSend) {
             TextField(
                 "",
-                text: $viewModel.draft,
+                text: $viewModel.typedGuess,
                 prompt: Text(Strings.GuesserBoard.placeholder).font(.bodyRegular).foregroundStyle(Color.black.opacity(0.5))
             )
             .font(.labelSection)

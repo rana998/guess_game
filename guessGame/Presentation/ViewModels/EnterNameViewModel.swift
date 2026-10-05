@@ -34,7 +34,7 @@ final class EnterNameViewModel {
     }
 
     var rows: [PlayerRow.Model] {
-        room.players.map { PlayerRow.Model(player: $0, ownerCaption: Strings.EnterName.ownerCaption) }
+        room.players.map { player in PlayerRow.Model(player: player, ownerCaption: Strings.EnterName.ownerCaption) }
     }
 
     var trimmedName: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }

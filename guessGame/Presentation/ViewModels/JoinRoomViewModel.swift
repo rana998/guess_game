@@ -34,7 +34,7 @@ final class JoinRoomViewModel {
         resolve: @escaping Resolver = JoinRoomViewModel.noRoomsYet,
         onJoined: @escaping (Room) -> Void = { _ in }
     ) {
-        self.code = String(code.filter { $0.isASCII && $0.isNumber }.prefix(Self.codeLength))
+        self.code = String(code.filter { character in character.isASCII && character.isNumber }.prefix(Self.codeLength))
         self.state = state
         self.resolve = resolve
         self.onJoined = onJoined
@@ -49,16 +49,18 @@ final class JoinRoomViewModel {
 
     /// One entry per box, index 0 at the physical left (first digit typed).
     var slots: [CodeDigitRow.Slot] {
-        let digits = Array(code)
-        return (0..<Self.codeLength).map { index in
-            let digit = index < digits.count ? digits[index] : nil
+        let typedDigits = Array(code)
+        return (0..<Self.codeLength).map { boxIndex in
+            let digit = boxIndex < typedDigits.count ? typedDigits[boxIndex] : nil
             let style: CodeDigitBox.Style
             switch state {
             case .idle:
-                if index < digits.count {
+                if boxIndex < typedDigits.count {
                     style = .filled
+                } else if boxIndex == typedDigits.count {
+                    style = .active
                 } else {
-                    style = index == digits.count ? .active : .empty
+                    style = .empty
                 }
             case .invalidCode:
                 style = .error

@@ -47,7 +47,7 @@ final class GuesserBoardViewModelTests: XCTestCase {
 
     func testNothingToGuessFromYet() {
         let viewModel = makeViewModel(repository: repository())
-        viewModel.draft = "زرافة"
+        viewModel.typedGuess = "زرافة"
         XCTAssertFalse(viewModel.canSubmit)
         XCTAssertNil(viewModel.submit())
         XCTAssertTrue(viewModel.isGuessListEmpty)
@@ -111,10 +111,10 @@ final class GuesserBoardViewModelTests: XCTestCase {
         let repository = repository(marks: [ClueMark(tileIndex: 0, tag: .mainIdea)])
         let viewModel = makeViewModel(repository: repository)
         XCTAssertEqual(viewModel.emptySubtitle, "ظهرت أول صورة. اكتب تخمينك الآن")
-        viewModel.draft = "  زرافة "
+        viewModel.typedGuess = "  زرافة "
         XCTAssertTrue(viewModel.canSubmit)
         XCTAssertEqual(viewModel.submit(), .incorrect)
-        XCTAssertEqual(viewModel.draft, "")
+        XCTAssertEqual(viewModel.typedGuess, "")
         XCTAssertEqual(viewModel.guessRows, [
             GuessRow.Model(id: 0, playerName: "لاعب4", text: "زرافة", isCorrect: false, accessibilityLabel: "لاعب4: زرافة"),
         ])
@@ -124,12 +124,12 @@ final class GuesserBoardViewModelTests: XCTestCase {
     func testTheRightGuessIsMarkedAndEndsTheRound() {
         let repository = repository(marks: [ClueMark(tileIndex: 0, tag: .mainIdea)])
         let viewModel = makeViewModel(repository: repository)
-        viewModel.draft = "وحيد القرن"
+        viewModel.typedGuess = "وحيد القرن"
         XCTAssertEqual(viewModel.submit(), .correct)
         XCTAssertEqual(viewModel.guessRows.last?.isCorrect, true)
         XCTAssertEqual(viewModel.guessRows.last?.accessibilityLabel, "لاعب4: وحيد القرن، تخمين صحيح")
         XCTAssertTrue(viewModel.isRoundOver)
-        viewModel.draft = "زرافة"
+        viewModel.typedGuess = "زرافة"
         XCTAssertFalse(viewModel.canSubmit)
     }
 
@@ -146,15 +146,15 @@ final class GuesserBoardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.latestGuessAnnouncement, "لاعب5: زرافة")
     }
 
-    func testBlankDraftCannotBeSent() {
+    func testBlankGuessCannotBeSent() {
         let viewModel = makeViewModel(repository: repository(marks: [ClueMark(tileIndex: 0, tag: .detail)]))
-        viewModel.draft = "   "
+        viewModel.typedGuess = "   "
         XCTAssertFalse(viewModel.canSubmit)
     }
 
     func testTheDescriberCannotGuessFromThisScreen() {
         let viewModel = makeViewModel(repository: repository(marks: [ClueMark(tileIndex: 0, tag: .detail)]), viewer: describerId)
-        viewModel.draft = "وحيد القرن"
+        viewModel.typedGuess = "وحيد القرن"
         XCTAssertFalse(viewModel.canSubmit)
     }
 
@@ -163,9 +163,9 @@ final class GuesserBoardViewModelTests: XCTestCase {
         let date = MutableDate(startDate)
         let viewModel = makeViewModel(repository: repository, date: date)
         date.now = startDate.addingTimeInterval(61)
-        viewModel.draft = "وحيد القرن"
+        viewModel.typedGuess = "وحيد القرن"
         XCTAssertEqual(viewModel.submit(), .rejected(.timeUp))
-        XCTAssertEqual(viewModel.draft, "وحيد القرن", "a refused guess stays typed")
+        XCTAssertEqual(viewModel.typedGuess, "وحيد القرن", "a refused guess stays typed")
         XCTAssertEqual(repository.game?.currentRound.guesses, [])
     }
 }

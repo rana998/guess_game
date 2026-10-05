@@ -61,8 +61,9 @@ final class GameViewModel {
             useCases.roundTimer.expireIfDue(now: now)
             return
         }
-        guard round.isEnded, !isConfirmingLeave,
-              now >= (round.endedAt ?? .distantPast).addingTimeInterval(Self.roundEndPause) else { return }
+        guard round.isEnded, !isConfirmingLeave else { return }
+        let nextRoundOpensAt = (round.endedAt ?? .distantPast).addingTimeInterval(Self.roundEndPause)
+        guard now >= nextRoundOpensAt else { return }
         continueAfterRound()
     }
 

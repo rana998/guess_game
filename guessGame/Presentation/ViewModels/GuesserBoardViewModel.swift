@@ -5,14 +5,14 @@ import Observation
 /// guesses, and the field to guess in. Guessing opens with the first image.
 @Observable
 final class GuesserBoardViewModel {
-    var draft = ""
+    var typedGuess = ""
 
     @ObservationIgnored private let useCases: GameUseCases
     @ObservationIgnored private let viewerId: String
     @ObservationIgnored private let clock: GameClock
 
     /// The main-idea box shows this many places before it starts scrolling.
-    static let visibleMainSlots = 5
+    static let visibleMainSlotCount = 5
 
     init(useCases: GameUseCases, viewerId: String, clock: GameClock) {
         self.useCases = useCases
@@ -69,16 +69,16 @@ final class GuesserBoardViewModel {
 
     var canSubmit: Bool {
         guard let round, round.isDescribing, round.hasAnyMark, round.describerId != viewerId else { return false }
-        return !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        return !typedGuess.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     /// Clears the field once the guess is recorded; a refused guess stays typed.
     @discardableResult
     func submit() -> GuessResult? {
         guard canSubmit else { return nil }
-        let result = useCases.guess.submit(draft, by: viewerId, now: clock.refresh())
+        let result = useCases.guess.submit(typedGuess, by: viewerId, now: clock.refresh())
         if case .rejected = result { return result }
-        draft = ""
+        typedGuess = ""
         return result
     }
 
@@ -100,7 +100,7 @@ final class GuesserBoardViewModel {
     }
 
     /// Dashed places filling the box's first five until images arrive.
-    var placeholderSlotCount: Int { max(0, Self.visibleMainSlots - mainSlots.count) }
+    var placeholderSlotCount: Int { max(0, Self.visibleMainSlotCount - mainSlots.count) }
 
     var lastMainSlotId: Int? { round?.mainIdeaMarks.last?.tileIndex }
 

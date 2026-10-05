@@ -112,7 +112,7 @@ guessGame/
 │   │   │   ├── GameScreen.swift / GameScreenIdentity.swift # The five screens; round + viewer + screen identity
 │   │   │   ├── WaitingForWordViewModel.swift / DifficultyPickerViewModel.swift / WordCardViewModel.swift
 │   │   │   ├── DescriberBoardViewModel.swift # Tiles, cube counter, picker state/options, choose → placeMark, end round
-│   │   │   ├── GuesserBoardViewModel.swift  # Guess rows, draft/canSubmit/submit, main slots in placement order, secondary tile, announcements
+│   │   │   ├── GuesserBoardViewModel.swift  # Guess rows, typedGuess/canSubmit/submit, main slots in placement order, secondary tile, announcements
 │   │   │   ├── DifficultyOption.swift / BadgeOption.swift / AvatarModel.swift / ViewerChoice.swift
 │   │   │   └── CountdownFormatter.swift # "m:ss" in ASCII digits
 │   │   ├── Samples/

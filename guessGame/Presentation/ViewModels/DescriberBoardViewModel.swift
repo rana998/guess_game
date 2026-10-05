@@ -31,8 +31,8 @@ final class DescriberBoardViewModel {
 
     /// "7/10": cubes left this round.
     var detailCounterText: String {
-        let remaining = round.map { round in ClueMarkRules.remaining(.detail, in: round) } ?? 0
-        return Strings.DescriberBoard.detailCounter(remaining: remaining, limit: ClueMarkRules.limit(for: .detail))
+        let remainingDetails = round.map { currentRound in ClueMarkRules.remaining(.detail, in: currentRound) } ?? 0
+        return Strings.DescriberBoard.detailCounter(remaining: remainingDetails, limit: ClueMarkRules.limit(for: .detail))
     }
 
     var tiles: [ClueTile.Model] {

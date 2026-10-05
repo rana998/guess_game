@@ -52,7 +52,7 @@ struct DifficultyPickerView: View {
                 SelectablePillButton(
                     value: option.title,
                     caption: option.pointsText,
-                    isSelected: option.difficulty == viewModel.selection,
+                    isSelected: option.difficulty == viewModel.selectedDifficulty,
                     width: Metrics.cardWidth,
                     size: .large
                 ) {

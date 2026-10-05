@@ -44,7 +44,7 @@ final class WaitingRoomViewModel {
 
     var isStarting: Bool { phase == .starting }
 
-    var currentPlayer: Player? { room.players.first { $0.id == currentPlayerId } }
+    var currentPlayer: Player? { room.players.first { player in player.id == currentPlayerId } }
 
     var isCurrentPlayerReady: Bool { currentPlayer?.isReady ?? false }
 
@@ -67,11 +67,11 @@ final class WaitingRoomViewModel {
 
     /// The players in order, then an empty seat for each free place up to capacity.
     var slots: [WaitingRoomSlot] {
-        let players = room.players.map {
-            WaitingRoomSlot.player(PlayerWaitingCard.Model(player: $0, currentPlayerId: currentPlayerId, viewerRole: role))
+        let playerSlots = room.players.map { player in
+            WaitingRoomSlot.player(PlayerWaitingCard.Model(player: player, currentPlayerId: currentPlayerId, viewerRole: role))
         }
-        let empties = (room.players.count..<max(room.players.count, room.capacity)).map { WaitingRoomSlot.empty(index: $0) }
-        return players + empties
+        let emptySeatSlots = (room.players.count..<max(room.players.count, room.capacity)).map { seatIndex in WaitingRoomSlot.empty(index: seatIndex) }
+        return playerSlots + emptySeatSlots
     }
 
     // MARK: - Intents
@@ -79,17 +79,17 @@ final class WaitingRoomViewModel {
     /// The owner is always ready and has no toggle.
     func toggleReady() {
         guard !isOwner, phase == .waiting,
-              let index = room.players.firstIndex(where: { $0.id == currentPlayerId }) else { return }
-        room.players[index].isReady.toggle()
+              let playerIndex = room.players.firstIndex(where: { player in player.id == currentPlayerId }) else { return }
+        room.players[playerIndex].isReady.toggle()
         autoStartIfEveryoneReady()
     }
 
     /// Only the owner removes players, and never themselves.
     func removePlayer(id: String) {
         guard isOwner, phase == .waiting, id != currentPlayerId,
-              let index = room.players.firstIndex(where: { $0.id == id }),
-              !room.players[index].isOwner else { return }
-        room.players.remove(at: index)
+              let playerIndex = room.players.firstIndex(where: { player in player.id == id }),
+              !room.players[playerIndex].isOwner else { return }
+        room.players.remove(at: playerIndex)
         autoStartIfEveryoneReady()
     }
 

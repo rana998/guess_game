@@ -11,11 +11,11 @@ extension Game {
         let room = Room.sampleLobby()
         let playerIds = room.players.map(\.id)
         let hasWord = phase != .choosingWord
-        let hasStarted = phase != .choosingWord && phase != .wordDrawn
+        let hasTimerStarted = phase != .choosingWord && phase != .wordDrawn
         var round = Round(index: 2, describerId: "lobby-0", phase: phase, marks: marks, guesses: guesses)
         round.difficulty = hasWord ? .medium : nil
         round.word = hasWord ? "وحيد القرن" : nil
-        round.endsAt = hasStarted ? sampleNow.addingTimeInterval(47) : nil
+        round.endsAt = hasTimerStarted ? sampleNow.addingTimeInterval(47) : nil
         round.endedAt = round.isEnded ? sampleNow : nil
         return Game(
             players: room.players,

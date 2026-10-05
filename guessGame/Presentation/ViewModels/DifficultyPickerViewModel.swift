@@ -4,7 +4,7 @@ import Observation
 @Observable
 final class DifficultyPickerViewModel {
     /// Medium starts selected, as in the mockup.
-    private(set) var selection: Difficulty = .medium
+    private(set) var selectedDifficulty: Difficulty = .medium
 
     @ObservationIgnored private let useCases: GameUseCases
     @ObservationIgnored private let viewerId: String
@@ -17,11 +17,11 @@ final class DifficultyPickerViewModel {
     var options: [DifficultyOption] { Difficulty.allCases.map { difficulty in DifficultyOption(difficulty: difficulty) } }
 
     func select(_ difficulty: Difficulty) {
-        selection = difficulty
+        selectedDifficulty = difficulty
     }
 
     @discardableResult
     func drawWord() -> Bool {
-        useCases.describerTurn.drawWord(difficulty: selection, by: viewerId)
+        useCases.describerTurn.drawWord(difficulty: selectedDifficulty, by: viewerId)
     }
 }

@@ -17,7 +17,7 @@ final class DifficultyPickerViewModelTests: XCTestCase {
     }
 
     func testMediumStartsSelected() {
-        XCTAssertEqual(makeViewModel(repository: choosingRepository).selection, .medium)
+        XCTAssertEqual(makeViewModel(repository: choosingRepository).selectedDifficulty, .medium)
     }
 
     func testOptionsInReadingOrderWithTheirPoints() {

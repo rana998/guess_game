@@ -8,8 +8,8 @@ struct WaitingRoomSession: Hashable {
     /// nil when the room is already full.
     static func joining(_ room: Room, name: String, color: PlayerColor, playerId: String) -> WaitingRoomSession? {
         guard room.players.count < room.capacity else { return nil }
-        var joined = room
-        joined.players.append(Player(id: playerId, name: name, color: color, isOwner: false, isReady: false))
-        return WaitingRoomSession(room: joined, role: .participant, currentPlayerId: playerId)
+        var roomWithNewPlayer = room
+        roomWithNewPlayer.players.append(Player(id: playerId, name: name, color: color, isOwner: false, isReady: false))
+        return WaitingRoomSession(room: roomWithNewPlayer, role: .participant, currentPlayerId: playerId)
     }
 }
