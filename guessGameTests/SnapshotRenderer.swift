@@ -23,27 +23,27 @@ enum SnapshotRenderer {
     /// The view at 1x in the mockups' 852×393 landscape canvas, light, RTL,
     /// with no safe area, so 1 pixel is 1 point of the mockup.
     static func render<V: View>(_ view: V, size: CGSize = CGSize(width: 852, height: 393)) throws -> Data {
-        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { connectedScene in connectedScene as? UIWindowScene }.first)
         let window = UIWindow(windowScene: scene)
         window.overrideUserInterfaceStyle = .light
 
-        let host = UIHostingController(rootView: view
+        let hostingController = UIHostingController(rootView: view
             .environment(\.layoutDirection, .rightToLeft)
             .environment(\.colorScheme, .light))
-        host.safeAreaRegions = []
+        hostingController.safeAreaRegions = []
 
         window.frame = CGRect(origin: .zero, size: size)
-        window.rootViewController = host
+        window.rootViewController = hostingController
         window.makeKeyAndVisible()
-        host.view.frame = window.bounds
-        host.view.layoutIfNeeded()
+        hostingController.view.frame = window.bounds
+        hostingController.view.layoutIfNeeded()
         // Lets fonts, tasks and the first layout pass settle before drawing.
         RunLoop.main.run(until: Date().addingTimeInterval(0.5))
 
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
-        let image = UIGraphicsImageRenderer(bounds: host.view.bounds, format: format).image { _ in
-            _ = host.view.drawHierarchy(in: host.view.bounds, afterScreenUpdates: true)
+        let image = UIGraphicsImageRenderer(bounds: hostingController.view.bounds, format: format).image { _ in
+            _ = hostingController.view.drawHierarchy(in: hostingController.view.bounds, afterScreenUpdates: true)
         }
         window.isHidden = true
         return try XCTUnwrap(image.pngData())

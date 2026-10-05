@@ -87,15 +87,15 @@ final class GameLifecycleUseCaseTests: XCTestCase {
 
         lifecycle.advanceToNextRound()
 
-        let next = repository.game
-        XCTAssertEqual(next?.currentRound.index, 1)
-        XCTAssertEqual(next?.currentRound.describerId, "player-2")
-        XCTAssertEqual(next?.currentRound.phase, .choosingWord)
-        XCTAssertEqual(next?.currentRound.marks, [])
-        XCTAssertEqual(next?.currentRound.guesses, [])
-        XCTAssertNil(next?.currentRound.word)
-        XCTAssertEqual(next?.scores["player-2"], 2, "scores carry over")
-        XCTAssertEqual(next?.usedWords, ["قطة"], "used words carry over")
+        let nextGame = repository.game
+        XCTAssertEqual(nextGame?.currentRound.index, 1)
+        XCTAssertEqual(nextGame?.currentRound.describerId, "player-2")
+        XCTAssertEqual(nextGame?.currentRound.phase, .choosingWord)
+        XCTAssertEqual(nextGame?.currentRound.marks, [])
+        XCTAssertEqual(nextGame?.currentRound.guesses, [])
+        XCTAssertNil(nextGame?.currentRound.word)
+        XCTAssertEqual(nextGame?.scores["player-2"], 2, "scores carry over")
+        XCTAssertEqual(nextGame?.usedWords, ["قطة"], "used words carry over")
     }
 
     func testEveryPlayerDescribesExactlyOnceThenTheGameFinishes() {

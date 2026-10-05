@@ -6,7 +6,7 @@ final class LocalRoomCodeTests: XCTestCase {
         for _ in 0..<10_000 {
             let code = LocalRoomCode.make()
             XCTAssertEqual(code.count, 4)
-            XCTAssertTrue(code.allSatisfy { ("0"..."9").contains($0) }, code)
+            XCTAssertTrue(code.allSatisfy { character in ("0"..."9").contains(character) }, code)
             XCTAssertNotEqual(code, "8701")
         }
     }

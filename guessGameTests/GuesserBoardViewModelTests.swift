@@ -9,13 +9,13 @@ final class GuesserBoardViewModelTests: XCTestCase {
     /// Six players; player 2 describes round 3 of 6 (turn order is room order).
     private func makeViewModel(
         repository: GameRepositoryFake,
-        viewer: String? = nil,
+        viewerId: String? = nil,
         date: MutableDate? = nil
     ) -> GuesserBoardViewModel {
         let clockDate = date ?? MutableDate(startDate)
         return GuesserBoardViewModel(
             useCases: GameFixtures.makeUseCases(repository: repository),
-            viewerId: viewer ?? guesserId,
+            viewerId: viewerId ?? guesserId,
             clock: GameClock(currentDate: { clockDate.now })
         )
     }
@@ -136,9 +136,9 @@ final class GuesserBoardViewModelTests: XCTestCase {
     func testOtherPlayersGuessesShowUpLiveOldestFirstAndAreAnnounced() {
         let repository = repository(marks: [ClueMark(tileIndex: 0, tag: .mainIdea)])
         let viewModel = makeViewModel(repository: repository)
-        let guess = GameFixtures.makeUseCases(repository: repository).guess
-        guess.submit("حصان", by: "player-0", now: startDate.addingTimeInterval(5))
-        guess.submit("زرافة", by: "player-5", now: startDate.addingTimeInterval(6))
+        let guessUseCase = GameFixtures.makeUseCases(repository: repository).guess
+        guessUseCase.submit("حصان", by: "player-0", now: startDate.addingTimeInterval(5))
+        guessUseCase.submit("زرافة", by: "player-5", now: startDate.addingTimeInterval(6))
         XCTAssertEqual(viewModel.guessRows.map(\.text), ["حصان", "زرافة"])
         XCTAssertEqual(viewModel.guessRows.map(\.playerName), ["لاعب0", "لاعب5"])
         XCTAssertEqual(viewModel.guessCount, 2)
@@ -153,7 +153,7 @@ final class GuesserBoardViewModelTests: XCTestCase {
     }
 
     func testTheDescriberCannotGuessFromThisScreen() {
-        let viewModel = makeViewModel(repository: repository(marks: [ClueMark(tileIndex: 0, tag: .detail)]), viewer: describerId)
+        let viewModel = makeViewModel(repository: repository(marks: [ClueMark(tileIndex: 0, tag: .detail)]), viewerId: describerId)
         viewModel.typedGuess = "وحيد القرن"
         XCTAssertFalse(viewModel.canSubmit)
     }

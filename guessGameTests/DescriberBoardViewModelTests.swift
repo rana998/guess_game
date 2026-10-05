@@ -7,13 +7,13 @@ final class DescriberBoardViewModelTests: XCTestCase {
 
     private func makeViewModel(
         repository: GameRepositoryFake,
-        viewer: String? = nil,
+        viewerId: String? = nil,
         date: MutableDate? = nil
     ) -> DescriberBoardViewModel {
         let clockDate = date ?? MutableDate(startDate)
         return DescriberBoardViewModel(
             useCases: GameFixtures.makeUseCases(repository: repository),
-            viewerId: viewer ?? describerId,
+            viewerId: viewerId ?? describerId,
             clock: GameClock(currentDate: { clockDate.now })
         )
     }
@@ -163,7 +163,7 @@ final class DescriberBoardViewModelTests: XCTestCase {
 
     func testAGuesserCannotTagEvenThroughTheBoard() {
         let repository = describingRepository()
-        let viewModel = makeViewModel(repository: repository, viewer: GameFixtures.playerId(1))
+        let viewModel = makeViewModel(repository: repository, viewerId: GameFixtures.playerId(1))
         viewModel.selectTile(0)
         XCTAssertEqual(viewModel.choose(.detail), .rejected(.notDescriber))
         XCTAssertEqual(repository.saveCount, 0)

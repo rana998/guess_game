@@ -3,59 +3,59 @@ import XCTest
 
 final class WaitingRoomViewModelTests: XCTestCase {
     /// Players "لاعب0"… with ids "0"…; player 0 is the owner (always ready).
-    /// `ready` lists which of the others are ready.
-    private func room(players: Int, capacity: Int = 6, ready: Set<Int> = [], code: String = "1234") -> Room {
+    /// `readyIndices` lists which of the others are ready.
+    private func room(playerCount: Int, capacity: Int = 6, readyIndices: Set<Int> = [], code: String = "1234") -> Room {
         Room(
             code: code,
             capacity: capacity,
-            players: (0..<players).map {
-                Player(id: "\($0)", name: "لاعب\($0)", color: .green, isOwner: $0 == 0, isReady: $0 == 0 || ready.contains($0))
+            players: (0..<playerCount).map { playerIndex in
+                Player(id: "\(playerIndex)", name: "لاعب\(playerIndex)", color: .green, isOwner: playerIndex == 0, isReady: playerIndex == 0 || readyIndices.contains(playerIndex))
             }
         )
     }
 
     private final class Spy {
-        var copied: [String] = []
-        var started: [Room] = []
-        var leaves = 0
+        var copiedCodes: [String] = []
+        var startedRooms: [Room] = []
+        var leaveCount = 0
     }
 
-    private func viewModel(_ room: Room, viewer: String = "0", role: RoomRole = .owner, spy: Spy = Spy()) -> WaitingRoomViewModel {
+    private func makeViewModel(_ room: Room, viewerId: String = "0", role: RoomRole = .owner, spy: Spy = Spy()) -> WaitingRoomViewModel {
         WaitingRoomViewModel(
-            session: WaitingRoomSession(room: room, role: role, currentPlayerId: viewer),
-            copyToPasteboard: { spy.copied.append($0) },
-            onStartGame: { spy.started.append($0) },
-            onLeave: { spy.leaves += 1 }
+            session: WaitingRoomSession(room: room, role: role, currentPlayerId: viewerId),
+            copyToPasteboard: { copiedCode in spy.copiedCodes.append(copiedCode) },
+            onStartGame: { startedRoom in spy.startedRooms.append(startedRoom) },
+            onLeave: { spy.leaveCount += 1 }
         )
     }
 
     // MARK: - Ready count
 
     func testReadyCountTextForTheOwnerAlone() {
-        XCTAssertEqual(viewModel(room(players: 1)).readyCountText, "1 من 1 جاهزين")
+        XCTAssertEqual(makeViewModel(room(playerCount: 1)).readyCountText, "1 من 1 جاهزين")
     }
 
     func testReadyCountTextCountsPresentPlayersNotCapacity() {
-        XCTAssertEqual(viewModel(room(players: 6, ready: [1, 3, 5])).readyCountText, "4 من 6 جاهزين")
-        XCTAssertEqual(viewModel(room(players: 2, capacity: 6)).readyCountText, "1 من 2 جاهزين")
+        XCTAssertEqual(makeViewModel(room(playerCount: 6, readyIndices: [1, 3, 5])).readyCountText, "4 من 6 جاهزين")
+        XCTAssertEqual(makeViewModel(room(playerCount: 2, capacity: 6)).readyCountText, "1 من 2 جاهزين")
     }
 
     func testRemovingAReadyPlayerDropsBothCounts() {
-        let model = viewModel(room(players: 6, ready: [1, 3, 5]))
-        model.removePlayer(id: "1")
-        XCTAssertEqual(model.readyCountText, "3 من 5 جاهزين")
+        let viewModel = makeViewModel(room(playerCount: 6, readyIndices: [1, 3, 5]))
+        viewModel.removePlayer(id: "1")
+        XCTAssertEqual(viewModel.readyCountText, "3 من 5 جاهزين")
     }
 
     // MARK: - Slots
 
     func testSlotCountEqualsCapacity() {
         for capacity in [3, 4, 6] {
-            XCTAssertEqual(viewModel(room(players: 2, capacity: capacity)).slots.count, capacity)
+            XCTAssertEqual(makeViewModel(room(playerCount: 2, capacity: capacity)).slots.count, capacity)
         }
     }
 
     func testPlayersComeFirstInOrderThenEmptySeats() {
-        let slots = viewModel(room(players: 2, capacity: 4)).slots
+        let slots = makeViewModel(room(playerCount: 2, capacity: 4)).slots
         XCTAssertEqual(slots.map(\.id), ["0", "1", "empty-2", "empty-3"])
         XCTAssertEqual(slots.last, .empty(index: 3))
     }
@@ -63,236 +63,236 @@ final class WaitingRoomViewModelTests: XCTestCase {
     // MARK: - Ready toggle
 
     func testToggleReadyFlipsOnlyTheParticipantsOwnFlag() {
-        let model = viewModel(room(players: 4, ready: [1]), viewer: "2", role: .participant)
-        model.toggleReady()
-        XCTAssertEqual(model.room.players.map(\.isReady), [true, true, true, false])
-        XCTAssertTrue(model.isCurrentPlayerReady)
-        XCTAssertEqual(model.readyToggleTitle, "إلغاء الجاهزية")
-        model.toggleReady()
-        XCTAssertEqual(model.room.players.map(\.isReady), [true, true, false, false])
-        XCTAssertEqual(model.readyToggleTitle, "جاهز الآن")
+        let viewModel = makeViewModel(room(playerCount: 4, readyIndices: [1]), viewerId: "2", role: .participant)
+        viewModel.toggleReady()
+        XCTAssertEqual(viewModel.room.players.map(\.isReady), [true, true, true, false])
+        XCTAssertTrue(viewModel.isCurrentPlayerReady)
+        XCTAssertEqual(viewModel.readyToggleTitle, "إلغاء الجاهزية")
+        viewModel.toggleReady()
+        XCTAssertEqual(viewModel.room.players.map(\.isReady), [true, true, false, false])
+        XCTAssertEqual(viewModel.readyToggleTitle, "جاهز الآن")
     }
 
     func testOwnerToggleDoesNothing() {
-        let model = viewModel(room(players: 3))
-        model.toggleReady()
-        XCTAssertEqual(model.room.players.map(\.isReady), [true, false, false])
+        let viewModel = makeViewModel(room(playerCount: 3))
+        viewModel.toggleReady()
+        XCTAssertEqual(viewModel.room.players.map(\.isReady), [true, false, false])
     }
 
     func testToggleReadyDoesNothingWhileStarting() {
         let spy = Spy()
-        let model = viewModel(room(players: 3, ready: [1, 2]), viewer: "2", role: .participant, spy: spy)
-        model.toggleReady()
-        model.toggleReady() // ready again → auto-start
-        XCTAssertTrue(model.isStarting)
-        model.toggleReady()
-        XCTAssertTrue(model.isCurrentPlayerReady)
+        let viewModel = makeViewModel(room(playerCount: 3, readyIndices: [1, 2]), viewerId: "2", role: .participant, spy: spy)
+        viewModel.toggleReady()
+        viewModel.toggleReady() // ready again → auto-start
+        XCTAssertTrue(viewModel.isStarting)
+        viewModel.toggleReady()
+        XCTAssertTrue(viewModel.isCurrentPlayerReady)
     }
 
     // MARK: - Remove
 
     func testOwnerRemovesAnotherParticipant() {
-        let model = viewModel(room(players: 4))
-        model.removePlayer(id: "2")
-        XCTAssertEqual(model.room.players.map(\.id), ["0", "1", "3"])
+        let viewModel = makeViewModel(room(playerCount: 4))
+        viewModel.removePlayer(id: "2")
+        XCTAssertEqual(viewModel.room.players.map(\.id), ["0", "1", "3"])
     }
 
     func testOwnerCannotRemoveThemselves() {
-        let model = viewModel(room(players: 4))
-        model.removePlayer(id: "0")
-        XCTAssertEqual(model.room.players.count, 4)
+        let viewModel = makeViewModel(room(playerCount: 4))
+        viewModel.removePlayer(id: "0")
+        XCTAssertEqual(viewModel.room.players.count, 4)
     }
 
     func testTheOwnerCannotBeRemovedEvenIfViewerIdDiffers() {
         // An owner-role viewer whose own id isn't the owner's must still not remove the owner.
-        let model = viewModel(room(players: 4), viewer: "1", role: .owner)
-        model.removePlayer(id: "0")
-        XCTAssertEqual(model.room.players.count, 4)
+        let viewModel = makeViewModel(room(playerCount: 4), viewerId: "1", role: .owner)
+        viewModel.removePlayer(id: "0")
+        XCTAssertEqual(viewModel.room.players.count, 4)
     }
 
     func testParticipantCannotRemoveAnyone() {
-        let model = viewModel(room(players: 4), viewer: "1", role: .participant)
-        model.removePlayer(id: "2")
-        XCTAssertEqual(model.room.players.count, 4)
+        let viewModel = makeViewModel(room(playerCount: 4), viewerId: "1", role: .participant)
+        viewModel.removePlayer(id: "2")
+        XCTAssertEqual(viewModel.room.players.count, 4)
     }
 
     func testRemovingAnUnknownIdDoesNothing() {
-        let model = viewModel(room(players: 4))
-        model.removePlayer(id: "nobody")
-        XCTAssertEqual(model.room.players.count, 4)
+        let viewModel = makeViewModel(room(playerCount: 4))
+        viewModel.removePlayer(id: "nobody")
+        XCTAssertEqual(viewModel.room.players.count, 4)
     }
 
     func testRemoveDoesNothingWhileStarting() {
-        let model = viewModel(room(players: 4))
-        model.startGame()
-        model.removePlayer(id: "2")
-        XCTAssertEqual(model.room.players.count, 4)
+        let viewModel = makeViewModel(room(playerCount: 4))
+        viewModel.startGame()
+        viewModel.removePlayer(id: "2")
+        XCTAssertEqual(viewModel.room.players.count, 4)
     }
 
     // MARK: - Copy
 
     func testCopyPassesTheExactCodeAndBumpsTheToken() {
         let spy = Spy()
-        let model = viewModel(room(players: 1, code: "0042"), spy: spy)
-        model.copyRoomCode()
-        XCTAssertEqual(spy.copied, ["0042"])
-        XCTAssertEqual(model.copyConfirmationToken, 1)
-        XCTAssertTrue(model.isShowingCopyConfirmation)
-        model.copyRoomCode()
-        XCTAssertEqual(model.copyConfirmationToken, 2)
+        let viewModel = makeViewModel(room(playerCount: 1, code: "0042"), spy: spy)
+        viewModel.copyRoomCode()
+        XCTAssertEqual(spy.copiedCodes, ["0042"])
+        XCTAssertEqual(viewModel.copyConfirmationToken, 1)
+        XCTAssertTrue(viewModel.isShowingCopyConfirmation)
+        viewModel.copyRoomCode()
+        XCTAssertEqual(viewModel.copyConfirmationToken, 2)
     }
 
     func testClearCopyConfirmationIgnoresAStaleToken() {
-        let model = viewModel(room(players: 1))
-        model.copyRoomCode()
-        model.copyRoomCode()
-        model.clearCopyConfirmation(token: 1)
-        XCTAssertTrue(model.isShowingCopyConfirmation)
-        model.clearCopyConfirmation(token: 2)
-        XCTAssertFalse(model.isShowingCopyConfirmation)
+        let viewModel = makeViewModel(room(playerCount: 1))
+        viewModel.copyRoomCode()
+        viewModel.copyRoomCode()
+        viewModel.clearCopyConfirmation(token: 1)
+        XCTAssertTrue(viewModel.isShowingCopyConfirmation)
+        viewModel.clearCopyConfirmation(token: 2)
+        XCTAssertFalse(viewModel.isShowingCopyConfirmation)
     }
 
     // MARK: - Round length
 
     func testOwnerPicksAnOfferedRoundLength() {
-        let model = viewModel(room(players: 3))
+        let viewModel = makeViewModel(room(playerCount: 3))
         for seconds in [30, 60, 90] {
-            model.setRoundSeconds(seconds)
-            XCTAssertEqual(model.roundSeconds, seconds)
+            viewModel.setRoundSeconds(seconds)
+            XCTAssertEqual(viewModel.roundSeconds, seconds)
         }
-        model.setRoundSeconds(45)
-        XCTAssertEqual(model.roundSeconds, 90)
+        viewModel.setRoundSeconds(45)
+        XCTAssertEqual(viewModel.roundSeconds, 90)
     }
 
     func testParticipantCannotChangeTheRoundLength() {
-        let model = viewModel(room(players: 3), viewer: "1", role: .participant)
-        model.setRoundSeconds(30)
-        XCTAssertEqual(model.roundSeconds, 60)
+        let viewModel = makeViewModel(room(playerCount: 3), viewerId: "1", role: .participant)
+        viewModel.setRoundSeconds(30)
+        XCTAssertEqual(viewModel.roundSeconds, 60)
     }
 
     func testRoundLengthIsLockedWhileStarting() {
-        let model = viewModel(room(players: 3))
-        model.startGame()
-        model.setRoundSeconds(30)
-        XCTAssertEqual(model.roundSeconds, 60)
+        let viewModel = makeViewModel(room(playerCount: 3))
+        viewModel.startGame()
+        viewModel.setRoundSeconds(30)
+        XCTAssertEqual(viewModel.roundSeconds, 60)
     }
 
     // MARK: - canStart
 
     func testCanStartNeedsThreePlayersButNotEveryoneReady() {
-        XCTAssertFalse(viewModel(room(players: 2)).canStart)
-        XCTAssertTrue(viewModel(room(players: 3)).canStart)
+        XCTAssertFalse(makeViewModel(room(playerCount: 2)).canStart)
+        XCTAssertTrue(makeViewModel(room(playerCount: 3)).canStart)
     }
 
     func testParticipantCanNeverStart() {
-        XCTAssertFalse(viewModel(room(players: 3), viewer: "1", role: .participant).canStart)
+        XCTAssertFalse(makeViewModel(room(playerCount: 3), viewerId: "1", role: .participant).canStart)
     }
 
     func testCannotStartAgainAfterStarting() {
-        let model = viewModel(room(players: 3))
-        model.startGame()
-        XCTAssertFalse(model.canStart)
+        let viewModel = makeViewModel(room(playerCount: 3))
+        viewModel.startGame()
+        XCTAssertFalse(viewModel.canStart)
     }
 
     // MARK: - startGame
 
     func testStartBelowThreePlayersDoesNothing() {
         let spy = Spy()
-        let model = viewModel(room(players: 2), spy: spy)
-        model.startGame()
-        XCTAssertTrue(spy.started.isEmpty)
-        XCTAssertEqual(model.phase, .waiting)
+        let viewModel = makeViewModel(room(playerCount: 2), spy: spy)
+        viewModel.startGame()
+        XCTAssertTrue(spy.startedRooms.isEmpty)
+        XCTAssertEqual(viewModel.phase, .waiting)
     }
 
     func testStartMovesToStartingAndReportsTheRoomOnce() {
         let spy = Spy()
-        let model = viewModel(room(players: 3), spy: spy)
-        model.setRoundSeconds(90)
-        model.startGame()
-        XCTAssertEqual(model.phase, .starting)
-        XCTAssertEqual(spy.started, [model.room])
-        XCTAssertEqual(spy.started.first?.roundSeconds, 90)
-        model.startGame()
-        XCTAssertEqual(spy.started.count, 1)
-        XCTAssertEqual(model.startButtonTitle, "جارٍ بدء اللعبة…")
+        let viewModel = makeViewModel(room(playerCount: 3), spy: spy)
+        viewModel.setRoundSeconds(90)
+        viewModel.startGame()
+        XCTAssertEqual(viewModel.phase, .starting)
+        XCTAssertEqual(spy.startedRooms, [viewModel.room])
+        XCTAssertEqual(spy.startedRooms.first?.roundSeconds, 90)
+        viewModel.startGame()
+        XCTAssertEqual(spy.startedRooms.count, 1)
+        XCTAssertEqual(viewModel.startButtonTitle, "جارٍ بدء اللعبة…")
     }
 
     func testStartButtonTitleBeforeStarting() {
-        XCTAssertEqual(viewModel(room(players: 3)).startButtonTitle, "ابدأ اللعبة")
+        XCTAssertEqual(makeViewModel(room(playerCount: 3)).startButtonTitle, "ابدأ اللعبة")
     }
 
     func testParticipantCaptionSwitchesWhenTheGameAutoStarts() {
-        let model = viewModel(room(players: 3, ready: [1]), viewer: "2", role: .participant)
-        XCTAssertEqual(model.participantCaption, "تبدأ اللعبة تلقائيًا عندما يجهز الجميع")
-        model.toggleReady()
-        XCTAssertEqual(model.participantCaption, "جارٍ بدء اللعبة…")
+        let viewModel = makeViewModel(room(playerCount: 3, readyIndices: [1]), viewerId: "2", role: .participant)
+        XCTAssertEqual(viewModel.participantCaption, "تبدأ اللعبة تلقائيًا عندما يجهز الجميع")
+        viewModel.toggleReady()
+        XCTAssertEqual(viewModel.participantCaption, "جارٍ بدء اللعبة…")
     }
 
     // MARK: - Auto-start
 
     func testLastPlayerGettingReadyStartsTheGameOnce() {
         let spy = Spy()
-        let model = viewModel(room(players: 3, ready: [1]), viewer: "2", role: .participant, spy: spy)
-        model.toggleReady()
-        XCTAssertEqual(model.phase, .starting)
-        XCTAssertEqual(spy.started.count, 1)
+        let viewModel = makeViewModel(room(playerCount: 3, readyIndices: [1]), viewerId: "2", role: .participant, spy: spy)
+        viewModel.toggleReady()
+        XCTAssertEqual(viewModel.phase, .starting)
+        XCTAssertEqual(spy.startedRooms.count, 1)
     }
 
     func testEveryoneReadyWithTwoPlayersDoesNotStart() {
         let spy = Spy()
-        let model = viewModel(room(players: 2), viewer: "1", role: .participant, spy: spy)
-        model.toggleReady()
-        XCTAssertEqual(model.phase, .waiting)
-        XCTAssertTrue(spy.started.isEmpty)
+        let viewModel = makeViewModel(room(playerCount: 2), viewerId: "1", role: .participant, spy: spy)
+        viewModel.toggleReady()
+        XCTAssertEqual(viewModel.phase, .waiting)
+        XCTAssertTrue(spy.startedRooms.isEmpty)
     }
 
     func testRemovingTheLastUnreadyPlayerStartsTheGameOnce() {
         let spy = Spy()
-        let model = viewModel(room(players: 4, ready: [1, 2]), spy: spy)
-        model.removePlayer(id: "3")
-        XCTAssertEqual(model.phase, .starting)
-        XCTAssertEqual(spy.started.count, 1)
-        XCTAssertEqual(spy.started.first?.players.count, 3)
+        let viewModel = makeViewModel(room(playerCount: 4, readyIndices: [1, 2]), spy: spy)
+        viewModel.removePlayer(id: "3")
+        XCTAssertEqual(viewModel.phase, .starting)
+        XCTAssertEqual(spy.startedRooms.count, 1)
+        XCTAssertEqual(spy.startedRooms.first?.players.count, 3)
     }
 
     func testRemovalLeavingTwoReadyPlayersDoesNotStart() {
         let spy = Spy()
-        let model = viewModel(room(players: 3, ready: [1]), spy: spy)
-        model.removePlayer(id: "2")
-        XCTAssertEqual(model.phase, .waiting)
-        XCTAssertTrue(spy.started.isEmpty)
+        let viewModel = makeViewModel(room(playerCount: 3, readyIndices: [1]), spy: spy)
+        viewModel.removePlayer(id: "2")
+        XCTAssertEqual(viewModel.phase, .waiting)
+        XCTAssertTrue(spy.startedRooms.isEmpty)
     }
 
     func testTogglingBackToNotReadyDoesNotStart() {
         let spy = Spy()
-        let model = viewModel(room(players: 4, ready: [1, 2]), viewer: "2", role: .participant, spy: spy)
-        model.toggleReady()
-        XCTAssertEqual(model.phase, .waiting)
-        XCTAssertTrue(spy.started.isEmpty)
+        let viewModel = makeViewModel(room(playerCount: 4, readyIndices: [1, 2]), viewerId: "2", role: .participant, spy: spy)
+        viewModel.toggleReady()
+        XCTAssertEqual(viewModel.phase, .waiting)
+        XCTAssertTrue(spy.startedRooms.isEmpty)
     }
 
     func testOpeningAnAllReadyRoomDoesNotStart() {
         let spy = Spy()
-        let model = viewModel(room(players: 3, ready: [1, 2]), viewer: "1", role: .participant, spy: spy)
-        XCTAssertEqual(model.phase, .waiting)
-        XCTAssertTrue(spy.started.isEmpty)
+        let viewModel = makeViewModel(room(playerCount: 3, readyIndices: [1, 2]), viewerId: "1", role: .participant, spy: spy)
+        XCTAssertEqual(viewModel.phase, .waiting)
+        XCTAssertTrue(spy.startedRooms.isEmpty)
     }
 
     func testLaterIntentsDoNotStartAgainAfterAnAutoStart() {
         let spy = Spy()
-        let model = viewModel(room(players: 4, ready: [1, 2]), spy: spy)
-        model.removePlayer(id: "3")
-        model.startGame()
-        model.removePlayer(id: "2")
-        model.toggleReady()
-        XCTAssertEqual(spy.started.count, 1)
+        let viewModel = makeViewModel(room(playerCount: 4, readyIndices: [1, 2]), spy: spy)
+        viewModel.removePlayer(id: "3")
+        viewModel.startGame()
+        viewModel.removePlayer(id: "2")
+        viewModel.toggleReady()
+        XCTAssertEqual(spy.startedRooms.count, 1)
     }
 
     // MARK: - Leave
 
     func testLeaveRoomCallsOnLeaveOnce() {
         let spy = Spy()
-        viewModel(room(players: 3), spy: spy).leaveRoom()
-        XCTAssertEqual(spy.leaves, 1)
+        makeViewModel(room(playerCount: 3), spy: spy).leaveRoom()
+        XCTAssertEqual(spy.leaveCount, 1)
     }
 }

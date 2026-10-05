@@ -21,7 +21,7 @@ final class CreateRoomViewModelTests: XCTestCase {
             name: "  لاعب  ",
             makeCode: { "1234" },
             makePlayerId: { "owner-id" },
-            onCreate: { sessions.append($0) }
+            onCreate: { createdSession in sessions.append(createdSession) }
         )
         viewModel.avatarColor = .purple
         viewModel.playerCount = 4
@@ -41,10 +41,10 @@ final class CreateRoomViewModelTests: XCTestCase {
     }
 
     func testBlankNameDoesNotSubmit() {
-        var called = false
-        let viewModel = CreateRoomViewModel(name: "   ", onCreate: { _ in called = true })
+        var didCreate = false
+        let viewModel = CreateRoomViewModel(name: "   ", onCreate: { _ in didCreate = true })
         XCTAssertFalse(viewModel.canSubmit)
         viewModel.submit()
-        XCTAssertFalse(called)
+        XCTAssertFalse(didCreate)
     }
 }

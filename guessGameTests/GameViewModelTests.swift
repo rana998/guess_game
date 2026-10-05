@@ -12,16 +12,16 @@ final class GameViewModelTests: XCTestCase {
 
     private func makeViewModel(
         repository: GameRepositoryFake,
-        viewer: String? = nil,
+        viewerId: String? = nil,
         date: MutableDate? = nil,
-        exits: ExitCounter = ExitCounter()
+        exitCounter: ExitCounter = ExitCounter()
     ) -> GameViewModel {
         let clockDate = date ?? MutableDate(startDate)
         return GameViewModel(
             useCases: GameFixtures.makeUseCases(repository: repository),
-            viewerId: viewer ?? guesserId,
+            viewerId: viewerId ?? guesserId,
             clock: GameClock(currentDate: { clockDate.now }),
-            onExit: { exits.count += 1 }
+            onExit: { exitCounter.count += 1 }
         )
     }
 
@@ -39,8 +39,8 @@ final class GameViewModelTests: XCTestCase {
             (.ended(.timeUp), .describerBoard, .guesserBoard),
         ]
         for (phase, describerScreen, guesserScreen) in expectations {
-            XCTAssertEqual(makeViewModel(repository: repository(phase: phase), viewer: describerId).screen, describerScreen, "\(phase)")
-            XCTAssertEqual(makeViewModel(repository: repository(phase: phase), viewer: guesserId).screen, guesserScreen, "\(phase)")
+            XCTAssertEqual(makeViewModel(repository: repository(phase: phase), viewerId: describerId).screen, describerScreen, "\(phase)")
+            XCTAssertEqual(makeViewModel(repository: repository(phase: phase), viewerId: guesserId).screen, guesserScreen, "\(phase)")
         }
     }
 
@@ -51,19 +51,19 @@ final class GameViewModelTests: XCTestCase {
     func testScreenIdentityChangesWithViewerRoundAndScreenOnly() {
         let repository = repository(phase: .describing)
         let viewModel = makeViewModel(repository: repository)
-        let initial = viewModel.screenIdentity
+        let initialIdentity = viewModel.screenIdentity
         let useCases = GameFixtures.makeUseCases(repository: repository)
         useCases.describerTurn.placeMark(.detail, onTile: 0, by: describerId)
         useCases.guess.submit("زرافة", by: guesserId, now: startDate)
-        XCTAssertEqual(viewModel.screenIdentity, initial, "live moves keep the screen's state")
+        XCTAssertEqual(viewModel.screenIdentity, initialIdentity, "live moves keep the screen's state")
 
         viewModel.switchViewer(to: describerId)
-        XCTAssertNotEqual(viewModel.screenIdentity, initial)
+        XCTAssertNotEqual(viewModel.screenIdentity, initialIdentity)
 
-        let roundOne = repository.game?.currentRound.index
+        let firstRoundIndex = repository.game?.currentRound.index
         useCases.describerTurn.endRound(by: describerId, now: startDate)
         useCases.lifecycle.advanceToNextRound()
-        XCTAssertNotEqual(repository.game?.currentRound.index, roundOne)
+        XCTAssertNotEqual(repository.game?.currentRound.index, firstRoundIndex)
         XCTAssertEqual(viewModel.screenIdentity?.roundIndex, 1)
     }
 
@@ -95,25 +95,25 @@ final class GameViewModelTests: XCTestCase {
 
     func testContinuingOpensTheNextDescribersRound() {
         let repository = repository(phase: .ended(.timeUp))
-        let exits = ExitCounter()
-        let viewModel = makeViewModel(repository: repository, viewer: guesserId, exits: exits)
+        let exitCounter = ExitCounter()
+        let viewModel = makeViewModel(repository: repository, viewerId: guesserId, exitCounter: exitCounter)
         viewModel.continueAfterRound()
         XCTAssertEqual(repository.game?.currentRound.index, 1)
         XCTAssertEqual(repository.game?.currentRound.describerId, guesserId)
         XCTAssertEqual(viewModel.screen, .difficultyPicker, "the viewer describes next")
-        XCTAssertEqual(exits.count, 0)
+        XCTAssertEqual(exitCounter.count, 0)
     }
 
     func testContinuingAfterTheLastRoundLeavesTheGameOnce() {
         let repository = repository(phase: .ended(.timeUp), playerCount: 3, roundIndex: 2)
-        let exits = ExitCounter()
-        let viewModel = makeViewModel(repository: repository, exits: exits)
+        let exitCounter = ExitCounter()
+        let viewModel = makeViewModel(repository: repository, exitCounter: exitCounter)
         viewModel.continueAfterRound()
-        XCTAssertEqual(exits.count, 1)
+        XCTAssertEqual(exitCounter.count, 1)
         XCTAssertNil(repository.game)
         viewModel.continueAfterRound()
         viewModel.confirmLeave()
-        XCTAssertEqual(exits.count, 1)
+        XCTAssertEqual(exitCounter.count, 1)
     }
 
     // MARK: - Moving on after a round
@@ -165,15 +165,15 @@ final class GameViewModelTests: XCTestCase {
 
     func testTheLastRoundReturnsHomeAfterThePause() {
         let repository = endedRepository(roundIndex: 2, endedAt: startDate)
-        let exits = ExitCounter()
+        let exitCounter = ExitCounter()
         let date = MutableDate(startDate.addingTimeInterval(4))
-        let viewModel = makeViewModel(repository: repository, date: date, exits: exits)
+        let viewModel = makeViewModel(repository: repository, date: date, exitCounter: exitCounter)
         viewModel.tick()
-        XCTAssertEqual(exits.count, 1)
+        XCTAssertEqual(exitCounter.count, 1)
         XCTAssertNil(repository.game)
         XCTAssertFalse(viewModel.isTicking)
         viewModel.tick()
-        XCTAssertEqual(exits.count, 1)
+        XCTAssertEqual(exitCounter.count, 1)
     }
 
     func testNoMovingOnWhileLeavingIsBeingConfirmed() {
@@ -198,14 +198,14 @@ final class GameViewModelTests: XCTestCase {
 
     func testLeavingAsksFirstThenClearsTheGame() {
         let repository = repository(phase: .describing)
-        let exits = ExitCounter()
-        let viewModel = makeViewModel(repository: repository, exits: exits)
+        let exitCounter = ExitCounter()
+        let viewModel = makeViewModel(repository: repository, exitCounter: exitCounter)
         viewModel.requestLeave()
         XCTAssertTrue(viewModel.isConfirmingLeave)
         XCTAssertNotNil(repository.game)
         viewModel.confirmLeave()
         XCTAssertNil(repository.game)
-        XCTAssertEqual(exits.count, 1)
+        XCTAssertEqual(exitCounter.count, 1)
     }
 
     // MARK: - Viewer
