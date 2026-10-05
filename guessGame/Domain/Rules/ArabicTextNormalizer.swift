@@ -5,7 +5,7 @@ import Foundation
 /// variants unified, punctuation and extra spaces removed.
 struct ArabicTextNormalizer {
     /// Harakat, superscript alef, Quranic marks, tatweel and invisible direction/joining marks.
-    private static let removedScalars: [ClosedRange<UInt32>] = [
+    private static let removedScalarRanges: [ClosedRange<UInt32>] = [
         0x064B...0x065F, 0x0670...0x0670, 0x06D6...0x06ED, 0x0640...0x0640,
         0x200B...0x200F, 0x061C...0x061C, 0xFEFF...0xFEFF,
     ]
@@ -19,10 +19,10 @@ struct ArabicTextNormalizer {
 
     func normalize(_ text: String) -> String {
         // Compatibility mapping splits presentation forms such as "ﻻ" into their letters.
-        let folded = text.precomposedStringWithCompatibilityMapping.lowercased()
+        let foldedText = text.precomposedStringWithCompatibilityMapping.lowercased()
         var normalizedScalars = String.UnicodeScalarView()
-        for scalar in folded.unicodeScalars {
-            if Self.removedScalars.contains(where: { range in range.contains(scalar.value) }) {
+        for scalar in foldedText.unicodeScalars {
+            if Self.removedScalarRanges.contains(where: { range in range.contains(scalar.value) }) {
                 continue
             } else if Self.separators.contains(scalar) {
                 normalizedScalars.append(" ")

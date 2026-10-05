@@ -3,7 +3,8 @@
 enum TurnOrder {
     static func rotation(of playerIds: [String], startingAt startIndex: Int) -> [String] {
         guard !playerIds.isEmpty else { return [] }
-        let firstIndex = ((startIndex % playerIds.count) + playerIds.count) % playerIds.count
-        return Array(playerIds[firstIndex...] + playerIds[..<firstIndex])
+        let playerCount = playerIds.count
+        let wrappedStartIndex = ((startIndex % playerCount) + playerCount) % playerCount
+        return Array(playerIds[wrappedStartIndex...] + playerIds[..<wrappedStartIndex])
     }
 }
