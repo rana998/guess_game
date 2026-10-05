@@ -98,7 +98,7 @@ struct JoinRoomView: View {
 
             CodeDigitRow(
                 slots: viewModel.slots,
-                boxLabel: { Strings.JoinRoom.boxLabel(position: $0 + 1, of: JoinRoomViewModel.codeLength) },
+                boxLabel: { boxIndex in Strings.JoinRoom.boxLabel(position: boxIndex + 1, of: JoinRoomViewModel.codeLength) },
                 emptyValue: Strings.JoinRoom.boxEmptyValue,
                 identifierPrefix: "joinRoom.box"
             )
@@ -155,7 +155,7 @@ struct JoinRoomView: View {
                 NumericKeypad(
                     deleteTitle: Strings.JoinRoom.deleteKey,
                     confirmTitle: Strings.JoinRoom.confirmKey,
-                    onDigit: { viewModel.appendDigit($0) },
+                    onDigit: { digit in viewModel.appendDigit(digit) },
                     onDelete: { viewModel.deleteLast() },
                     onConfirm: { viewModel.confirm() }
                 )

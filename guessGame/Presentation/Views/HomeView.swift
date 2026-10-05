@@ -25,7 +25,7 @@ struct HomeView: View {
         /// so the group is centered by its visible ink, not its frame.
         static let logoTransparentMargin: CGFloat = 35
         static let columnWidth: CGFloat = 288
-        static let gap: CGFloat = 18
+        static let logoToColumnGap: CGFloat = 18
         static let columnTop: CGFloat = 27
         static let minimumMargin: CGFloat = 16
     }
@@ -61,11 +61,11 @@ struct HomeView: View {
             .navigationDestination(for: HomeDestination.self) { destination in
                 switch destination {
                 case .createRoom:
-                    CreateRoomView(viewModel: CreateRoomViewModel(onCreate: { path.append(.waitingRoom($0)) }))
+                    CreateRoomView(viewModel: CreateRoomViewModel(onCreate: { session in path.append(.waitingRoom(session)) }))
                 case .joinRoom:
                     JoinRoomView(viewModel: JoinRoomViewModel(
                         resolve: joinResolver,
-                        onJoined: { path.append(.enterName($0)) }
+                        onJoined: { room in path.append(.enterName(room)) }
                     ))
                 case .howToPlay: HowPlayView()
                 case .homeSetting: HomeSettingView()
@@ -79,7 +79,7 @@ struct HomeView: View {
                 case .waitingRoom(let session):
                     WaitingRoomView(viewModel: WaitingRoomViewModel(
                         session: session,
-                        copyToPasteboard: { UIPasteboard.general.string = $0 },
+                        copyToPasteboard: { roomCode in UIPasteboard.general.string = roomCode },
                         onStartGame: { room in
                             if gameUseCases.lifecycle.start(room: room) != nil {
                                 path.append(.game(viewerId: session.currentPlayerId))
@@ -103,17 +103,17 @@ struct HomeView: View {
         // Only the logo shrinks on narrow landscape screens (iPhone SE class);
         // the button column keeps its fixed size so tap targets stay HIG-sized.
         // 1 for any width from 780pt up, i.e. every current notched iPhone.
-        let scale = min(1, max(0.5, (size.width - 2 * Landscape.minimumMargin - Landscape.columnWidth - Landscape.gap)
-            / (Landscape.logoSize.width + Landscape.logoTransparentMargin)))
+        let widthLeftForLogo = size.width - 2 * Landscape.minimumMargin - Landscape.columnWidth - Landscape.logoToColumnGap
+        let logoScale = min(1, max(0.5, widthLeftForLogo / (Landscape.logoSize.width + Landscape.logoTransparentMargin)))
 
-        return HStack(alignment: .top, spacing: Landscape.gap) {
+        return HStack(alignment: .top, spacing: Landscape.logoToColumnGap) {
             StarburstLogo()
-                .frame(width: Landscape.logoSize.width * scale, height: Landscape.logoSize.height * scale)
+                .frame(width: Landscape.logoSize.width * logoScale, height: Landscape.logoSize.height * logoScale)
             buttonColumn
-                .padding(.top, Landscape.columnTop * scale)
+                .padding(.top, Landscape.columnTop * logoScale)
         }
         // Trailing is the physical left under the app's forced RTL layout.
-        .padding(.trailing, Landscape.logoTransparentMargin * scale)
+        .padding(.trailing, Landscape.logoTransparentMargin * logoScale)
         .frame(width: size.width, height: size.height)
     }
 

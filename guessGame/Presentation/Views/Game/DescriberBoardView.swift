@@ -180,17 +180,17 @@ struct DescriberBoardView: View {
             .padding(.top, Metrics.gridTopPadding)
             .padding(.bottom, Metrics.gridBottomPadding)
             .background {
-                GeometryReader { proxy in
-                    Color.clear.preference(key: ScrollOffsetPreferenceKey.self, value: proxy.frame(in: .named(Self.gridSpace)).minY)
+                GeometryReader { geometry in
+                    Color.clear.preference(key: ScrollOffsetPreferenceKey.self, value: geometry.frame(in: .named(Self.gridCoordinateSpaceName)).minY)
                 }
             }
         }
-        .coordinateSpace(name: Self.gridSpace)
+        .coordinateSpace(name: Self.gridCoordinateSpaceName)
         .scrollIndicators(.hidden)
         .onPreferenceChange(ScrollOffsetPreferenceKey.self) { offset in gridScrollOffset = offset }
     }
 
-    private static let gridSpace = "describerBoard.grid"
+    private static let gridCoordinateSpaceName = "describerBoard.grid"
 
     // The mockup's own always-visible bar, in place of the system indicator.
     private var scrollIndicator: some View {

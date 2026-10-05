@@ -194,7 +194,7 @@ struct GuesserBoardView: View {
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("game.guessList.empty")
         } else {
-            ScrollViewReader { proxy in
+            ScrollViewReader { scrollProxy in
                 ScrollView(.vertical) {
                     VStack(spacing: Metrics.rowSpacing) {
                         ForEach(viewModel.guessRows) { row in
@@ -213,10 +213,10 @@ struct GuesserBoardView: View {
                 .scrollIndicators(.hidden)
                 .onChange(of: viewModel.lastGuessId) { _, lastGuessId in
                     guard let lastGuessId else { return }
-                    withAnimation { proxy.scrollTo(lastGuessId, anchor: .bottom) }
+                    withAnimation { scrollProxy.scrollTo(lastGuessId, anchor: .bottom) }
                 }
                 .onAppear {
-                    if let lastGuessId = viewModel.lastGuessId { proxy.scrollTo(lastGuessId, anchor: .bottom) }
+                    if let lastGuessId = viewModel.lastGuessId { scrollProxy.scrollTo(lastGuessId, anchor: .bottom) }
                 }
             }
             .accessibilityElement(children: .contain)
@@ -291,7 +291,7 @@ struct GuesserBoardView: View {
 
     // Five places show at a time; past five the row scrolls sideways, never wraps.
     private var mainSlots: some View {
-        ScrollViewReader { proxy in
+        ScrollViewReader { scrollProxy in
             ScrollView(.horizontal) {
                 HStack(spacing: Metrics.slotSpacing) {
                     ForEach(Array(viewModel.mainSlots.enumerated()), id: \.element.id) { position, slot in
@@ -312,7 +312,7 @@ struct GuesserBoardView: View {
             .frame(width: Metrics.mainBoxSize.width)
             .onChange(of: viewModel.lastMainSlotId) { _, lastSlotId in
                 guard let lastSlotId else { return }
-                withAnimation { proxy.scrollTo(lastSlotId, anchor: .trailing) }
+                withAnimation { scrollProxy.scrollTo(lastSlotId, anchor: .trailing) }
             }
         }
     }

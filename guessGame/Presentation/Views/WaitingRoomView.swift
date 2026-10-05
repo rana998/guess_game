@@ -151,7 +151,7 @@ struct WaitingRoomView: View {
         VStack(spacing: Metrics.rowGap) {
             ForEach(Array(Self.rows(of: viewModel.slots).enumerated()), id: \.offset) { _, row in
                 HStack(spacing: Metrics.columnGap) {
-                    ForEach(row) { slotView($0) }
+                    ForEach(row) { slot in slotView(slot) }
                 }
                 .frame(width: Metrics.gridWidth, alignment: .leading)
             }
@@ -174,8 +174,8 @@ struct WaitingRoomView: View {
     }
 
     private static func rows(of slots: [WaitingRoomSlot]) -> [[WaitingRoomSlot]] {
-        stride(from: 0, to: slots.count, by: Metrics.columns).map {
-            Array(slots[$0..<min($0 + Metrics.columns, slots.count)])
+        stride(from: 0, to: slots.count, by: Metrics.columns).map { rowStart in
+            Array(slots[rowStart..<min(rowStart + Metrics.columns, slots.count)])
         }
     }
 
@@ -222,7 +222,7 @@ struct WaitingRoomView: View {
                 title: nil,
                 caption: nil,
                 values: Room.roundSecondsOptions,
-                selection: Binding(get: { viewModel.roundSeconds }, set: { viewModel.setRoundSeconds($0) }),
+                selection: Binding(get: { viewModel.roundSeconds }, set: { seconds in viewModel.setRoundSeconds(seconds) }),
                 pillWidth: Metrics.durationPillWidth,
                 pillSpacing: Metrics.durationPillSpacing,
                 identifierPrefix: "waitingRoom.duration",
